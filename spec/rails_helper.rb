@@ -20,7 +20,7 @@ require 'rspec/rails'
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 #
-# Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
+Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
@@ -50,4 +50,17 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  config.include ControllerHelper
+
+  # Wipe database to have a clean test environment
+  config.after(:each) do
+    Mongoid::Config.purge!
+  end
+
+  # let spec/apis/* access to request helpers : get, post, put ...
+  config.include RSpec::Rails::RequestExampleGroup, type: :request, parent_example_group: {
+    file_path: /spec\/api/
+  }
+
 end
