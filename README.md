@@ -1,2 +1,0 @@
-# hackerhouse
-HackerHouse platform
