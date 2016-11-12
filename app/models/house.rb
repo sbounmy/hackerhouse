@@ -1,5 +1,7 @@
+# 1 house = 1 stripe account
 class House
   include Mongoid::Document
+  include Mongoid::Timestamps
 
   # HackerHouse name
   field :name, type: String
@@ -13,14 +15,17 @@ class House
   # Stripe attributes
   # - stripe acc_id
   field :stripe_id, type: String
-  # - stripe connect client_id ca_xxxx
-  field :stripe_client_id, type: String
 
   # it is an unique id
   # Must match a slack channel ID without #
   field :slug_id, type: String
 
   has_many :transactions
+
+  # Validations
+  validates :slug_id, uniqueness: true, presence: true
+  validates :stripe_id, uniqueness: true, presence: true
+  validates :stripe_access_token, presence: true
 
   def slack_id
     "##{slug_id}"

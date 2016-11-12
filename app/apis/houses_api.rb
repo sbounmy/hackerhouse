@@ -10,6 +10,16 @@ class HousesAPI < Grape::API
 
     end
 
+    params do
+      requires :name,                type: String, desc: "HackerHouse's name"
+      requires :description,         type: String, desc: "Description"
+      requires :slug_id,             type: String, desc: "Slack channel id"
+      requires :stripe_access_token, type: String
+      requires :stripe_id,           type: String
+    end
+    post do
+      House.create! declared_params
+    end
   end
 
 end

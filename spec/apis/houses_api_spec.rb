@@ -22,10 +22,57 @@ describe HousesAPI do
         expect(json_response['slack_id']).to eq "#hq"
         expect(json_response['stripe_access_token']).to eq "very-secret-token"
         expect(json_response['stripe_id']).to eq "stripe-acc-id"
-        expect(json_response['stripe_client_id']).to eq "ca_stripe-client-id"
-        expect(json_response['stripe_oauth_url']).to eq "https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_stripe-client-id&scope=read_write"
+        expect(json_response['stripe_oauth_url']).to eq "https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_9SYxmUWdLukjBH0xWsspOwmCdBYbw2Mx&scope=read_write"
       end
 
+    end
+  end
+
+  describe "POST /v1/houses" do
+
+    def create_house(params={})
+      post "/v1/houses", build(:house).attributes.merge(params)
+    end
+
+    context 'with valid params' do
+
+      it "is success" do
+        create_house
+        expect(response.status).to be 201
+      end
+
+      it "returns json response" do
+        create_house
+        expect(json_response['name']).to eq "Canal Street"
+        expect(json_response['description']).to eq "The first and original HackerHouse"
+        expect(json_response['slug_id']).to eq "hq"
+        expect(json_response['slack_id']).to eq "#hq"
+      end
+
+    end
+
+    context 'with invalid params' do
+      it 'can not create house with same slug' do
+        create(:house)
+        expect {
+          create_house
+        }.to_not change { House.count }
+        expect(response.status).to eq 422
+      end
+
+      it 'requires stripe_access_token' do
+        expect {
+          create_house stripe_access_token: nil
+        }.to_not change { House.count }
+        expect(response.status).to eq 422
+      end
+
+      it 'requires stripe_id' do
+        expect {
+          create_house stripe_id: nil
+        }.to_not change { House.count }
+        expect(response.status).to eq 422
+      end
     end
   end
 

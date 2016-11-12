@@ -11,6 +11,11 @@ class ApplicationAPI < Grape::API
     end
   end
 
+  # Errors handling
+  rescue_from Mongoid::Errors::Validations do |e|
+    error_response(status: 422, message: { 'errors' => e.document.errors.as_json })
+  end
+
   # APIs
   mount HousesAPI
   mount TransactionsAPI
