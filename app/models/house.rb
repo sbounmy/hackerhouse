@@ -9,8 +9,10 @@ class House
   # Description text
   field :description, type: String
 
-  # Stripe access token
+  # Stripe tokens
   field :stripe_access_token, type: String
+  field :stripe_refresh_token, type: String
+  field :stripe_publishable_key, type: String
 
   # Stripe attributes
   # - stripe acc_id
@@ -20,6 +22,7 @@ class House
   # Must match a slack channel ID without #
   field :slug_id, type: String
 
+  # Associations
   has_many :transactions
 
   # Validations

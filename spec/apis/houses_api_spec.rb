@@ -20,7 +20,8 @@ describe HousesAPI do
         expect(json_response['name']).to eq "Canal Street"
         expect(json_response['slug_id']).to eq "hq"
         expect(json_response['slack_id']).to eq "#hq"
-        expect(json_response['stripe_access_token']).to eq "very-secret-token"
+        expect(json_response['stripe_access_token']).to eq "sk_very-secret-token"
+        expect(json_response['stripe_publishable_key']).to eq "pk_public-token"
         expect(json_response['stripe_id']).to eq "stripe-acc-id"
         expect(json_response['stripe_oauth_url']).to eq "https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_9SYxmUWdLukjBH0xWsspOwmCdBYbw2Mx&scope=read_write"
       end
@@ -49,6 +50,13 @@ describe HousesAPI do
         expect(json_response['slack_id']).to eq "#hq"
       end
 
+      it 'sets tokens' do
+        create_house stripe_access_token: 'sk', stripe_publishable_key: 'pk', stripe_refresh_token: 'rt'
+        house = House.last
+        expect(house.stripe_access_token).to eq 'sk'
+        expect(house.stripe_publishable_key).to eq 'pk'
+        expect(house.stripe_refresh_token).to eq 'rt'
+      end
     end
 
     context 'with invalid params' do
