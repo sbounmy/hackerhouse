@@ -23,7 +23,7 @@ class House
   field :slug_id, type: String
 
   # Associations
-  has_many :transactions
+  has_many :users
 
   # Validations
   validates :slug_id, uniqueness: true, presence: true
