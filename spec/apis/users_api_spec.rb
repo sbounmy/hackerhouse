@@ -56,7 +56,7 @@ describe UsersAPI do
           expect {
             create_user
           }.to raise_error(Stripe::InvalidRequestError, 'No such plan: basic_monthly')
-        }.to change { User.count }
+        }.to_not change { User.count }
       end
 
       it 'raises error when no matching publishable key' do
@@ -73,12 +73,13 @@ describe UsersAPI do
           expect {
             create_user moving_on: '1988-10-20'
           }.to raise_error(Stripe::InvalidRequestError, 'Invalid timestamp: must be an integer Unix timestamp in the future')
-        }.to change { User.count }
+        }.to_not change { User.count }
       end
 
       it 'does not create duplicate users' do
+        pending
         create_user
-        expect(Stripe::Customer).to_not receive(:create)
+        expect_any_instance_of(Stripe::Customer).to receive(:delete)
         create_user
       end
 
