@@ -10,23 +10,26 @@ class UsersAPI < Grape::API
       requires :moving_on,              type: Date,   desc: 'Moving date'
     end
 
+    # refactor this ! this api call should not be idempotent
     post do
       house = House.find_by(stripe_publishable_key: declared_params[:stripe_publishable_key])
-      house.users.build(declared_params.except(:stripe_publishable_key)).tap do |u|
+      user = house.users.where(email: declared_params[:email]).first ||  house.users.build(declared_params.except(:stripe_publishable_key))
+      user.tap do |u|
         Stripe.api_key = house.stripe_access_token
 
         c = Stripe::Customer.create(
           source: declared_params[:token], # obtained from Stripe.js
-          email: declared_params[:email]
-        )
+          email:  declared_params[:email]
+        ) if u.stripe_id.nil?
 
         u.plan = 'basic_monthly' #force by default
-        u.stripe_id = c.id
+        u.stripe_id ||= c.id
         u.save!
 
-        # directly subscribe user
+        # directly subscribes user
+        # this should move to a separate api call
         Stripe::Subscription.create(
-          customer: c.id,
+          customer: u.stripe_id,
           plan: "basic_monthly",
           application_fee_percent: 20,
           trial_end: declared_params[:moving_on].to_time.to_i
