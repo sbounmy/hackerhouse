@@ -1,0 +1,79 @@
+<!-- Ivry -->
+<!-- <form action="http://localhost:3000/v1/" method="POST">
+  <script
+    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+    data-key="pk_test_w16a4DTyGylp8oAxNPmfXAqX"
+    data-amount="999"
+    data-name="Ivry"
+    data-description="Widget"
+    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+    data-locale="auto"
+    data-zip-code="true"
+    data-currency="eur">
+  </script>
+</form> -->
+
+<script src="https://checkout.stripe.com/checkout.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+<form id='user_new'>
+<input id='moving_on' type='date'/>
+<button id="customButton">Purchase</button>
+</form>
+
+
+<script type='text/javascript'>
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
+
+var key = getUrlParameter('pk');
+
+var handler = StripeCheckout.configure({
+  key: key,
+  image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+  locale: 'auto',
+  token: function(token) {
+    $.post(
+window.location.origin + '/v1/users.json', {
+     token: token.id,
+     email: token.email,
+     moving_on: $('#moving_on').val(),
+     stripe_publishable_key: key
+    }, function(data) {
+        alert('42 x Merci ! Ton paiement a bien été pris en compte, on te voit très bientôt :-). HackerHouse');
+    });
+    // POST /transactions?stripe_publishable_key=pk_test_w16a4DTyGylp8oAxNPmfXAqX&token=token.id&stripe_cust_id=?
+    // You can access the token ID with `token.id`.
+    // Get the token ID to your server-side code for use.
+  }
+});
+
+document.getElementById('customButton').addEventListener('click', function(e) {
+  // Open Checkout with further options:
+  handler.open({
+    name: 'Ivry',
+    description: '2 widgets',
+    zipCode: true,
+    currency: 'eur',
+    amount: 52000
+  });
+  e.preventDefault();
+});
+
+// Close Checkout on page navigation:
+window.addEventListener('popstate', function() {
+  handler.close();
+});
+</script>

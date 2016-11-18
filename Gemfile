@@ -23,8 +23,16 @@ gem 'puma', '~> 3.0'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 
-# Use Grape for REST-Style API
+# Use Grape as REST API micro-framework
 gem 'grape'
+
+# User Active Model Serializer as formatter
+gem 'grape-active_model_serializers'
+# Use Grape Middle logger to log requests / exceptions and more
+gem 'grape-middleware-logger'
+
+# Use Stripe as Payment platform
+gem 'stripe'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -37,6 +45,14 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'rspec-rails'
+end
+
+group :test do
+  gem 'capybara'
+  gem 'factory_girl_rails'
+  gem 'launchy'
+  gem 'stripe-ruby-mock', '~> 2.3.1', require: 'stripe_mock'
+  gem 'selenium-webdriver'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
