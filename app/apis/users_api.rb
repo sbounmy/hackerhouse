@@ -19,7 +19,6 @@ class UsersAPI < Grape::API
           source: declared_params[:token], # obtained from Stripe.js
           email:  declared_params[:email]
         )
-
         # directly subscribes user
         begin
         Stripe::Subscription.create(

@@ -2,6 +2,7 @@ class ApplicationAPI < Grape::API
   version 'v1', using: :path
   format :json
   formatter :json, Grape::Formatter::ActiveModelSerializers
+  insert_after Grape::Middleware::Formatter, Grape::Middleware::Logger
 
   # Helpers
   helpers do
