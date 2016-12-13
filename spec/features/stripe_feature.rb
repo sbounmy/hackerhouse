@@ -13,9 +13,8 @@ feature 'checkout' do
     pk = "pk_test_TZNvputhVSjs6WFIZy4b4hH9"
     sk = "sk_test_4h4o1ck9feZX9VzinYNX4Vwm"
     visit "/stripe.html?pk=#{pk}"
-    expect(page).to have_content 'Purchase'
     fill_in 'moving_on', with: 2.days.from_now.to_date.to_s
-    click_on 'Purchase'
+    click_on "customButton"
     create(:house, stripe_publishable_key: pk, stripe_access_token: sk)
     expect {
       fill_credit_card

@@ -12,68 +12,91 @@
     data-currency="eur">
   </script>
 </form> -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <script src="https://checkout.stripe.com/checkout.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
-<script src="https://checkout.stripe.com/checkout.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  </head>
 
-<form id='user_new'>
-<input id='moving_on' type='date'/>
-<button id="customButton">Purchase</button>
-</form>
+  <body class='container-fluid'>
+    <div class="row">
+      <div class="col-lg-4">
+        <h3>Réservation HackerHouse Paris</h3>
+        <form id='user_new'>
+          <div class="form-group">
+            <label for="moving_on">Date d'émménagement</label>
+            <input id='moving_on' type='date' class="form-control" />
+            <p class='help-block'>Tu seras débité le jour de ton emménagement</p>
+          </div>
+          <button id="customButton" type="submit" class="btn btn-default">J'emménage 🚀</button>
+        </form>
+      </div>
+    </div>
+    <!-- This should always be after form until we move to (document).ready -->
+    <script type='text/javascript'>
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
 
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
 
-<script type='text/javascript'>
-var getUrlParameter = function getUrlParameter(sParam) {
-    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-        sURLVariables = sPageURL.split('&'),
-        sParameterName,
-        i;
-
-    for (i = 0; i < sURLVariables.length; i++) {
-        sParameterName = sURLVariables[i].split('=');
-
-        if (sParameterName[0] === sParam) {
-            return sParameterName[1] === undefined ? true : sParameterName[1];
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
         }
-    }
-};
+    };
 
-var key = getUrlParameter('pk');
+    var key = getUrlParameter('pk');
 
-var handler = StripeCheckout.configure({
-  key: key,
-  image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
-  locale: 'auto',
-  token: function(token) {
-    $.post(
-window.location.origin + '/v1/users.json', {
-     token: token.id,
-     email: token.email,
-     moving_on: $('#moving_on').val(),
-     stripe_publishable_key: key
-    }, function(data) {
-        alert('42 x Merci ! Ton paiement a bien été pris en compte, on te voit très bientôt :-). HackerHouse');
+    var handler = StripeCheckout.configure({
+      key: key,
+      image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+      locale: 'auto',
+      token: function(token) {
+        $.post(
+         window.location.origin + '/v1/users.json', {
+         token: token.id,
+         email: token.email,
+         moving_on: $('#moving_on').val(),
+         stripe_publishable_key: key })
+          .done(function(data) {
+            alert('42 x Merci ! Ton paiement a bien été pris en compte, on te voit très bientôt :-). HackerHouse'); })
+          .fail(function (error) {
+            alert(error.responseText);
+        });
+        // POST /transactions?stripe_publishable_key=pk_test_w16a4DTyGylp8oAxNPmfXAqX&token=token.id&stripe_cust_id=?
+        // You can access the token ID with `token.id`.
+        // Get the token ID to your server-side code for use.
+      }
     });
-    // POST /transactions?stripe_publishable_key=pk_test_w16a4DTyGylp8oAxNPmfXAqX&token=token.id&stripe_cust_id=?
-    // You can access the token ID with `token.id`.
-    // Get the token ID to your server-side code for use.
-  }
-});
 
-document.getElementById('customButton').addEventListener('click', function(e) {
-  // Open Checkout with further options:
-  handler.open({
-    name: 'Ivry',
-    description: '2 widgets',
-    zipCode: true,
-    currency: 'eur',
-    amount: 52000
-  });
-  e.preventDefault();
-});
+    document.getElementById('customButton').addEventListener('click', function(e) {
+      // Open Checkout with further options:
+      handler.open({
+        name: 'Réservation HackerHouse',
+        description: "Abonnement mensuel",
+        zipCode: true,
+        currency: 'eur',
+        amount: 52000
+      });
+      e.preventDefault();
+    });
 
-// Close Checkout on page navigation:
-window.addEventListener('popstate', function() {
-  handler.close();
-});
-</script>
+    // Close Checkout on page navigation:
+    window.addEventListener('popstate', function() {
+      handler.close();
+    });
+    </script>
+  </body>
+</html>
