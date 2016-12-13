@@ -5,7 +5,6 @@ module StripeHelper
       fill_in 'Card number', with: '4242424242424242'
       fill_in 'MM / YY', with: '08/20'
       fill_in 'CVC', with: '999'
-      fill_in 'ZIP Code', with: '75019'
 
       find('.Section-button button').click
     end
