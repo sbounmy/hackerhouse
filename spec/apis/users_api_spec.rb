@@ -5,9 +5,10 @@ describe UsersAPI do
 
     let!(:hq) { create(:house, stripe_access_token: 'sk_test_1qzvgz941TTVVpccIXEjgSiO') }
     let(:stripe) { StripeMock.create_test_helper }
+    let(:tomorrow) { 1.days.from_now }
     let(:default_params) { { stripe_publishable_key: 'pk_public-token',
         token: stripe.generate_card_token, email: 'paul@42.student.fr',
-        moving_on: '2016-12-20' } }
+        moving_on: tomorrow } }
 
     before do
       StripeMock.start
@@ -45,7 +46,7 @@ describe UsersAPI do
         expect(json_response['token']).to eq "test_tok_1"
         expect(json_response['plan']).to eq "basic_monthly"
         expect(json_response['stripe_id']).to eq "test_cus_3"
-        expect(json_response['moving_on']).to eq "2016-12-20"
+        expect(json_response['moving_on']).to eq tomorrow.strftime("%Y-%m-%d")
       end
     end
 

@@ -51,6 +51,7 @@ group :test do
   gem 'capybara'
   gem 'factory_girl_rails'
   gem 'launchy'
+  gem 'rspec-collection_matchers'
   gem 'stripe-ruby-mock', '~> 2.3.1', require: 'stripe_mock'
   gem 'selenium-webdriver'
 end

@@ -18,14 +18,19 @@ describe HousesAPI do
       it "returns a json response" do
         get_house
         expect(json_response['name']).to eq "Canal Street"
-        expect(json_response['slug_id']).to eq "hq"
-        expect(json_response['slack_id']).to eq "#hq"
-        expect(json_response['stripe_access_token']).to eq "sk_very-secret-token"
+        expect(json_response['slug_id']).to match /hq-\d/
+        expect(json_response['slack_id']).to match /#hq-\d/
+        expect(json_response).to_not have_key 'stripe_access_token'
         expect(json_response['stripe_publishable_key']).to eq "pk_public-token"
-        expect(json_response['stripe_id']).to eq "stripe-acc-id"
-        expect(json_response['stripe_oauth_url']).to eq "https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_9SYxmUWdLukjBH0xWsspOwmCdBYbw2Mx&scope=read_write"
+        expect(json_response['stripe_id']).to match /stripe-acc-\d/
       end
 
+      it' returns users' do
+        user = create(:user, house: hq)
+        get_house
+        expect(json_response['user_ids']).to have(1).items
+        expect(json_response['user_ids']).to eq [user.id.to_s]
+      end
     end
   end
 
@@ -46,8 +51,8 @@ describe HousesAPI do
         create_house
         expect(json_response['name']).to eq "Canal Street"
         expect(json_response['description']).to eq "The first and original HackerHouse"
-        expect(json_response['slug_id']).to eq "hq"
-        expect(json_response['slack_id']).to eq "#hq"
+        expect(json_response['slug_id']).to match /hq-\d/
+        expect(json_response['slack_id']).to match /#hq-\d/
       end
 
       it 'sets tokens' do
@@ -61,9 +66,9 @@ describe HousesAPI do
 
     context 'with invalid params' do
       it 'can not create house with same slug' do
-        create(:house)
+        h1 = create(:house)
         expect {
-          create_house
+          create_house(slug_id: h1.slug_id)
         }.to_not change { House.count }
         expect(response.status).to eq 422
       end
