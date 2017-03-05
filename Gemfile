@@ -7,6 +7,7 @@ gem 'rails', '~> 5.0.0', '>= 5.0.0.1'
 # gem 'sqlite3'
 # Use mongoid as the ORM database
 gem 'mongoid', '6.0.2'
+gem 'mongoid_rails_migrations'
 
 # Use Puma as the app server
 gem 'puma', '~> 3.0'
@@ -31,8 +32,20 @@ gem 'grape-active_model_serializers'
 # Use Grape Middle logger to log requests / exceptions and more
 gem 'grape-middleware-logger'
 
+# Use Pundit as Authorization library
+gem 'pundit'
+
 # Use Stripe as Payment platform
 gem 'stripe'
+
+# Use standardized way to build Service Objects
+gem 'simple_command'
+
+# Use JWT  as Authentication
+gem 'jwt'
+
+# Use Bcrypt as Password encryption
+gem 'bcrypt'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

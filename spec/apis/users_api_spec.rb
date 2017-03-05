@@ -1,9 +1,14 @@
 require 'rails_helper'
 
 describe UsersAPI do
+  let!(:hq) { create(:house, stripe_access_token: 'sk_test_1qzvgz941TTVVpccIXEjgSiO') }
+
+  def token u
+    JsonWebToken.encode(user_id: u.id.to_s)
+  end
+
   describe "POST /v1/users" do
 
-    let!(:hq) { create(:house, stripe_access_token: 'sk_test_1qzvgz941TTVVpccIXEjgSiO') }
     let(:stripe) { StripeMock.create_test_helper }
     let(:tomorrow) { 1.days.from_now }
     let(:default_params) { { stripe_publishable_key: 'pk_public-token',
@@ -84,6 +89,41 @@ describe UsersAPI do
         create_user
       end
 
+    end
+  end
+
+  describe "PUT /v1/users/:id" do
+    let(:user) { create(:user) }
+    let(:avatar) { "https://i1.wp.com/dev.slack.com/img/avatars/ava_0010-512.v1443724322.png" }
+
+    it 'is forbidden to guest' do
+      expect {
+        put "/v1/users/#{user.id}", { avatar_url: avatar }
+      }.to_not change { user.reload.avatar_url }.from(nil)
+      expect(response.status).to eq 403
+    end
+
+    it 'updates its own avatar url' do
+      expect {
+        put "/v1/users/#{user.id}", { avatar_url: avatar }, { 'Authorization' => token(user) }
+      }.to change { user.reload.avatar_url }.from(nil).to(avatar)
+    end
+
+    it 'is forbidden to update someone else avatar url' do
+      user2 = create(:user)
+      expect {
+        put "/v1/users/#{user2.id}", { avatar_url: avatar }, { 'Authorization' => token(user) }
+      }.to_not change { user2.reload.avatar_url }.from(nil)
+      expect(response.status).to eq 403
+    end
+
+    it 'is forbidden to update someone else avatar url if admin' do
+      user2 = create(:user)
+      user.set admin: true
+      expect {
+        put "/v1/users/#{user2.id}", { avatar_url: avatar }, { 'Authorization' => token(user) }
+      }.to change { user2.reload.avatar_url }.from(nil).to(avatar)
+      expect(response.status).to eq 200
     end
   end
 

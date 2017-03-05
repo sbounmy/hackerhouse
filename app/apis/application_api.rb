@@ -10,11 +10,20 @@ class ApplicationAPI < Grape::API
     def declared_params
       @declared ||= ActiveSupport::HashWithIndifferentAccess.new(declared(params, include_missing: false))
     end
+    include Pundit
+
+    def current_user
+      @current_user ||= AuthorizeApiRequest.call(request.headers).result || Guest.new
+    end
   end
 
   # Errors handling
   rescue_from Mongoid::Errors::Validations do |e|
     error_response(status: 422, message: { 'errors' => e.document.errors.as_json })
+  end
+
+  rescue_from Pundit::NotAuthorizedError do |e|
+    error_response(status: 403, message: { 'errors' => { 'authorization' => 'Unauthorized' } })
   end
 
   # APIs

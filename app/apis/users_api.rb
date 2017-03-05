@@ -34,10 +34,21 @@ class UsersAPI < Grape::API
 
         u.plan = 'basic_monthly' #force by default
         u.stripe_id = c.id
+        u.password = "#{u.email.split('@')[0]}42" # generate default password atm : stephane@hackerhouse.paris -> stephane42
         u.save!
       end
     end
 
+    desc "Updates an User"
+    params do
+      optional :avatar_url,             type: String, desc: "Avatar url"
+    end
+    put ':id' do
+      User.find(params[:id]).tap do |user|
+        authorize user, :update?
+        user.update_attributes! declared_params
+      end
+    end
   end
 
 end
