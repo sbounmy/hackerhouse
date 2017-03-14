@@ -44,6 +44,14 @@ describe UsersAPI do
         expect(response.status).to be 201
       end
 
+      it "can create twice" do
+        expect {
+          create_user
+          create_user
+        }.to change { User.count }.by(2)
+        expect(response.status).to be 201
+      end
+
       it "returns a json response" do
         expect {
           create_user
