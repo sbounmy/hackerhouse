@@ -14,7 +14,6 @@ class UsersAPI < Grape::API
       house = House.find_by(slug_id: declared_params.delete(:slug_id))
       house.users.build(declared_params).tap do |u|
         Stripe.api_key = house.stripe_access_token
-
         c = Stripe::Customer.create(
           source: declared_params[:token], # obtained from Stripe.js
           email:  declared_params[:email]
@@ -48,6 +47,14 @@ class UsersAPI < Grape::API
         authorize user, :update?
         user.update_attributes! declared_params
       end
+    end
+
+    desc "List Users"
+    params do
+      optional :q, type: Hash
+    end
+    get do
+      User.search(declared_params[:q])
     end
   end
 

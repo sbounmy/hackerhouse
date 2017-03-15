@@ -11,7 +11,7 @@ describe UsersAPI do
 
     let(:stripe) { StripeMock.create_test_helper }
     let(:tomorrow) { 1.days.from_now }
-    let(:default_params) { { stripe_publishable_key: 'pk_public-token',
+    let(:default_params) { { slug_id: hq.slug_id,
         token: stripe.generate_card_token, email: 'paul@42.student.fr',
         moving_on: tomorrow } }
 
@@ -56,10 +56,16 @@ describe UsersAPI do
         expect {
           create_user
         }.to change { hq.users.count }.by(1)
-        expect(json_response['token']).to eq "test_tok_1"
-        expect(json_response['plan']).to eq "basic_monthly"
-        expect(json_response['stripe_id']).to eq "test_cus_3"
-        expect(json_response['moving_on']).to eq tomorrow.strftime("%Y-%m-%d")
+        user = User.last
+        expect(user.token).to eq "test_tok_1"
+        expect(user.plan).to eq "basic_monthly"
+        expect(user.stripe_id).to eq "test_cus_3"
+        expect(user.moving_on).to eq tomorrow.strftime("%Y-%m-%d")
+      end
+
+      it 'doesnt display sensible information' do
+        create_user
+        expect(json_response.keys).to eq ['id', 'firstname', 'lastname', 'avatar_url']
       end
     end
 
@@ -73,13 +79,13 @@ describe UsersAPI do
         }.to_not change { User.count }
       end
 
-      it 'raises error when no matching publishable key' do
+      it 'returns error when no matching house' do
         hq.destroy!
         expect {
-          expect {
-            create_user
-          }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document not found for class House with attributes/)
+          create_user
         }.to_not change { User.count }
+        expect(response.code).to eq "404"
+        expect(json_response['errors']).to have_key('not_found')
       end
 
       it 'raises error when moving_on is in the past' do
@@ -101,7 +107,7 @@ describe UsersAPI do
   end
 
   describe "PUT /v1/users/:id" do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, avatar_url: nil) }
     let(:avatar) { "https://i1.wp.com/dev.slack.com/img/avatars/ava_0010-512.v1443724322.png" }
 
     it 'is forbidden to guest' do
@@ -118,7 +124,7 @@ describe UsersAPI do
     end
 
     it 'is forbidden to update someone else avatar url' do
-      user2 = create(:user)
+      user2 = create(:user, avatar_url: nil)
       expect {
         put "/v1/users/#{user2.id}", { avatar_url: avatar }, { 'Authorization' => token(user) }
       }.to_not change { user2.reload.avatar_url }.from(nil)
@@ -126,7 +132,7 @@ describe UsersAPI do
     end
 
     it 'is forbidden to update someone else avatar url if admin' do
-      user2 = create(:user)
+      user2 = create(:user, avatar_url: nil)
       user.set admin: true
       expect {
         put "/v1/users/#{user2.id}", { avatar_url: avatar }, { 'Authorization' => token(user) }
@@ -135,4 +141,27 @@ describe UsersAPI do
     end
   end
 
+  describe "GET /v1/users" do
+    let(:user) { create(:user) }
+
+    it 'list all users' do
+      user
+      get "/v1/users"
+      expect(response.status).to eq 200
+      expect(json_response[0]['firstname']).to eq "Paul"
+      expect(json_response[0]['lastname']).to eq "Amicel"
+      expect(json_response[0]['avatar_url']).to eq "http://avatar.slack.com/paul.jpg"
+    end
+
+    it 'list user from specific house' do
+      user
+      hq = create(:house)
+      didix = create(:user, firstname: "Edmond Xavier", lastname: "Collot", house: hq)
+      get "/v1/users", q: { house_id: hq.id }
+      expect(response.status).to eq 200
+      expect(json_response).to have(1).items
+      expect(json_response[0]['firstname']).to eq "Edmond Xavier"
+      expect(json_response[0]['lastname']).to eq "Collot"
+    end
+  end
 end
