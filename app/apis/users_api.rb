@@ -5,14 +5,14 @@ class UsersAPI < Grape::API
     desc "Create a User"
     params do
       requires :token,                  type: String, desc: "Card token returned from Stripe"
-      requires :stripe_publishable_key, type: String
+      requires :slug_id,                type: String, desc: "House slug id ex: hq"
       requires :email,                  type: String
       requires :moving_on,              type: Date,   desc: 'Moving date'
     end
 
     post do
-      house = House.find_by(stripe_publishable_key: declared_params[:stripe_publishable_key])
-      house.users.build(declared_params.except(:stripe_publishable_key)).tap do |u|
+      house = House.find_by(slug_id: declared_params.delete(:slug_id))
+      house.users.build(declared_params).tap do |u|
         Stripe.api_key = house.stripe_access_token
 
         c = Stripe::Customer.create(
@@ -34,7 +34,7 @@ class UsersAPI < Grape::API
 
         u.plan = 'basic_monthly' #force by default
         u.stripe_id = c.id
-        u.password = "#{u.email.split('@')[0]}42" # generate default password atm : stephane@hackerhouse.paris -> stephane42
+        u.password = "#{u.email.split('@')[0]}42" # generate default password from email: stephane@hackerhouse.paris -> stephane42
         u.save!
       end
     end

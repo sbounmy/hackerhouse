@@ -92,7 +92,7 @@
              token: token.id,
              email: token.email,
              moving_on: $('#moving_on').val(),
-             stripe_publishable_key: hh.stripe_publishable_key })
+             slug_id: hh.slug_id })
               .done(function(data) {
                 alert('42 x Merci ! Ton paiement a bien été pris en compte, on te voit très bientôt :-). HackerHouse'); })
               .fail(function (error) {
