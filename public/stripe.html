@@ -40,7 +40,11 @@
       $("#moving_on").attr('min', str);
     });
   </script>
-
+  <style>
+    #user_new {
+      display: none;
+    }
+  </style>
   </head>
 
   <body class='container-fluid'>
@@ -74,46 +78,54 @@
         }
     };
 
-    var key = getUrlParameter('pk');
+    $(document).ready(function() {
+      $.getJSON("/v1/houses/" + getUrlParameter('hh')).done(function(hh) {
+        $("#user_new").show();
 
-    var handler = StripeCheckout.configure({
-      key: key,
-      image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
-      locale: 'auto',
-      token: function(token) {
-        $.post(
-         window.location.origin + '/v1/users.json', {
-         token: token.id,
-         email: token.email,
-         moving_on: $('#moving_on').val(),
-         stripe_publishable_key: key })
-          .done(function(data) {
-            alert('42 x Merci ! Ton paiement a bien été pris en compte, on te voit très bientôt :-). HackerHouse'); })
-          .fail(function (error) {
-            alert(error.responseText);
+        var handler = StripeCheckout.configure({
+          key: hh.stripe_publishable_key,
+          image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+          locale: 'auto',
+          token: function(token) {
+            $.post(
+             window.location.origin + '/v1/users.json', {
+             token: token.id,
+             email: token.email,
+             moving_on: $('#moving_on').val(),
+             stripe_publishable_key: hh.stripe_publishable_key })
+              .done(function(data) {
+                alert('42 x Merci ! Ton paiement a bien été pris en compte, on te voit très bientôt :-). HackerHouse'); })
+              .fail(function (error) {
+                alert(error.responseText);
+            });
+            // POST /transactions?stripe_publishable_key=pk_test_w16a4DTyGylp8oAxNPmfXAqX&token=token.id&stripe_cust_id=?
+            // You can access the token ID with `token.id`.
+            // Get the token ID to your server-side code for use.
+          }
         });
-        // POST /transactions?stripe_publishable_key=pk_test_w16a4DTyGylp8oAxNPmfXAqX&token=token.id&stripe_cust_id=?
-        // You can access the token ID with `token.id`.
-        // Get the token ID to your server-side code for use.
-      }
-    });
 
-    document.getElementById('customButton').addEventListener('click', function(e) {
-      // Open Checkout with further options:
-      handler.open({
-        name: 'Réservation HackerHouse',
-        description: "Abonnement mensuel",
-        zipCode: false,
-        currency: 'eur',
-        amount: 52000
+        document.getElementById('customButton').addEventListener('click', function(e) {
+          // Open Checkout with further options:
+          handler.open({
+            name: 'Réservation HackerHouse',
+            description: "Abonnement mensuel",
+            zipCode: false,
+            currency: 'eur',
+            amount: 52000
+          });
+          e.preventDefault();
+        });
+
+        // Close Checkout on page navigation:
+        window.addEventListener('popstate', function() {
+          handler.close();
+        });
+
+      }).fail(function() {
+        $("#user_new").html("oulah ! T'es sur que le lien est bon ? Je trouve pas cet HH 😩").show();
       });
-      e.preventDefault();
     });
 
-    // Close Checkout on page navigation:
-    window.addEventListener('popstate', function() {
-      handler.close();
-    });
     </script>
   </body>
 </html>

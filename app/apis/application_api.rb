@@ -26,6 +26,10 @@ class ApplicationAPI < Grape::API
     error_response(status: 403, message: { 'errors' => { 'authorization' => 'Unauthorized' } })
   end
 
+  rescue_from Mongoid::Errors::DocumentNotFound do |e|
+    error_response(status: 404, message: { 'errors' => { 'not_found' => e.message } })
+  end
+
   # APIs
   mount HousesAPI
   mount UsersAPI
