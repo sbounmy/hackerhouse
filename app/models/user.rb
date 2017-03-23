@@ -15,6 +15,7 @@ class User
   field :plan, type: String
   field :stripe_id, type: String
   field :token, type: String
+  field :job_title, type: String
 
   # Associations
   belongs_to :house, index: true
