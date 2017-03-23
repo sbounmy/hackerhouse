@@ -5,6 +5,7 @@ class User
   include Concerns::MongoidQuery
 
   # Fields
+  field :active, type: Boolean, default: false
   field :admin, type: Boolean, default: false
   field :avatar_url, type: String
   field :firstname, type: String
@@ -16,6 +17,9 @@ class User
   field :stripe_id, type: String
   field :token, type: String
   field :job_title, type: String
+
+  # Indexes
+  index active: 1
 
   # Associations
   belongs_to :house, index: true

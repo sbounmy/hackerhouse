@@ -8,5 +8,6 @@ FactoryGirl.define do
     moving_on '2016-12-20'
     avatar_url 'http://avatar.slack.com/paul.jpg'
     house
+    active true
   end
 end

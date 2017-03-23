@@ -163,5 +163,28 @@ describe UsersAPI do
       expect(json_response[0]['firstname']).to eq "Edmond Xavier"
       expect(json_response[0]['lastname']).to eq "Collot"
     end
+
+    it 'can filter by inactive' do
+      user
+      ghost = create(:user, firstname: 'Brian', lastname: 'Ghost', active: false)
+      get "/v1/users", q: { active: false }
+      expect(response.status).to eq 200
+
+      expect(json_response).to have(1).items
+      expect(json_response[0]['firstname']).to eq 'Brian'
+      expect(json_response[0]['lastname']).to eq 'Ghost'
+    end
+
+    it 'can filter by active' do
+      user
+      ghost = create(:user, firstname: 'Brian', lastname: 'Ghost', active: false)
+      get "/v1/users", q: { active: true }
+      expect(response.status).to eq 200
+
+      expect(json_response).to have(1).items
+      expect(json_response[0]['firstname']).to eq 'Paul'
+      expect(json_response[0]['lastname']).to eq 'Amicel'
+    end
+
   end
 end
