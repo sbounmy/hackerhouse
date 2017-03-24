@@ -1,7 +1,0 @@
-{
-  "proxies": {
-    "/v1/": {
-      "origin": "${API_URL}"
-    }
-  }
-}
