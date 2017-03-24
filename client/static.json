@@ -2,7 +2,7 @@
   "root": "build/",
   "proxies": {
     "/v1/": {
-      "origin": "${API_URL}"
+      "origin": "http://api.hackerhouse.paris"
     }
   }
 }
