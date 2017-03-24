@@ -1,7 +1,7 @@
 {
   "root": "build/",
   "proxies": {
-    "/v1/": {
+    "/v1": {
       "origin": "http://api.hackerhouse.paris"
     }
   }
