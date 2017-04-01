@@ -16,7 +16,8 @@ class User
   field :plan, type: String
   field :stripe_id, type: String
   field :token, type: String
-  field :job_title, type: String
+  field :bio_title, type: String
+  field :bio_url,   type: String
 
   # Indexes
   index active: 1

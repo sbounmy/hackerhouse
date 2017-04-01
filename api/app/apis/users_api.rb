@@ -41,7 +41,7 @@ class UsersAPI < Grape::API
     desc "Updates an User"
     params do
       optional :avatar_url,             type: String, desc: "Avatar url"
-      optional :job_title,              type: String, desc: "Job Title"
+      optional :bio_title,              type: String, desc: "Bio Title"
     end
     put ':id' do
       User.find(params[:id]).tap do |user|
