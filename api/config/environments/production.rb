@@ -73,4 +73,11 @@ Rails.application.configure do
     config.logger = ActiveSupport::TaggedLogging.new(logger)
   end
 
+  config.middleware.insert_before 0, "Rack::Cors" do
+    allow do
+      origins 'http://www.hackerhouse.paris' # allow squarespace
+      resource '*', headers: :any, methods: [:get, :post, :options]
+    end
+  end
+
 end
