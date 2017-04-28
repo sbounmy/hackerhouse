@@ -62,6 +62,14 @@ describe HousesAPI do
         expect(house.stripe_publishable_key).to eq 'pk'
         expect(house.stripe_refresh_token).to eq 'rt'
       end
+
+      it 'default application fee is 20 and cant be set through API' do
+        create_house stripe_application_fee_percent: 1
+        house = House.last
+        expect(house.stripe_application_fee_percent).to eq 20
+        house.update_attributes stripe_application_fee_percent: 30
+        expect(house.reload.stripe_application_fee_percent).to eq 30
+      end
     end
 
     context 'with invalid params' do

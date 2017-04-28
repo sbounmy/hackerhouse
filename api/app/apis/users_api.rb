@@ -23,7 +23,7 @@ class UsersAPI < Grape::API
         Stripe::Subscription.create(
           customer: c.id,
           plan: "basic_monthly",
-          application_fee_percent: 20,
+          application_fee_percent: house.stripe_application_fee_percent,
           trial_end: declared_params[:moving_on].to_time.to_i
         )
         rescue Exception => e

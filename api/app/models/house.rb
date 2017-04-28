@@ -17,6 +17,8 @@ class House
   # Stripe attributes
   # - stripe acc_id
   field :stripe_id, type: String
+  # - application_fee
+  field :stripe_application_fee_percent, type: Float, default: 20
 
   # it is an unique id
   # Must match a slack channel ID without #

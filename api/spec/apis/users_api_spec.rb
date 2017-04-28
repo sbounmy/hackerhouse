@@ -65,7 +65,22 @@ describe UsersAPI do
 
       it 'doesnt display sensible information' do
         create_user
-        expect(json_response.keys).to eq ['id', 'firstname', 'lastname', 'avatar_url']
+        expect(json_response.keys).to eq ["id", "firstname", "lastname", "avatar_url", "bio_title", "bio_url"]
+      end
+
+      it 'creates subscriptions with default application fee' do
+        create_user
+        customer = Stripe::Customer.retrieve('test_cus_3')
+        expect(customer.subscriptions.count).to eq 1
+        expect(customer.subscriptions.first.application_fee_percent).to eq 20
+      end
+
+      it 'creates subscriptions with custom application fee' do
+        hq.update_attributes stripe_application_fee_percent: 30
+        create_user
+        customer = Stripe::Customer.retrieve('test_cus_3')
+        expect(customer.subscriptions.count).to eq 1
+        expect(customer.subscriptions.first.application_fee_percent).to eq 30
       end
     end
 
