@@ -19,6 +19,8 @@ class House
   field :stripe_id, type: String
   # - application_fee
   field :stripe_application_fee_percent, type: Float, default: 20
+  # - default price in cents
+  field :default_price, type: Integer, default: 52000
 
   # it is an unique id
   # Must match a slack channel ID without #
