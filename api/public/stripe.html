@@ -50,8 +50,8 @@
   <body class='container-fluid'>
     <div class="row">
       <div class="col-lg-4">
-        <h3>Réservation HackerHouse Paris</h3>
         <form id='user_new'>
+          <h3 id='name'></h3>
           <div class="form-group">
             <label for="moving_on">Date d'émménagement</label>
             <input id='moving_on' type='date' class="form-control" />
@@ -81,7 +81,7 @@
     $(document).ready(function() {
       $.getJSON("/v1/houses/" + getUrlParameter('hh')).done(function(hh) {
         $("#user_new").show();
-
+        $('#name').html(hh.name);
         var handler = StripeCheckout.configure({
           key: hh.stripe_publishable_key,
           image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
@@ -94,7 +94,7 @@
              moving_on: $('#moving_on').val(),
              slug_id: hh.slug_id })
               .done(function(data) {
-                alert('42 x Merci ! Ton paiement a bien été pris en compte, on te voit très bientôt :-). HackerHouse'); })
+                alert('42 x Merci ! Ton paiement a bien été pris en compte, on te voit très bientôt :-). ' + hh.name); })
               .fail(function (error) {
                 alert(error.responseText);
             });
@@ -107,7 +107,7 @@
         document.getElementById('customButton').addEventListener('click', function(e) {
           // Open Checkout with further options:
           handler.open({
-            name: 'Réservation HackerHouse',
+            name: 'Réservation ' + hh.name,
             description: "Abonnement mensuel",
             zipCode: false,
             currency: 'eur',
