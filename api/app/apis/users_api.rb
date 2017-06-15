@@ -22,7 +22,7 @@ class UsersAPI < Grape::API
         begin
         Stripe::Subscription.create(
           customer: c.id,
-          plan: "basic_monthly",
+          plan: house.plan,
           application_fee_percent: house.stripe_application_fee_percent,
           trial_end: declared_params[:moving_on].to_time.to_i
         )
@@ -31,7 +31,7 @@ class UsersAPI < Grape::API
          raise
         end
 
-        u.plan = 'basic_monthly' #force by default
+        u.plan = house.plan #force by default
         u.stripe_id = c.id
         u.password = "#{u.email.split('@')[0]}42" # generate default password from email: stephane@hackerhouse.paris -> stephane42
         u.save!

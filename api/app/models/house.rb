@@ -21,6 +21,8 @@ class House
   field :stripe_application_fee_percent, type: Float, default: 20
   # - default price in cents
   field :default_price, type: Integer, default: 52000
+  # - stripe plan
+  field :plan, type: String, default: "basic_monthly"
 
   # it is an unique id
   # Must match a slack channel ID without #
