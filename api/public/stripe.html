@@ -56,8 +56,10 @@
             <label for="moving_on">Date d'émménagement</label>
             <input id='moving_on' type='date' class="form-control" />
             <p class='help-block'>Tu seras débité le jour de ton emménagement</p>
+
+            <input type='checkbox' id='terms'> <label for="terms">J'ai lu et accepte les conditions générales d'utilisation "<a target="_blank" href="https://man.hackerhouse.paris/hc/fr/articles/115010135147">✋Les X commandements</a>"</label>
           </div>
-          <button id="customButton" type="submit" class="btn btn-default">J'emménage 🚀</button>
+          <button id="customButton" type="submit" class="btn btn-default" disabled=disabled>J'emménage 🚀</button>
         </form>
       </div>
     </div>
@@ -79,6 +81,13 @@
     };
 
     $(document).ready(function() {
+
+      $('#terms').on('change', function(event) {
+        var btn = $(this);
+        // console.log(btn.not(':checked'))
+        $('#customButton').prop('disabled', !btn.is(':checked'));
+      });
+
       $.getJSON("/v1/houses/" + getUrlParameter('hh')).done(function(hh) {
         $("#user_new").show();
         $('#name').html(hh.name);
