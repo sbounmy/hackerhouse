@@ -12,6 +12,8 @@ class User
   field :lastname, type: String
   field :email, type: String
   field :moving_on, type: String
+  field :check_in, type: Date
+  field :check_out, type: Date
   field :password_digest, type: String
   field :plan, type: String
   field :stripe_id, type: String

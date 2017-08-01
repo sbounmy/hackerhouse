@@ -7,7 +7,8 @@ class UsersAPI < Grape::API
       requires :token,                  type: String, desc: "Card token returned from Stripe"
       requires :slug_id,                type: String, desc: "House slug id ex: hq"
       requires :email,                  type: String
-      requires :moving_on,              type: Date,   desc: 'Moving date'
+      requires :check_in,               type: Date,   desc: 'Check in date'
+      requires :check_out,              type: Date,   desc: 'Check out date'      
     end
 
     post do
@@ -24,7 +25,7 @@ class UsersAPI < Grape::API
           customer: c.id,
           plan: house.plan,
           application_fee_percent: house.stripe_application_fee_percent,
-          trial_end: declared_params[:moving_on].to_time.to_i
+          trial_end: declared_params[:check_in].to_time.to_i
         )
         rescue Exception => e
           c.delete #rollbacks customer creation if any issue and raise

@@ -36,12 +36,21 @@
 <!-- End of HubSpot Embed Code -->
 
   <!-- only let people to pick future date (starting tomorrow) -->
+
+  <link rel="stylesheet" href="https://unpkg.com/flatpickr/dist/flatpickr.min.css">
+  <script src="https://unpkg.com/flatpickr"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+
   <script type="text/javascript">
     $(document).ready(function() {
-      var tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      var str = tomorrow.toISOString().split('T')[0];
-      $("#moving_on").attr('min', str);
+      $("#when").flatpickr({
+        locale: 'fr',
+        mode: "range",
+        altFormat: "d M",
+        altInput: true,
+        dateFormat: 'd-m-Y',
+        minDate: new Date().fp_incr(1)
+      });
     });
   </script>
   <style>
@@ -53,15 +62,15 @@
 
   <body class='container-fluid'>
     <div class="row">
-      <div class="col-lg-4">
+      <div class="col-lg-offset-4 col-lg-4">
         <form id='user_new'>
           <h3 id='name'></h3>
           <div class="form-group">
-            <label for="moving_on">Date d'émménagement</label>
-            <input id='moving_on' type='date' class="form-control" />
+            <label for="when">Quand</label>
+            <input id='when' type='date' class="form-control" />
             <p class='help-block'>Tu seras débité le jour de ton emménagement</p>
 
-            <input type='checkbox' id='terms'> <label for="terms">J'ai lu et accepte les conditions générales d'utilisation "<a target="_blank" href="https://man.hackerhouse.paris/hc/fr/articles/115010135147">✋Les X commandements</a>"</label>
+            <input type='checkbox' id='terms'> <label for="terms">J'ai lu et accepte les <a target="_blank" href="https://man.hackerhouse.paris/hc/fr/articles/115010135147">conditions générales d'utilisation</a></label>
           </div>
           <button id="customButton" type="submit" class="btn btn-default" disabled=disabled>J'emménage 🚀</button>
         </form>
@@ -100,11 +109,13 @@
           image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
           locale: 'auto',
           token: function(token) {
+            var dates = $('#when').val().split(' au ');
             $.post(
              window.location.origin + '/v1/users.json', {
              token: token.id,
              email: token.email,
-             moving_on: $('#moving_on').val(),
+             check_in: dates[0],
+             check_out: dates[1],
              slug_id: hh.slug_id })
               .done(function(data) {
                 _hsq.push(['identify', {email: data.email, lifecyclestage: 'customer'}]);

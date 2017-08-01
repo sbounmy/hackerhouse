@@ -10,13 +10,16 @@ feature 'checkout' do
 
   # after { StripeMock.stop }
   scenario 'paying with correct card' do
+
+    I18n.locale = :fr
     pk = "pk_test_TZNvputhVSjs6WFIZy4b4hH9"
     sk = "sk_test_4h4o1ck9feZX9VzinYNX4Vwm"
     # visit "/stripe.html?pk=#{pk}"
     create(:house, slug_id: 'hq', stripe_publishable_key: pk, stripe_access_token: sk)
     visit "stripe.html?hh=hq"
 
-    fill_in 'moving_on', with: 2.days.from_now.to_date.to_s
+    select_dates(from: 2.days.from_now, to: 5.month.from_now)
+    check 'terms'
     click_on "customButton"
     expect {
       fill_credit_card
@@ -43,7 +46,8 @@ feature 'checkout' do
     visit "stripe.html?hh=supernana"
     expect(page).to have_content("SuperNana House")
 
-    fill_in 'moving_on', with: 2.days.from_now.to_date.to_s
+    select_dates(from: 2.days.from_now, to: 8.month.from_now)
+    check 'terms'
     click_on "customButton"
     expect {
       within_frame find('.stripe_checkout_app') do
@@ -66,7 +70,8 @@ feature 'checkout' do
     visit "stripe.html?hh=supernana"
     expect(page).to have_content("SuperNana House")
 
-    fill_in 'moving_on', with: 2.days.from_now.to_date.to_s
+    select_dates(from: 2.days.from_now, to: 8.month.from_now)
+    check 'terms'
     click_on "customButton"
     expect {
       within_frame find('.stripe_checkout_app') do
