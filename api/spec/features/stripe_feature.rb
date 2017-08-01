@@ -6,17 +6,16 @@ feature 'checkout' do
   before do
     # StripeMock.start
     # stripe.create_plan(id: 'basic_monthly', amount: 52000)
+    I18n.locale = :fr #for date picker
   end
 
   # after { StripeMock.stop }
   scenario 'paying with correct card' do
-
-    I18n.locale = :fr
     pk = "pk_test_TZNvputhVSjs6WFIZy4b4hH9"
     sk = "sk_test_4h4o1ck9feZX9VzinYNX4Vwm"
     # visit "/stripe.html?pk=#{pk}"
     create(:house, slug_id: 'hq', stripe_publishable_key: pk, stripe_access_token: sk)
-    visit "stripe.html?hh=hq"
+    visit "/gp/hq"
 
     select_dates(from: 2.days.from_now, to: 5.month.from_now)
     check 'terms'
@@ -33,8 +32,8 @@ feature 'checkout' do
 
   scenario 'when no matching house it should raise error' do
     create(:house, slug_id: 'hq')
-    visit "stripe.html?hh=thefamily"
-    expect(page).to have_content("T'es sur que le lien est bon")
+    visit "/gp/thefamily"
+    expect(page.status_code).to eql 404
   end
 
   scenario 'it displays custom name and price' do
@@ -43,7 +42,7 @@ feature 'checkout' do
     # visit "/stripe.html?pk=#{pk}"
     create(:house, name: 'SuperNana House', slug_id: 'supernana', stripe_publishable_key: pk, stripe_access_token: sk, default_price: 79_000)
 
-    visit "stripe.html?hh=supernana"
+    visit "/gp/supernana"
     expect(page).to have_content("SuperNana House")
 
     select_dates(from: 2.days.from_now, to: 8.month.from_now)
@@ -67,7 +66,7 @@ feature 'checkout' do
     sk = "sk_test_4h4o1ck9feZX9VzinYNX4Vwm"
     create(:house, name: 'SuperNana House', slug_id: 'supernana', stripe_publishable_key: pk, stripe_access_token: sk, plan: 'vip_monthly', default_price: 99_000)
 
-    visit "stripe.html?hh=supernana"
+    visit "/gp/supernana"
     expect(page).to have_content("SuperNana House")
 
     select_dates(from: 2.days.from_now, to: 8.month.from_now)

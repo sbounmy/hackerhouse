@@ -1,0 +1,144 @@
+<!-- Ivry -->
+<!-- <form action="http://localhost:3000/v1/" method="POST">
+  <script
+    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+    data-key="pk_test_w16a4DTyGylp8oAxNPmfXAqX"
+    data-amount="999"
+    data-name="Ivry"
+    data-description="Widget"
+    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+    data-locale="auto"
+    data-zip-code="true"
+    data-currency="eur">
+  </script>
+</form> -->
+<% content_for :head do %>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>HackerHouse Paris</title>
+  <meta name="description" content="Are you ready ?">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <script src="https://checkout.stripe.com/checkout.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- Start of HubSpot Embed Code -->
+  <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/3327857.js"></script>
+<!-- End of HubSpot Embed Code -->
+
+  <!-- only let people to pick future date (starting tomorrow) -->
+
+  <link rel="stylesheet" href="https://unpkg.com/flatpickr/dist/flatpickr.min.css">
+  <script src="https://unpkg.com/flatpickr"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $("#when").flatpickr({
+        locale: 'fr',
+        mode: "range",
+        altFormat: "d M",
+        altInput: true,
+        dateFormat: 'd-m-Y',
+        minDate: new Date().fp_incr(1)
+      });
+    });
+  </script>
+<% end %>
+
+
+    <div class="row">
+      <div class="col-lg-offset-4 col-lg-4">
+        <form id='user_new'>
+          <h3 id='name'><%= @house.name %></h3>
+          <div class="form-group">
+            <label for="when">Quand</label>
+            <input id='when' type='date' class="form-control" />
+            <p class='help-block'>Tu seras débité le jour de ton emménagement</p>
+
+            <input type='checkbox' id='terms'> <label for="terms">J'ai lu et accepte les <a target="_blank" href="https://man.hackerhouse.paris/hc/fr/articles/115010135147">conditions générales d'utilisation</a></label>
+          </div>
+          <button id="customButton" type="submit" class="btn btn-default" disabled=disabled>J'emménage 🚀</button>
+        </form>
+      </div>
+    </div>
+    <!-- This should always be after form until we move to (document).ready -->
+    <script type='text/javascript'>
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    };
+
+    $(document).ready(function() {
+
+      $('#terms').on('change', function(event) {
+        var btn = $(this);
+        // console.log(btn.not(':checked'))
+        $('#customButton').prop('disabled', !btn.is(':checked'));
+      });
+
+      var handler = StripeCheckout.configure({
+        key: '<%= @house.stripe_publishable_key %>',
+        image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+        locale: 'auto',
+        token: function(token) {
+          var dates = $('#when').val().split(' au ');
+          $.post(
+           window.location.origin + '/v1/users.json', {
+           token: token.id,
+           email: token.email,
+           check_in: dates[0],
+           check_out: dates[1],
+           slug_id: '<%= @house.slug_id %>'})
+            .done(function(data) {
+              _hsq.push(['identify', {email: data.email, lifecyclestage: 'customer'}]);
+              _hsq.push(['trackPageView']);
+              alert('42 x Merci ! Ton paiement a bien été pris en compte, on te voit très bientôt :-). <%= @house.name %>'); })
+            .fail(function (error) {
+              alert(error.responseText);
+          });
+          // POST /transactions?stripe_publishable_key=pk_test_w16a4DTyGylp8oAxNPmfXAqX&token=token.id&stripe_cust_id=?
+          // You can access the token ID with `token.id`.
+          // Get the token ID to your server-side code for use.
+        }
+      });
+
+      document.getElementById('customButton').addEventListener('click', function(e) {
+        // Open Checkout with further options:
+        handler.open({
+          name: '<%= "Réservation #{@house.name}" %>',
+          description: "Abonnement mensuel",
+          zipCode: false,
+          currency: 'eur',
+          amount: <%= @house.default_price %>
+        });
+        e.preventDefault();
+      });
+
+      // Close Checkout on page navigation:
+      window.addEventListener('popstate', function() {
+        handler.close();
+      });
+
+    });
+
+    </script>
+
+    <%= I18n.locale %>
