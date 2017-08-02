@@ -1,0 +1,21 @@
+<table class='table prices'>
+  <% house.plans.each do |s| %>
+  <tr>
+    <td><div class='text-left'><%= s.name %> <i class="fa fa-question-circle fa-padding" title="<%= s.metadata['description'] %>"
+    data-toggle="tooltip" data-placement="right"></i></div></td>
+    <td class='text-right'><%= number_to_currency s.amount / 100, locale: 'fr', precision: 0 %></td>                
+  </tr>
+  <% end %>
+  <tr>
+    <td><div class='text-left'><strong>Total </strong><small>par mois</small></div></td>
+    <td class='text-right'><strong><%= number_to_currency house.price_in_cents / 100, locale: 'fr', precision: 0 %></strong></td>
+  </tr>
+</table>
+
+<p>
+  <% if house.coupons.any? %>
+    <h6>Remises exceptionnelles <i class="fa fa-question-circle fa-padding" title="La remise sera appliquée après validation par la HackerHouse" data-toggle="tooltip" data-placement="right"></i></h6> 
+    <p><i><%= house.coupon_to_s %></i></p>
+  <% end %>
+</p>
+

@@ -3,7 +3,11 @@ class GpController < ApplicationController
     @house = House.find_by(slug_id: params[:slug_id])
   end
 
-  after_action :allow_iframe
+  def pricing
+    @house = House.find_by(slug_id: params[:slug_id])
+  end
+  
+  after_action :allow_iframe, on: :pricing
 
   private
 

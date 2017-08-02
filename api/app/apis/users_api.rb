@@ -23,7 +23,7 @@ class UsersAPI < Grape::API
         begin
         Stripe::Subscription.create(
           customer: c.id,
-          plan: house.plan,
+          items: house.stripe_plan_ids.map { |pid| { plan: pid, quantity: 1} },
           application_fee_percent: house.stripe_application_fee_percent,
           trial_end: declared_params[:check_in].to_time.to_i
         )
