@@ -92,7 +92,7 @@
            check_out: dates[1],
            slug_id: '<%= @house.slug_id %>'})
             .done(function(data) {
-              _hsq.push(['identify', {email: data.email, lifecyclestage: 'customer',
+              _hsq.push(['identify', {email: token.email, lifecyclestage: 'customer',
                 check_in: dates[0],
                 check_out: dates[1]}]);
               _hsq.push(['trackPageView']);
