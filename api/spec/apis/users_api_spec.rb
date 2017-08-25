@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe UsersAPI do
-  let!(:hq) { create(:house, stripe_access_token: 'sk_test_1qzvgz941TTVVpccIXEjgSiO') }
+  let!(:hq) { create(:house, stripe_access_token: 'sk_test_ldGbQo4R0tq1W10ebvHyaV6N') }
 
   def token u
     JsonWebToken.encode(user_id: u.id.to_s)
@@ -13,11 +13,14 @@ describe UsersAPI do
     let(:tomorrow) { 1.days.from_now }
     let(:default_params) { { slug_id: hq.slug_id,
         token: stripe.generate_card_token, email: 'paul@42.student.fr',
-        moving_on: tomorrow } }
+        check_in: tomorrow, check_out: 4.months.from_now } }
 
     before do
+      StripeMock.toggle_live(true)
       StripeMock.start
-      stripe.create_plan(id: 'basic_monthly', amount: 52000)
+      Stripe.api_key = hq.stripe_access_token
+      stripe.create_plan(id: 'work_monthly', amount: 300_00)
+      stripe.create_plan(id: 'sleep_monthly', amount: 220_00)
     end
 
     after { StripeMock.stop }
@@ -103,11 +106,11 @@ describe UsersAPI do
         expect(json_response['errors']).to have_key('not_found')
       end
 
-      it 'raises error when moving_on is in the past' do
+      it 'raises error when check_in is in the past' do
         expect {
           expect {
-            create_user moving_on: '1988-10-20'
-          }.to raise_error(Stripe::InvalidRequestError, 'Invalid timestamp: must be an integer Unix timestamp in the future')
+            create_user check_in: '1988-10-20'
+          }.to raise_error(Stripe::InvalidRequestError, /Invalid timestamp\: must be an integer Unix timestamp in the future/)
         }.to_not change { User.count }
       end
 
@@ -135,6 +138,12 @@ describe UsersAPI do
     it 'updates its own avatar url' do
       expect {
         put "/v1/users/#{user.id}", { avatar_url: avatar }, { 'Authorization' => token(user) }
+      }.to change { user.reload.avatar_url }.from(nil).to(avatar)
+    end
+
+    it 'updates its own avatar url using token parameter' do
+      expect {
+        put "/v1/users/#{user.id}", { avatar_url: avatar, token: token(user) }
       }.to change { user.reload.avatar_url }.from(nil).to(avatar)
     end
 

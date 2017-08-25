@@ -10,46 +10,15 @@ module StripeHelper
     end
   end
 
-  NEXT_MONTH = '.flatpickr-next-month'
-  PREV_MONTH = '.flatpickr-prev-month'
-
-  def date_diff2_in_months(start_date, end_date)
-    (to_months(start_date) - to_months(end_date)).abs
-  end
-
-  def to_months(date)
-    (date.year * 12 + date.month)
-  end
-
   ## select target date and flip through the calendar
-  def select_dates(from:, to:)
-    months_ahead = date_diff2_in_months(Date.today, from)
-    find('.flatpickr-input').click
-    # define next month selector used into flip date picker method
-    # if days.to_i < 0
-    #   navigator = find(PREV_MONTH)
-    # else
-      navigator = find(NEXT_MONTH)
-    # end
-    # flip over the date picker to the target calculated month
-    flip_date_picker(navigator, months_ahead) if months_ahead > 0
-    select_date(from)
+  def select_date(datetime, from:)
+    I18n.locale = :fr
+      date = I18n.l datetime.to_date # must be d/m/y format
+    I18n.locale = :en  
+    puts "$('#{from}')[0]._flatpickr.setDate('#{date}');"
 
-    months_ahead = date_diff2_in_months(from, to)
-
-    flip_date_picker(navigator, months_ahead) if months_ahead > 0
-    select_date(to)
-    expect(page).to have_no_css('.flatpickr-calendar')
+    page.execute_script("$('#{from}')[0]._flatpickr.setDate('#{date}');")
+    
+    return true
   end
-
-  def flip_date_picker(element, months)
-    for i in 1..months do
-      element.click
-    end
-  end
-
-  def select_date(date)
-     date = I18n.l(date, format: "%B %-d, %Y").capitalize
-     find(:xpath, "//span[contains(@class, 'flatpickr-day') and @aria-label='#{date}']").click
-   end
 end

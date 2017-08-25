@@ -13,7 +13,7 @@ class ApplicationAPI < Grape::API
     include Pundit
 
     def current_user
-      @current_user ||= AuthorizeApiRequest.call(request.headers).result || Guest.new
+      @current_user ||= AuthorizeApiRequest.call(params[:token], request.headers).result || Guest.new
     end
   end
 

@@ -32,7 +32,6 @@ class UsersAPI < Grape::API
          raise
         end
 
-        u.plan = house.plan #force by default
         u.stripe_id = c.id
         u.password = "#{u.email.split('@')[0]}42" # generate default password from email: stephane@hackerhouse.paris -> stephane42
         u.save!
