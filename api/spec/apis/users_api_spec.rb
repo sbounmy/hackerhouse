@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe UsersAPI do
-  let!(:hq) { create(:house, stripe_access_token: 'sk_test_ldGbQo4R0tq1W10ebvHyaV6N') }
+  let!(:hq) { create(:house, stripe_access_token: 'sk_test_4h4o1ck9feZX9VzinYNX4Vwm') }
 
   def token u
     JsonWebToken.encode(user_id: u.id.to_s)
@@ -76,6 +76,29 @@ describe UsersAPI do
         customer = Stripe::Customer.retrieve('test_cus_3')
         expect(customer.subscriptions.count).to eq 1
         expect(customer.subscriptions.first.application_fee_percent).to eq 20
+      end
+
+      it 'accepts date as %d\/%m\/%Y' do
+        expect {
+          create_user check_in: tomorrow.strftime("%d/%m/%Y")  
+        }.to change { hq.users.count }.by(1)
+        
+        customer = Stripe::Customer.retrieve('test_cus_3')
+        expect(customer.subscriptions.count).to eq 1
+        expect(customer.subscriptions.first.application_fee_percent).to eq 20
+      end
+
+      it 'accepts localized date %d\/%m\/%Y' do
+        nexthyear = Date.today.year + 1
+        date = Date.new(nextyear, 2, 1) # next year 1st february
+        expect {
+          create_user check_in: date.strftime("%d/%m/%Y")  
+        }.to change { hq.users.count }.by(1)
+        
+        customer = Stripe::Customer.retrieve('test_cus_3')
+        expect(customer.subscriptions.count).to eq 1
+        expect(customer.subscriptions.first.application_fee_percent).to eq 20
+        expect(customer.subscriptions.trial_until).to eq "01/02/#{nextyear}"
       end
 
       it 'creates subscriptions with custom application fee' do

@@ -30,15 +30,14 @@
     $(document).ready(function() {
       var options = {        
         locale: 'fr',
-        altFormat: "d/m/Y",
-        altInput: true,
-        dateFormat: 'd-m-Y',
+        dateFormat: 'd/m/Y',
         minDate: new Date().fp_incr(1)
       }
 
       const check_in = flatpickr('#check_in', $.extend(options, {
         onChange: function(d, n, str) {
           check_out.set("minDate", d[0].fp_incr(<%= @house.min_stay_in_days -%>));
+          
           check_out.set("enable", [function(d2) {
             const date = d2.getDate();
             if (d[0].getDate() === date) {
