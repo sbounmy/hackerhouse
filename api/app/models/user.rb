@@ -20,6 +20,9 @@ class User
   field :bio_title, type: String
   field :bio_url,   type: String
 
+  # Stripe id
+  field :stripe_id, type: String
+
   # Indexes
   index active: 1
 
@@ -28,4 +31,10 @@ class User
 
   # Bcrypt
   has_secure_password
+
+  def self.send_reminders(house)
+    house.rent.users do |user|
+      RentMailer.reminder(user, house.rent).deliver_now
+    end
+  end
 end

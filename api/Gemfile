@@ -71,6 +71,7 @@ group :test do
   gem 'rspec-collection_matchers'
   gem 'stripe-ruby-mock', '~> 2.4.1', require: 'stripe_mock'
   gem 'selenium-webdriver'
+  gem 'timecop'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

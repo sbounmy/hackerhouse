@@ -24,6 +24,11 @@ class House
   field :stripe_plan_ids, type: Array, default: ["work_monthly", "sleep_monthly"]
   field :stripe_coupon_ids, type: Array, default: []
   field :min_stay_in_days, type: Integer, default: 28*2 #2 months default
+  field :v2, type: Boolean, default: false
+  # rent amount in cents
+  field :amount, type: Integer, default: 100_00
+
+  field :default_capacity, type: Integer
 
   # it is an unique id
   # Must match a slack channel ID without #
@@ -77,5 +82,9 @@ class House
 
   def price_in_cents
     @price_in_cents ||= plans.sum &:amount
+  end
+
+  def rent_on(time)
+    @rent ||= Rent.new(self, time)
   end
 end
