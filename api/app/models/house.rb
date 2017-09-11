@@ -14,6 +14,10 @@ class House
   field :stripe_refresh_token, type: String
   field :stripe_publishable_key, type: String
 
+  # Stripe test tokens
+  field :stripe_secret_key_test, type: String
+  field :stripe_publishable_key_test, type: String
+
   # Stripe attributes
   # - stripe acc_id
   field :stripe_id, type: String
@@ -71,7 +75,11 @@ class House
 
   def stripe
     begin
-      Stripe.api_key = stripe_access_token
+      if Rails.env == 'production'
+        Stripe.api_key = stripe_access_token
+      else
+        Stripe.api_key = stripe_secret_key_test
+      end
       yield
     rescue Exception => e
       raise e
