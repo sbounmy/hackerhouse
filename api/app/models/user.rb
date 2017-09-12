@@ -20,6 +20,9 @@ class User
   field :bio_title, type: String
   field :bio_url,   type: String
 
+  # Stripe id
+  field :stripe_id, type: String
+
   # Indexes
   index active: 1
 
