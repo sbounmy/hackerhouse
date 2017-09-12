@@ -75,10 +75,10 @@ class House
 
   def stripe
     begin
-      if Rails.env == 'production'
+      if v2
         Stripe.api_key = stripe_access_token
       else
-        Stripe.api_key = stripe_secret_key_test
+        Stripe.api_key = Rails.application.secrets.stripe_secret_key
       end
       yield
     rescue Exception => e
