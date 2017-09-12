@@ -14,10 +14,6 @@ class House
   field :stripe_refresh_token, type: String
   field :stripe_publishable_key, type: String
 
-  # Stripe test tokens
-  field :stripe_secret_key_test, type: String
-  field :stripe_publishable_key_test, type: String
-
   # Stripe attributes
   # - stripe acc_id
   field :stripe_id, type: String
@@ -31,8 +27,6 @@ class House
   field :v2, type: Boolean, default: false
   # rent amount in cents
   field :amount, type: Integer, default: 100_00
-
-  field :default_capacity, type: Integer
 
   # it is an unique id
   # Must match a slack channel ID without #
