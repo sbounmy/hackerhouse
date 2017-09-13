@@ -68,6 +68,7 @@ RSpec.configure do |config|
 
 end
 
+Capybara.server_port = "4242"
 Capybara.default_driver = :selenium
 Capybara.default_max_wait_time = 5
 

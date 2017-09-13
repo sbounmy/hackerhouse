@@ -1,3 +1,18 @@
 HackerHouse créé avec succès !
 
-<%= debug @response %>
+<%= debug @token %>
+
+<script type='text/javascript'>
+  $(document).ready(function() {
+    $.post('/v1/houses', {
+      name: "<%= @account.statement_descriptor %>",
+      slug_id: "<%= @account.statement_descriptor.split(' ').last.downcase.underscore %>",
+      stripe_access_token: "<%= @token.token -%>",
+      stripe_refresh_token: "<%= @token.refresh_token -%>",
+      stripe_publishable_key: "<%= @token.params['stripe_publishable_key'] %>",
+      stripe_id: "<%= @token.params['stripe_user_id'] -%>"
+    }).done(function() {
+      alert('Success !');
+    });
+  });
+</script>
