@@ -26,6 +26,8 @@ module Hackerhouse
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+    # http://blog.bigbinary.com/2016/08/29/rails-5-disables-autoloading-after-booting-the-app-in-production.html
+    config.eager_load_paths << Rails.root.join('lib')
     config.autoload_paths << Rails.root.join('lib')
 
     config.generators do |g|
