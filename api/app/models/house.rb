@@ -70,9 +70,9 @@ class House
   def stripe
     begin
       if v2
-        Stripe.api_key = stripe_access_token
-      else
         Stripe.api_key = Rails.application.secrets.stripe_secret_key
+      else
+        Stripe.api_key = stripe_access_token
       end
       yield
     rescue Exception => e
