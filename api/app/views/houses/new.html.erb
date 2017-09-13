@@ -1,1 +1,1 @@
-new <%= link_to "Créer mon compte stripe", @client.auth_code.authorize_url(scope: 'read_write', redirect_uri: App.oauth_url(:stripe)) %>
+new <%= link_to "Créer mon compte stripe", @client.auth_code.authorize_url(scope: 'read_write', redirect_uri: @url) %>
