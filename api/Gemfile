@@ -24,6 +24,9 @@ gem 'puma', '~> 3.0'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 
+# Use Oauth2 as wrapper for the OAuth 2.0 specification
+gem 'oauth2'
+
 # Use Grape as REST API micro-framework
 gem 'grape'
 
@@ -31,6 +34,9 @@ gem 'grape'
 gem 'grape-active_model_serializers'
 # Use Grape Middle logger to log requests / exceptions and more
 gem 'grape-middleware-logger'
+
+# Use httpclient as http library
+gem 'httpclient'
 
 # Use Pundit as Authorization library
 gem 'pundit'
@@ -69,7 +75,7 @@ group :test do
   gem 'factory_girl_rails'
   gem 'launchy'
   gem 'rspec-collection_matchers'
-  gem 'stripe-ruby-mock', '~> 2.4.1', require: 'stripe_mock'
+  gem 'stripe-ruby-mock', require: 'stripe_mock', git: 'git@github.com:rebelidealist/stripe-ruby-mock.git'
   gem 'selenium-webdriver'
   gem 'timecop'
 end

@@ -62,3 +62,28 @@ Add mixpanel tracking script
   }); //document ready
 </script>
 ```
+
+
+Create new house
+----------------
+On platform account :
+Top left Switch account > New Account : Type new HackerHouse Name
+
+Go to api.hackerhouse.paris/houses/new
+Fill in all infos
+Click on Authorize access
+
+On platform account > Connect > Connected accounts : verify if customer account is correctly connected
+
+Still need to manually update house : amount
+Go to platform account
+
+Add new subcription
+-------------------
+Add plan fee_monthly rent_monthly
+add metadata account_id : house-id (e.g "acct_195cnwDPESwYAX2A")
+
+House account id
+----------------
+Format : acct_195cnwDPESwYAX2A
+Can be fetch through Connect > Connected Accounts

@@ -1,30 +1,33 @@
 class Rent
 
-  def initialize(house, time=Time.now)
-    @end = time.end_of_month.end_of_day
+  def initialize(stripe_id, amount, date_or_time=Time.now)
+    @end = date_or_time.to_time.end_of_month.end_of_day
     raise 'cannot initialize past month date' if @end.end_of_month < Time.now.end_of_month
-    @house = house    
-    @time = time
+    @time = date_or_time
+    @stripe_id = stripe_id
+    @amount = amount
   end
 
-  def amount
-    @house.amount / users.count
+  def amount_per_user
+    @amount / active_subscriptions.count
   end
 
-  def amount_round
-    (amount.to_f / 100).ceil * 100
+  def quantity_per_user
+    (amount_per_user.to_f / 100).ceil 
   end
 
-  def users
-    User.where(:stripe_id.in => customer_ids).tap do |users|
-      raise "missing customer in api : #{customer_ids - users.map(&:stripe_id)}" if users.size != customer_ids.size
-    end
-  end
+  # def users
+  #   User.where(:stripe_id.in => customer_ids).tap do |users|
+  #     raise "missing customer in api : #{customer_ids - users.map(&:stripe_id)}" if users.size != customer_ids.size
+  #   end
+  # end
 
   def update!
     active_subscriptions.each do |s|
-      s.quantity = amount_round
-      s.save
+      s.items.each do |item|
+        item.quantity = quantity_per_user
+        item.save
+      end
     end
   end
 
@@ -32,19 +35,23 @@ class Rent
 
   def active_subscription? s
     return false if s.status == 'canceled'
+    # Return false if customer does not belong to current house stripe id
+    return false if s.metadata['account_id'] != @stripe_id
+
     if s.cancel_at_period_end?
       s.current_period_end >= @end.to_i #end after current end of month
     elsif s.trial_end.nil?
       true
     else
-       Time.at(s.trial_end).beginning_of_day.to_i <= @end.to_i
+      Time.at(s.trial_end).beginning_of_day.to_i <= @end.to_i
     end
-      
   end
 
+  # TODO: this should be refactored using cursor pagination
   def active_subscriptions
-    @house.stripe do
-      @subscriptions ||= Stripe::Subscription.list(limit: 100).select {|s| active_subscription? s }    
+    App.stripe do
+      @subscriptions ||= Stripe::Subscription.list(limit: 100)
+      .select {|s| active_subscription? s }    
     end
   end
 
