@@ -10,19 +10,17 @@ class HousesController < ApplicationController
   def token
     token = @client.auth_code.get_token(params[:code])
     App.stripe do
-      Thread.new do
-        Stripe::Account.retrieve(token.params['stripe_user_id']).tap do |a|
-          params = {
-            name: a.statement_descriptor,
-            slug_id: a.statement_descriptor.split(' ').last.downcase.underscore,
-            stripe_access_token: token.token,
-            stripe_refresh_token: token.refresh_token,
-            stripe_publishable_key: token.params['stripe_publishable_key'],
-            stripe_id: token.params['stripe_user_id']
-          } # weird timeout is happening. to fix this
-          @response = api.post '/v1/houses', params
-        end
-      end #throw this in a thread so
+      Stripe::Account.retrieve(token.params['stripe_user_id']).tap do |a|
+        params = {
+          name: a.statement_descriptor,
+          slug_id: a.statement_descriptor.split(' ').last.downcase.underscore,
+          stripe_access_token: token.token,
+          stripe_refresh_token: token.refresh_token,
+          stripe_publishable_key: token.params['stripe_publishable_key'],
+          stripe_id: token.params['stripe_user_id']
+        } # weird timeout is happening. to fix this
+        @response = api.post '/v1/houses', params
+      end
     end
   end
 
