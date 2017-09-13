@@ -2,7 +2,7 @@ class HousesController < ApplicationController
   before_action :set_client
   
   def new
-    @url = App.oauth_url(:stripe)
+    @url = ::App.oauth_url(:stripe)
   end
   
   # 1. Finalize oauth2 by fetching token
