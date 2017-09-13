@@ -1,6 +1,7 @@
 class GpController < ApplicationController
   def show
     @house = House.find_by(slug_id: params[:slug_id])
+    render 'show2' if @house.v2?
   end
 
   def pricing

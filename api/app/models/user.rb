@@ -22,6 +22,7 @@ class User
 
   # Stripe id
   field :stripe_id, type: String
+  field :stripe_subscription_ids, type: Array, default: []
 
   # Indexes
   index active: 1

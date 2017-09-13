@@ -21,14 +21,15 @@ class House
   field :stripe_application_fee_percent, type: Float, default: 20
 
   # - stripe_plan_ids
-  field :stripe_plan_ids, type: Array, default: ["work_monthly", "sleep_monthly"]
+  field :stripe_plan_ids, type: Array, default: ["rent_monthly", "fee_monthly", 'utilities_monthly']
   field :stripe_coupon_ids, type: Array, default: []
   field :min_stay_in_days, type: Integer, default: 28*2 #2 months default
   field :v2, type: Boolean, default: true
   # rent amount in cents
   field :amount, type: Integer, default: 100_00
-
-  # it is an unique id
+  field :min_users, type: Integer, default: 1
+  
+  # it is an unique idwork_monthly
   # Must match a slack channel ID without #
   field :slug_id, type: String
 
@@ -44,6 +45,7 @@ class House
     "##{slug_id}"
   end
 
+  # v1
   def plans
     stripe do
       @plans ||= stripe_plan_ids.map do |plan_id|
@@ -82,11 +84,12 @@ class House
     end
   end
 
+  # v1
   def price_in_cents
     @price_in_cents ||= plans.sum &:amount
   end
 
   def rent_on(time)
-    @rent ||= Rent.new(self, time)
+    @rent ||= Rent.new(self, amount, time, min_users)
   end
 end

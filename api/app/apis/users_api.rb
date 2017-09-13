@@ -14,27 +14,32 @@ class UsersAPI < Grape::API
     post do
       house = House.find_by(slug_id: declared_params.delete(:slug_id))
       house.users.build(declared_params).tap do |u|
-        Stripe.api_key = house.stripe_access_token
-        c = Stripe::Customer.create(
-          source: declared_params[:token], # obtained from Stripe.js
-          email:  declared_params[:email]
-        )
-        # directly subscribes user
-        begin
-        Stripe::Subscription.create(
-          customer: c.id,
-          items: house.stripe_plan_ids.map { |pid| { plan: pid, quantity: 1} },
-          application_fee_percent: house.stripe_application_fee_percent,
-          trial_end: declared_params[:check_in].to_time.to_i
-        )
-        rescue Exception => e
-          c.delete #rollbacks customer creation if any issue and raise
-         raise
-        end
+        house.stripe do
+          c = Stripe::Customer.create(
+            source: declared_params[:token], # obtained from Stripe.js
+            email:  declared_params[:email]
+          )
+          # directly subscribes user
+          subscription_params = {
+            customer: c.id,
+            items: house.stripe_plan_ids.map { |pid| { plan: pid, quantity: 1} },
+            trial_end: declared_params[:check_in].to_time.to_i,
+            metadata: { account_id: house.stripe_id },
+            prorate: false }
+          subscription_params.merge(application_fee_percent: house.stripe_application_fee_percent) unless house.v2?
 
-        u.stripe_id = c.id
-        u.password = "#{u.email.split('@')[0]}42" # generate default password from email: stephane@hackerhouse.paris -> stephane42
-        u.save!
+          begin
+            sub = Stripe::Subscription.create(subscription_params)
+          rescue Exception => e
+            c.delete #rollbacks customer creation if any issue and raise
+           raise
+          end
+
+          u.stripe_id = c.id
+          u.stripe_subscription_ids.push sub.id
+          u.password = "#{u.email.split('@')[0]}42" # generate default password from email: stephane@hackerhouse.paris -> stephane42
+          u.save!
+        end
       end
     end
 

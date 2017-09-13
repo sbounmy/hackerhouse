@@ -9,6 +9,6 @@ FactoryGirl.define do
     sequence(:stripe_id) { |n| "stripe-acc-#{n}" }
     stripe_refresh_token "rt_very-secret-token"
     stripe_publishable_key "pk_public-token"
-    stripe_plan_ids ['work_monthly', 'sleep_monthly']
+    stripe_plan_ids ['rent_monthly', 'utilities_monthly', 'fee_monthly']
   end
 end

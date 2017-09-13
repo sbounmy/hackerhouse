@@ -1,0 +1,27 @@
+<% rent = house.rent_on(1.month.from_now)
+   quantity = rent.quantity_per_user
+   users = rent.users_count %>
+<table class='table prices'>
+  <% house.plans.each do |s| %>
+  <tr>
+    <td><div class='text-left'><%= s.name %> <i class="fa fa-question-circle fa-padding" title="<%= "#{s.name} entier: #{cents house.amount / 100 * s.amount} soit par personne #{cents quantity * s.amount} sur la base de #{users} personnes" %>"
+    data-toggle="tooltip" data-placement="right"></i></div></td>
+    <td class='text-right'><%= cents quantity * s.amount %></td>
+  </tr>
+  <% end %>
+  <tr>
+    <td><div class='text-left'><strong>Total </strong><small>par mois</small></div></td>
+    <td class='text-right'><strong><%= cents house.plans.sum { |p| p.amount * quantity } %></strong></td>
+  </tr>
+</table>
+
+<p>
+  <% if house.coupons.any? %>
+    <h6>Remises exceptionnelles <i class="fa fa-question-circle fa-padding" title="La remise sera appliquée après validation par la HackerHouse" data-toggle="tooltip" data-placement="right"></i></h6> 
+    <p><i><%= house.coupon_to_s %></i></p>
+  <% end %>
+</p>
+
+<h6>Qu'est ce que le loyer solidaire ?</h6>
+
+<p>Un jour tu devras t'envoler de tes propres ailes. Toutes les bonnes choses ont une fin et de nouveaux défis t'attendent ! Avant ton départ tu seras prié de bien vouloir trouver un potentiel successeur afin que tes colocs continuent à profiter du même loyer de <%= cents house.plans.sum { |p| p.amount * quantity } %></p>

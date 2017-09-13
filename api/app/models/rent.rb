@@ -1,15 +1,20 @@
 class Rent
 
-  def initialize(stripe_id, amount, date_or_time=Time.now)
+  def initialize(stripe_id, amount, date_or_time=Time.now, min=1)
     @end = date_or_time.to_time.end_of_month.end_of_day
     raise 'cannot initialize past month date' if @end.end_of_month < Time.now.end_of_month
     @time = date_or_time
     @stripe_id = stripe_id
     @amount = amount
+    @min = min
   end
 
   def amount_per_user
-    @amount / active_subscriptions.count
+    @amount / users_count
+  end
+
+  def users_count
+    [ active_subscriptions.count, @min ].max
   end
 
   def quantity_per_user

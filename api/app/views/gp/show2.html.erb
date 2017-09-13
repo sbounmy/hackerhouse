@@ -1,0 +1,138 @@
+<% content_for :head do %>
+
+  <script src="https://checkout.stripe.com/checkout.js"></script>
+ 
+<!-- Start of HubSpot Embed Code -->
+  <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/3327857.js"></script>
+<!-- End of HubSpot Embed Code -->
+
+  <!-- only let people to pick future date (starting tomorrow) -->
+
+  <link rel="stylesheet" href="https://unpkg.com/flatpickr/dist/flatpickr.min.css">
+  <script src="https://unpkg.com/flatpickr"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      var today = new Date();
+      var options = {        
+        locale: 'fr',
+        dateFormat: 'd/m/Y',
+        minDate: new Date(today.getYear(), today.getMonth() + 1, 1)
+      }
+
+      const check_in = flatpickr('#check_in', $.extend(options, {
+        onChange: function(d, n, str) {
+          check_out.set("minDate", d[0].fp_incr(<%= @house.min_stay_in_days -%>));
+          
+          check_out.set("enable", [function(d2) {
+            const lastDayOfMonth = new Date(d2.getYear(), d2.getMonth() + 1, 0);
+            return (lastDayOfMonth.getDate() === d2.getDate());
+          }]);
+        }
+      }));
+      const check_out = flatpickr('#check_out', $.extend(
+        options, {
+          onChange: function(d, n, str) {
+            check_in.set("maxDate", d[0]);
+          }
+      }));
+
+      check_in.set("enable", [function(d2) {
+        const date = d2.getDate();
+        return (date === 1)
+      }]);
+
+    });
+  </script>
+
+  <style>
+  table.prices tr:first-child td {
+    border:none;
+  }
+  .fa-padding {
+    padding: 5px;
+  }
+  </style>
+<% end %>
+    <div class="row">
+      <div class="col-lg-offset-4 col-lg-4">
+        <form id='user_new'>
+          <h3 id='name'><%= @house.name %></h3>
+          <label for='check_in'>Quand</label>
+          <div class="form-inline">
+            <div class='form-group'>
+              <input id='check_in' type='text' class="form-control" placeholder="Check in"/>
+            </div>
+            <div class='form-group'>
+              <input id='check_out' type='text' class="form-control" placeholder="Check out" />
+            </div>
+          </div>
+          <%= render "pricing2", house: @house %>
+          <input type='checkbox' id='terms'> <label for="terms">J'ai lu et accepte les <a target="_blank" href="https://man.hackerhouse.paris/hc/fr/articles/115010135147">conditions générales d'utilisation</a></label>
+
+          <button id="customButton" type="submit" class="btn btn-primary btn-lg btn-block" disabled=disabled>J'emménage 🚀</button>
+          <p class='help-block text-center'><small>Tu seras débité à ton emménagement</small></p>
+
+        </form>
+      </div>
+    </div>
+    <!-- This should always be after form until we move to (document).ready -->
+    <script type='text/javascript'>
+
+    $(document).ready(function() {
+
+      $('#terms').on('change', function(event) {
+        var btn = $(this);
+        // console.log(btn.not(':checked'))
+        $('#customButton').prop('disabled', !btn.is(':checked'));
+      });
+
+      var handler = StripeCheckout.configure({
+        key: '<%= Rails.application.secrets.stripe_publishable_key %>',
+        image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+        locale: 'auto',
+        token: function(token) {
+          var check_in = $('#check_in').val();
+          var check_out = $('#check_out').val();
+          $.post(
+           window.location.origin + '/v1/users.json', {
+           token: token.id,
+           email: token.email,
+           check_in: check_in,
+           check_out: check_out,
+           slug_id: '<%= @house.slug_id -%>'})
+            .done(function(data) {
+              _hsq.push(['identify', {email: token.email, lifecyclestage: 'customer',
+                check_in: check_in,
+                check_out: check_out}]);
+              _hsq.push(['trackPageView']);
+              alert('42 x Merci ! Ton paiement a bien été pris en compte, on te voit très bientôt :-). <%= @house.name %>'); })
+            .fail(function (error) {
+              alert(error.responseText);
+          });
+          // POST /transactions?stripe_publishable_key=pk_test_w16a4DTyGylp8oAxNPmfXAqX&token=token.id&stripe_cust_id=?
+          // You can access the token ID with `token.id`.
+          // Get the token ID to your server-side code for use.
+        }
+      });
+
+      document.getElementById('customButton').addEventListener('click', function(e) {
+        // Open Checkout with further options:
+        handler.open({
+          name: '<%= "Réservation #{@house.name}" %>',
+          description: "Abonnement mensuel",
+          zipCode: false,
+          currency: 'eur'
+        });
+        e.preventDefault();
+      });
+
+      // Close Checkout on page navigation:
+      window.addEventListener('popstate', function() {
+        handler.close();
+      });
+
+    });
+
+    </script>
