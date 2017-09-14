@@ -20,21 +20,22 @@ class UsersAPI < Grape::API
             email:  declared_params[:email]
           )
         end
-        check_in = declared_params[:check_in].to_time
-        # directly subscribes user
-        quantity = house.v2? ? house.rent_on(check_in).plus(1).quantity_per_user : 1
-
-        subscription_params = {
-          customer: @c.id,
-          items: house.stripe_plan_ids.map { |pid| { plan: pid, quantity: quantity} },
-          metadata: { account_id: house.stripe_id },
-          trial_end: check_in.to_i,
-          prorate: false }
-        
-        subscription_params.merge(application_fee_percent: house.stripe_application_fee_percent) unless house.v2?
-
         begin
-          house.stripe { @sub = Stripe::Subscription.create(subscription_params) }
+          check_in = declared_params[:check_in].to_time
+          if house.v2?
+            @sub = SharedSubscription.create(house.stripe_id, house.amount, house.min_users,
+              customer: @c.id,
+              plans: ['rent_monthly', 'fee_monthly', 'utilities_monthly'],
+              trial_end: check_in
+            )
+          else #v1 remove
+            house.stripe { @sub = Stripe::Subscription.create(customer: @c.id,
+              items: house.stripe_plan_ids.map { |pid| { plan: pid, quantity: 1} },
+              metadata: { account_id: house.stripe_id },
+              trial_end: check_in.to_i,
+              application_fee_percent: house.stripe_application_fee_percent,
+              prorate: false) }
+          end
         rescue Exception => e
           @c.delete #rollbacks customer creation if any issue and raise
          raise
