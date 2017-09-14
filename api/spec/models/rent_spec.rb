@@ -29,6 +29,22 @@ RSpec.describe User, type: :model do
 
   end
 
+  describe '#plus' do
+    before do
+      StripeMock.start
+      stripe.create_plan(id: 'rent_monthly', amount: 100) #1euro
+      create_subscription    
+    end
+
+    it 'adds one user' do
+      rent = Rent.new(hq.stripe_id, hq.amount, Date.today)
+      expect(rent.amount_per_user).to eq 100_00
+      expect(rent.plus(1).amount_per_user).to eq 50_00
+    end
+
+
+  end
+
   describe '#amount_per_user' do
 
   before do
@@ -56,7 +72,7 @@ RSpec.describe User, type: :model do
         create_subscription.delete at_period_end: true
         expect(rent.amount_per_user).to eq 50_00
       end
-
+      
       it 'doesnt count other house subscription' do
         create_subscription.tap do |s|
           s.metadata['account_id'] = 'another-acc-id'

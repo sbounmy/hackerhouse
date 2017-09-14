@@ -15,31 +15,35 @@ class UsersAPI < Grape::API
       house = House.find_by(slug_id: declared_params.delete(:slug_id))
       house.users.build(declared_params).tap do |u|
         house.stripe do
-          c = Stripe::Customer.create(
+          @c = Stripe::Customer.create(
             source: declared_params[:token], # obtained from Stripe.js
             email:  declared_params[:email]
           )
-          # directly subscribes user
-          subscription_params = {
-            customer: c.id,
-            items: house.stripe_plan_ids.map { |pid| { plan: pid, quantity: 1} },
-            trial_end: declared_params[:check_in].to_time.to_i,
-            metadata: { account_id: house.stripe_id },
-            prorate: false }
-          subscription_params.merge(application_fee_percent: house.stripe_application_fee_percent) unless house.v2?
-
-          begin
-            sub = Stripe::Subscription.create(subscription_params)
-          rescue Exception => e
-            c.delete #rollbacks customer creation if any issue and raise
-           raise
-          end
-
-          u.stripe_id = c.id
-          u.stripe_subscription_ids.push sub.id
-          u.password = "#{u.email.split('@')[0]}42" # generate default password from email: stephane@hackerhouse.paris -> stephane42
-          u.save!
         end
+        check_in = declared_params[:check_in].to_time
+        # directly subscribes user
+        quantity = house.v2? ? house.rent_on(check_in).plus(1).quantity_per_user : 1
+
+        subscription_params = {
+          customer: @c.id,
+          items: house.stripe_plan_ids.map { |pid| { plan: pid, quantity: quantity} },
+          metadata: { account_id: house.stripe_id },
+          trial_end: check_in.to_i,
+          prorate: false }
+        
+        subscription_params.merge(application_fee_percent: house.stripe_application_fee_percent) unless house.v2?
+
+        begin
+          house.stripe { @sub = Stripe::Subscription.create(subscription_params) }
+        rescue Exception => e
+          @c.delete #rollbacks customer creation if any issue and raise
+         raise
+        end
+
+        u.stripe_id = @c.id
+        u.stripe_subscription_ids.push @sub.id
+        u.password = "#{u.email.split('@')[0]}42" # generate default password from email: stephane@hackerhouse.paris -> stephane42
+        u.save!
       end
     end
 

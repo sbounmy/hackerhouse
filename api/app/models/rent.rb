@@ -7,6 +7,7 @@ class Rent
     @stripe_id = stripe_id
     @amount = amount
     @min = min
+    @n = 0
   end
 
   def amount_per_user
@@ -14,13 +15,17 @@ class Rent
   end
 
   def users_count
-    [ active_subscriptions.count, @min ].max
+    [ active_subscriptions.count + @n, @min ].max
   end
 
   def quantity_per_user
     (amount_per_user.to_f / 100).ceil 
   end
 
+  def plus(n)
+    @n += n
+    self
+  end
   # def users
   #   User.where(:stripe_id.in => customer_ids).tap do |users|
   #     raise "missing customer in api : #{customer_ids - users.map(&:stripe_id)}" if users.size != customer_ids.size

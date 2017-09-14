@@ -1,1 +1,5 @@
-<%= render 'gp/pricing', house: @house %>
+<% if @house.v2? %>
+  <%= render 'gp/pricing2', house: @house %>
+<% else %>
+  <%= render 'gp/pricing', house: @house %>
+<% end %>
