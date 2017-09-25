@@ -82,6 +82,10 @@
 
     $(document).ready(function() {
 
+      function createDateAsUTC(date) {
+        return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()));
+      }
+
       $('#terms').on('change', function(event) {
         var btn = $(this);
         // console.log(btn.not(':checked'))
@@ -95,6 +99,7 @@
         token: function(token) {
           var check_in = $('#check_in').val();
           var check_out = $('#check_out').val();
+
           $.post(
            window.location.origin + '/v1/users.json', {
            token: token.id,
@@ -103,9 +108,17 @@
            check_out: check_out,
            slug_id: '<%= @house.slug_id -%>'})
             .done(function(data) {
-              _hsq.push(['identify', {email: token.email, lifecyclestage: 'customer',
-                check_in: check_in,
-                check_out: check_out}]);
+              // convert local date to utc
+              var hsq_in = createDateAsUTC(document.querySelector("#check_in")._flatpickr.selectedDates[0]).getTime();
+              var hsq_out = createDateAsUTC(document.querySelector("#check_out")._flatpickr.selectedDates[0]).getTime();
+
+              _hsq.push(['identify', {
+                email: token.email,
+                lifecyclestage: 'customer',
+                check_in: hsq_in,
+                check_out: hsq_out,
+                hackerhouse_name: '<%= @house.slug_id -%>'
+              }]);
               _hsq.push(['trackPageView']);
               alert('42 x Merci ! Ton paiement a bien été pris en compte, on te voit très bientôt :-). <%= @house.name %>'); })
             .fail(function (error) {
