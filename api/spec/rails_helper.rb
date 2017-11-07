@@ -69,13 +69,13 @@ RSpec.configure do |config|
 end
 
 Capybara.server_port = "4242"
-Capybara.default_driver = :selenium
+Capybara.default_driver = :firefox
 Capybara.default_max_wait_time = 5
 
-# Capybara.register_driver :selenium do |app|
-#   Capybara::Selenium::Driver.new(
-#     app,
-#     browser: :firefox,
-#     desired_capabilities: Selenium::WebDriver::Remote::Capabilities.firefox(marionette: false)
-#   )
-# end
+Capybara.register_driver :firefox do |app|
+  profile = Selenium::WebDriver::Firefox::Profile.new
+  profile["intl.accept_languages"] =  "en-US"
+  options = Selenium::WebDriver::Firefox::Options.new
+  options.profile = profile
+  Capybara::Selenium::Driver.new(app, browser: :firefox, options: options)
+end
