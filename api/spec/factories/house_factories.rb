@@ -10,5 +10,6 @@ FactoryGirl.define do
     stripe_refresh_token "rt_very-secret-token"
     stripe_publishable_key "pk_public-token"
     stripe_plan_ids ['rent_monthly', 'utilities_monthly', 'fee_monthly']
+    max_users 8
   end
 end

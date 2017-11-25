@@ -22,7 +22,12 @@ RSpec.describe HouseRent, type: :model do
   end
 
   describe '#users' do
-    it 'returns an array of users who needs to pay'
+    let(:rent) { HouseRent.new(hq, Date.today.month) }
+    
+    it 'returns an array of users who needs to pay' do
+      rent.users.to be_instance_of(Array)
+    end
+
     it 'is empty if no one have to pay'
     it 'is idempotent'
   end

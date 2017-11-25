@@ -30,6 +30,7 @@ class House
   # rent amount in cents
   field :amount, type: Integer, default: 100_00
   field :min_users, type: Integer, default: 1
+  field :max_users, type: Integer, default: 8
   
   # it is an unique idwork_monthly
   # Must match a slack channel ID without #
