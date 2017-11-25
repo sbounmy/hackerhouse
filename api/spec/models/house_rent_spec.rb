@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe HouseRent, type: :model do
-  let(:hq) { create(:house) }
+  let(:hq) { create(:house, amount: 10000_00) } # 10 000 euros / month
   let(:stripe) { StripeMock.create_test_helper }
 
   describe '#days_total' do
@@ -11,6 +11,22 @@ RSpec.describe HouseRent, type: :model do
 
     it 'returns 31 on January' do
       expect(HouseRent.new(hq, Date.new(2017, 01, 01)).days_total).to eq 31
+    end
+  end
+
+  describe '#amount_per_day' do
+    it 'is in cents' do
+      expect(HouseRent.new(hq, Date.today).amount_per_day).to eq 41_66
+    end
+
+    it 'changes when max user changes' do
+      hq.update_attributes max_users: 5
+      expect(HouseRent.new(hq, Date.today).amount_per_day).to eq 66_66
+    end
+    
+    it 'should not fail if amount is too small' do
+      hq.update_attributes amount: 10_00
+      expect(HouseRent.new(hq, Date.today).amount_per_day).to eq 4 #4 cents
     end
   end
 
