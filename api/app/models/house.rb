@@ -3,6 +3,8 @@ class House
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  scope :v2, -> { where(v2: true) }
+  
   # HackerHouse name
   field :name, type: String
 

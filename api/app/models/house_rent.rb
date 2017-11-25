@@ -1,0 +1,2 @@
+class HouseRent
+end

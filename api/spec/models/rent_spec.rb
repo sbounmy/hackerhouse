@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe User, type: :model do
+RSpec.describe Rent, type: :model do
   let(:hq) { create(:house) }
   let(:stripe) { StripeMock.create_test_helper }
   
