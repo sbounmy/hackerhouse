@@ -32,4 +32,8 @@ class User
 
   # Bcrypt
   has_secure_password
+
+  # Scope
+
+  scope :staying_on, ->(date, house) { where(house_id: house.id, :check_out.gt => date.beginning_of_month) }
 end
