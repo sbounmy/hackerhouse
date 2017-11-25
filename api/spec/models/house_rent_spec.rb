@@ -47,12 +47,21 @@ RSpec.describe HouseRent, type: :model do
 
   describe '#users' do
     let(:rent) { HouseRent.new(hq, Date.today) }
-    
+    before do
+      @nadia = create(:user, firstname: 'nadia', house: hq,
+        check_in: Date.new(2017, 9, 2), check_out: Date.new(2017, 11, 15))
+      @brian = create(:user, firstname: 'brian', house: hq,
+        check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
+    end
+
     it 'returns an array of users who needs to pay' do
       expect(rent.users).to be_instance_of(Array)
     end
 
-    it 'returns as parameter user who have to pay'
+    it 'returns as parameter user who have to pay' do
+      expect(rent.users).to eq [[@nadia, 1000], [@brian, 10000]]
+    end
+
     it 'is empty if no one have to pay'
     it 'is idempotent'
   end
