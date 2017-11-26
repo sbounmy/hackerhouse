@@ -4,6 +4,11 @@ RSpec.describe HouseRent, type: :model do
   let(:hq) { create(:house, amount: 10000_00) } # 10 000 euros / month
   let(:stripe) { StripeMock.create_test_helper }
 
+  def create_user(firstname, dates)
+    create(:user, firstname: firstname, house: hq,
+        check_in: Date.parse(dates[0]), check_out: Date.parse(dates[1]))
+  end
+
   describe '#days_total' do
     it 'returns 28 on February' do
       expect(HouseRent.new(hq, Date.new(2017, 02, 01)).days_total).to eq 28
@@ -48,10 +53,8 @@ RSpec.describe HouseRent, type: :model do
   describe '#users' do
     let(:rent) { HouseRent.new(hq, Date.today) }
     before do
-      @nadia = create(:user, firstname: 'nadia', house: hq,
-        check_in: Date.new(2017, 9, 2), check_out: Date.new(2017, 11, 15))
-      @brian = create(:user, firstname: 'brian', house: hq,
-        check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
+      @nadia = create_user 'nadia', ['2017-09-02', '2017-11-15']
+      @brian = create_user 'brian', ['2017-06-01', '2017-12-3']
     end
 
     it 'returns an array of users who needs to pay' do
@@ -64,28 +67,22 @@ RSpec.describe HouseRent, type: :model do
 
     it 'is empty if everyone is there' do
       @nadia.update_attributes check_out: Date.new(2018, 02, 12)
-      @val = create(:user, firstname: 'val', house: hq,
-        check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
-      @hugo = create(:user, firstname: 'hugo', house: hq,
-        check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
+      @val = create_user 'val', ['2017-06-01', '2017-12-3']
+      @hugo = create_user 'hugo', ['2017-06-01', '2017-12-3']
       expect(rent.users).to contain_exactly([@val, 0], [@hugo, 0], [@nadia, 0], [@brian, 0])
     end
 
     it 'does not freakout when nadia leave the first day of month' do
       @nadia.update_attributes check_out: Date.new(2017, 11, 01)
-      @val = create(:user, firstname: 'val', house: hq,
-        check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
-      @hugo = create(:user, firstname: 'hugo', house: hq,
-        check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
+      @val = create_user 'val', ['2017-06-01', '2017-12-3']
+      @hugo = create_user 'hugo', ['2017-06-01', '2017-12-3']
       expect(rent.users).to contain_exactly([@val, 833_40], [@hugo, 833_40], [@brian, 833_40])
     end
 
     it 'have few days of non-occupancy' do
       hq.update_attributes max_users: 3
-      @val = create(:user, firstname: 'val', house: hq,
-        check_in: Date.new(2017, 11, 18), check_out: Date.new(2018, 1, 3))
-      @hugo = create(:user, firstname: 'hugo', house: hq,
-        check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
+      @val = create_user 'val', ['2017-11-18', '2018-01-03']
+      @hugo = create_user 'hugo', ['2017-06-01', '2017-12-3']
       expect(rent.users).to contain_exactly([@hugo, 166_65], [@brian, 166_65], [@nadia, 0], [@val, 0])
     end
 
@@ -94,10 +91,8 @@ RSpec.describe HouseRent, type: :model do
       expect {
         @nadia.update_attributes! check_in: Date.new(2017, 11, 4), check_out: Date.new(2017, 11, 19)
       }.to raise_error(Mongoid::Errors::Validations, /should not be less than 2017-12-04/)
-      @val = create(:user, firstname: 'val', house: hq,
-        check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
-      @hugo = create(:user, firstname: 'hugo', house: hq,
-        check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
+      @val = create_user 'val', ['2017-06-01', '2018-12-03']
+      @hugo = create_user 'hugo', ['2017-06-01', '2017-12-03']
       expect(rent.users).to contain_exactly([@hugo, 444_48], [@brian, 444_48], [@nadia, 0], [@val, 444_48])
     end
 
