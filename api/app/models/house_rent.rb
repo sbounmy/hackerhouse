@@ -31,12 +31,12 @@ class HouseRent
       calendar[i][0] = user
 
       #someone leave during the month
-      if not (user.check_in..user.check_out).cover? @date.end_of_month 
-        calendar[i].fill(0, user.check_out.day)          
+      if not (user.check_in..user.check_out).cover? @date.end_of_month
+        calendar[i].fill(0, user.check_out.day)
       end
       #someone arrive during the month
       if user.check_in.month === @date.month
-        calendar[i].fill(0, 1, user.check_in.day - 1)          
+        calendar[i].fill(0, 1, user.check_in.day - 1)
       end
 
     end

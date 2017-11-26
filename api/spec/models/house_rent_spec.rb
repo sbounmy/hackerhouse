@@ -23,7 +23,7 @@ RSpec.describe HouseRent, type: :model do
       hq.update_attributes max_users: 5
       expect(HouseRent.new(hq, Date.today).amount_per_day).to eq 66_66
     end
-    
+
     it 'should not fail if amount is too small' do
       hq.update_attributes amount: 10_00
       expect(HouseRent.new(hq, Date.today).amount_per_day).to eq 8 #4 cents
@@ -77,16 +77,16 @@ RSpec.describe HouseRent, type: :model do
         check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
       @hugo = create(:user, firstname: 'hugo', house: hq,
         check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
-      expect(rent.users).to contain_exactly([@val, 833_40], [@hugo, 833_40], [@brian, 833_40])      
+      expect(rent.users).to contain_exactly([@val, 833_40], [@hugo, 833_40], [@brian, 833_40])
     end
-    
+
     it 'have few days of non-occupancy' do
       hq.update_attributes max_users: 3
       @val = create(:user, firstname: 'val', house: hq,
         check_in: Date.new(2017, 11, 18), check_out: Date.new(2018, 1, 3))
       @hugo = create(:user, firstname: 'hugo', house: hq,
         check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
-      expect(rent.users).to contain_exactly([@hugo, 166_65], [@brian, 166_65], [@nadia, 0], [@val, 0])      
+      expect(rent.users).to contain_exactly([@hugo, 166_65], [@brian, 166_65], [@nadia, 0], [@val, 0])
     end
 
     it 'Nadia 15 days in 1 month' do
@@ -98,7 +98,7 @@ RSpec.describe HouseRent, type: :model do
         check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
       @hugo = create(:user, firstname: 'hugo', house: hq,
         check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
-      expect(rent.users).to contain_exactly([@hugo, 444_48], [@brian, 444_48], [@nadia, 0], [@val, 444_48])      
+      expect(rent.users).to contain_exactly([@hugo, 444_48], [@brian, 444_48], [@nadia, 0], [@val, 444_48])
     end
 
     it 'is idempotent'

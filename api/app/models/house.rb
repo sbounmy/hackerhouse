@@ -4,7 +4,7 @@ class House
   include Mongoid::Timestamps
 
   scope :v2, -> { where(v2: true) }
-  
+
   # HackerHouse name
   field :name, type: String
 
@@ -31,7 +31,7 @@ class House
   field :amount, type: Integer, default: 100_00
   field :min_users, type: Integer, default: 1
   field :max_users, type: Integer, default: 8
-  
+
   # it is an unique idwork_monthly
   # Must match a slack channel ID without #
   field :slug_id, type: String
@@ -66,8 +66,8 @@ class House
   end
 
   def coupon_to_s
-    "Une remise sera appliquée pour " + 
-    @s ||= coupons.map do |c|  
+    "Une remise sera appliquée pour " +
+    @s ||= coupons.map do |c|
       "#{c.metadata['description']} -#{c.percent_off}%"
     end.join(' ou ')
   end

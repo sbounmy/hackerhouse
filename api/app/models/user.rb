@@ -41,7 +41,7 @@ class User
 
   def should_stay_at_least_1_month
     if check_out < check_in + 1.month 
-      errors.add(:check_out, "should not be less than #{check_in + 1.month}") 
+      errors.add(:check_out, "should not be less than #{check_in + 1.month}")
     end
   end
 end
