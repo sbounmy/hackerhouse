@@ -1,5 +1,3 @@
-require 'matrix'
-
 class HouseRent
 
   def initialize(house, date)
