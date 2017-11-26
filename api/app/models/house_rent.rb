@@ -28,10 +28,17 @@ class HouseRent
   def generate_calendar
     calendar = Array.new(find_users.count) { Array.new(days_total + 1) {1} }
     find_users.each_with_index do |user, i|
-      calendar[i][0] = user.firstname
-      if not (user.check_in..user.check_out).cover? @date.end_of_month
-        calendar[i].fill(0, user.check_out.day)
+      calendar[i][0] = user
+
+      #someone leave during the month
+      if not (user.check_in..user.check_out).cover? @date.end_of_month 
+        calendar[i].fill(0, user.check_out.day)          
       end
+      #someone arrive during the month
+      if user.check_in.month === @date.month
+        calendar[i].fill(0, 1, user.check_in.day - 1)          
+      end
+
     end
 
     nb_per_day = Array.new(days_total + 1) {0}.each_with_index.map do |day, i|
@@ -42,11 +49,12 @@ class HouseRent
 
     calendar.map do |row|
       j = 1
-      row[1..-1].inject(0) do |sum, value|
-        res = sum + (value * ((@house.amount / (nb_per_day[j] * days_total)) - amount_per_day))
+      amount = row[1..-1].inject(0) do |sum, presence|
+        res = sum + (presence * ((@house.amount / (nb_per_day[j] * days_total)) - amount_per_day))
         j += 1
         res
       end
+      [row[0], amount]
     end
   end
 end

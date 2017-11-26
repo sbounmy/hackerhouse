@@ -5,7 +5,8 @@ FactoryGirl.define do
     firstname 'Paul'
     lastname 'Amicel'
     password 'tiramisu42'
-    moving_on '2016-12-20'
+    check_in '2016-12-20'
+    check_out '2017-02-20'
     avatar_url 'http://avatar.slack.com/paul.jpg'
     house
     active true

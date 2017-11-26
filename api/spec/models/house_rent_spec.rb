@@ -16,7 +16,7 @@ RSpec.describe HouseRent, type: :model do
 
   describe '#amount_per_day' do
     it 'is in cents' do
-      expect(HouseRent.new(hq, Date.today).amount_per_day).to eq 41_66
+      expect(HouseRent.new(hq, Date.today).amount_per_day).to eq 83_33
     end
 
     it 'changes when max user changes' do
@@ -26,7 +26,7 @@ RSpec.describe HouseRent, type: :model do
     
     it 'should not fail if amount is too small' do
       hq.update_attributes amount: 10_00
-      expect(HouseRent.new(hq, Date.today).amount_per_day).to eq 4 #4 cents
+      expect(HouseRent.new(hq, Date.today).amount_per_day).to eq 8 #4 cents
     end
   end
 
@@ -36,7 +36,7 @@ RSpec.describe HouseRent, type: :model do
       House.v2.each do |house|
         HouseRent.new(house, Date.today.month).users.each do |user, amount|
         # house.users_need_to_pay(Date.today).each do |user, amount|
-          Stripe::Payment.new(user, amount)
+          Stripe::Charge.new(user, amount)
           Mail.deliver(user.email, 'ta contribution solidaire.... #{amount}')
         end
       end
@@ -59,10 +59,48 @@ RSpec.describe HouseRent, type: :model do
     end
 
     it 'returns as parameter user who have to pay' do
-      expect(rent.users).to eq [[@nadia, 1000], [@brian, 10000]]
+      expect(rent.users).to eq [[@nadia, 1166_62], [@brian, 5166_62]]
     end
 
-    it 'is empty if no one have to pay'
+    it 'is empty if everyone is there' do
+      @nadia.update_attributes check_out: Date.new(2018, 02, 12)
+      @val = create(:user, firstname: 'val', house: hq,
+        check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
+      @hugo = create(:user, firstname: 'hugo', house: hq,
+        check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
+      expect(rent.users).to contain_exactly([@val, 0], [@hugo, 0], [@nadia, 0], [@brian, 0])
+    end
+
+    it 'does not freakout when nadia leave the first day of month' do
+      @nadia.update_attributes check_out: Date.new(2017, 11, 01)
+      @val = create(:user, firstname: 'val', house: hq,
+        check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
+      @hugo = create(:user, firstname: 'hugo', house: hq,
+        check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
+      expect(rent.users).to contain_exactly([@val, 833_40], [@hugo, 833_40], [@brian, 833_40])      
+    end
+    
+    it 'have few days of non-occupancy' do
+      hq.update_attributes max_users: 3
+      @val = create(:user, firstname: 'val', house: hq,
+        check_in: Date.new(2017, 11, 18), check_out: Date.new(2018, 1, 3))
+      @hugo = create(:user, firstname: 'hugo', house: hq,
+        check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
+      expect(rent.users).to contain_exactly([@hugo, 166_65], [@brian, 166_65], [@nadia, 0], [@val, 0])      
+    end
+
+    it 'Nadia 15 days in 1 month' do
+      hq.update_attributes max_users: 4
+      expect {
+        @nadia.update_attributes! check_in: Date.new(2017, 11, 4), check_out: Date.new(2017, 11, 19)
+      }.to raise_error(Mongoid::Errors::Validations, /should not be less than 2017-12-04/)
+      @val = create(:user, firstname: 'val', house: hq,
+        check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
+      @hugo = create(:user, firstname: 'hugo', house: hq,
+        check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 12, 3))
+      expect(rent.users).to contain_exactly([@hugo, 444_48], [@brian, 444_48], [@nadia, 0], [@val, 444_48])      
+    end
+
     it 'is idempotent'
   end
 end
