@@ -37,7 +37,7 @@ class House
   field :cleaning_monthly, type: Float, default: 500
   field :pantry_monthly, type: Float, default: 300
   field :rent_monthly, type: Float, default: 10000
-  field :utilities_monthly, type: Integer, default: 100
+  field :utilities_monthly, type: Float, default: 100
 
   field :max_users, type: Integer, default: 8
 
