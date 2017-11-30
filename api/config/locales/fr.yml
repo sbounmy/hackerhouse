@@ -210,3 +210,12 @@ fr:
       long: "%A %d %B %Y %Hh%M"
       short: "%d %b %Hh%M"
     pm: pm
+  gp:
+    pricing2:
+      plan:
+        cleaning_monthly: "Service de ménage bi-hebdomaire pour les espaces communs"
+        fee_monthly: "Ces frais couvrent les coûts de fonctionnement de notre plate-forme et les services tels que l'assistance 24 h/24 durant ton séjour. Ils incluent la TVA."
+        rent_monthly: "Loyer entier: %{amount} soit par personne %{amount_per_user} sur la base de %{users} personnes"
+        utilities_monthly: "EDF, eau, internet, toutes charges comprises"
+        pantry_monthly: "Les indispensables de la HackerHouse : petit déjeuner, lessives, produits d'entretien, papier toilette et imprimante"
+

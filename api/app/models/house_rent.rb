@@ -8,13 +8,12 @@ class HouseRent
 
   def users
     generate_calendar
-
   end
 
   def days_total
     @date.end_of_month.day
   end
-  
+
   def amount_per_day
     @house.amount / (@house.max_users * days_total)
   end

@@ -44,4 +44,8 @@ class User
       errors.add(:check_out, "should not be less than #{check_in + 1.month}")
     end
   end
+
+  def check=(dates)
+    check_in, check_out = dates
+  end
 end

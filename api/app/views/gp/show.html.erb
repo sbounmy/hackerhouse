@@ -136,7 +136,7 @@
               }]);
               _hsq.push(['trackPageView']);
               alert('42 x Merci ! Ton paiement a bien été pris en compte, on te voit très bientôt :-). <%= @house.name %>'); })
-            .fail(function (error) {
+            .fail(function(error) {
               alert(error.responseText);
           });
           // POST /transactions?stripe_publishable_key=pk_test_w16a4DTyGylp8oAxNPmfXAqX&token=token.id&stripe_cust_id=?
