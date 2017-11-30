@@ -120,14 +120,14 @@ class House
     end
   end
 
-  # Quantity friendly (rounded value) format to display on /gp/:slug_id
+  # Quantity friendly (ceil value) format to display on /gp/:slug_id
   # Returns : { 'rent_monthly' => { name: 'Location', quantity: 500 },
   #             'pantry_monthly' => { name: 'Garde Manger', quantity: 150 },
   #              ...}
   def subscription_items
     {}.tap do |h|
       plans.each do |plan|
-        h[plan.id] = { name: plan.name, quantity: amount_for_user(plan.id).round }
+        h[plan.id] = { name: plan.name, quantity: amount_for_user(plan.id).ceil }
       end
     end
   end

@@ -62,7 +62,7 @@ RSpec.describe HouseRent, type: :model do
     end
 
     it 'returns as parameter user who have to pay' do
-      expect(rent.users).to eq [[@nadia, 5166.666666666667], [@brian, 5166.666666666667]]
+      expect(rent.users).to contain_exactly([@nadia, 1167], [@brian, 5167])
     end
 
     it 'is empty if everyone is there' do
@@ -76,14 +76,14 @@ RSpec.describe HouseRent, type: :model do
       @nadia.update_attributes check_out: Date.new(2017, 11, 01)
       @val = create_user 'val', ['2017-06-01', '2017-12-3']
       @hugo = create_user 'hugo', ['2017-06-01', '2017-12-3']
-      expect(rent.users).to contain_exactly([@val, 833.3333333333338], [@hugo, 833.3333333333338], [@brian, 833.3333333333338])
+      expect(rent.users).to contain_exactly([@val, 834], [@hugo, 834], [@brian, 834])
     end
 
     it 'have few days of non-occupancy' do
       hq.update_attributes max_users: 3
       @val = create_user 'val', ['2017-11-18', '2018-01-03']
       @hugo = create_user 'hugo', ['2017-06-01', '2017-12-3']
-      expect(rent.users).to contain_exactly([@hugo, 166.66666666666663], [@brian, 166.66666666666663], [@nadia, 0], [@val, 0])
+      expect(rent.users).to contain_exactly([@hugo, 167], [@brian, 167], [@nadia, 0], [@val, 0])
     end
 
     it 'Nadia 15 days in 1 month' do
@@ -93,14 +93,15 @@ RSpec.describe HouseRent, type: :model do
       }.to raise_error(Mongoid::Errors::Validations, /should not be less than 2017-12-04/)
       @val = create_user 'val', ['2017-06-01', '2018-12-03']
       @hugo = create_user 'hugo', ['2017-06-01', '2017-12-03']
-      expect(rent.users).to contain_exactly([@hugo, 444.4444444444444], [@brian, 444.4444444444444], [@nadia, 0], [@val, 444.4444444444444])
+      expect(rent.users).to contain_exactly([@hugo, 445], [@brian, 445], [@nadia, 0], [@val, 445])
     end
 
     it 'does not count someone who arrive way later' do
       @nadia.update_attributes check_out: Date.new(2018, 02, 12)
       @val = create_user 'val', ['2017-06-01', '2017-12-3']
       @hugo = create_user 'hugo', ['2017-12-31', '2018-12-3']
-      expect(rent.users).to contain_exactly([@val, 777.7777777777782], [@hugo, 0], [@nadia, 777.7777777777782], [@brian, 777.7777777777782])
+      expect(rent.users).to have(3).items
+      expect(rent.users).to contain_exactly([@val, 834], [@nadia, 834], [@brian, 834])
     end
 
     it 'is idempotent'

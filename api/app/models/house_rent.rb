@@ -53,7 +53,7 @@ class HouseRent
         j += 1
         res
       end
-      [row[0], amount]
+      [row[0], amount.ceil]
     end
   end
 end

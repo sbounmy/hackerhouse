@@ -34,7 +34,7 @@ class User
   has_secure_password
 
   # Scope
-  scope :staying_on, ->(date, house) { where(house_id: house.id, :check_out.gt => date.beginning_of_month) }
+  scope :staying_on, ->(date, house) { where(house_id: house.id, :check_out.gt => date.beginning_of_month, :check_in.lte => date.end_of_month) }
 
   # Validations
   validate :should_stay_at_least_1_month
@@ -46,6 +46,6 @@ class User
   end
 
   def check=(dates)
-    check_in, check_out = dates
+    self.check_in, self.check_out = dates
   end
 end
