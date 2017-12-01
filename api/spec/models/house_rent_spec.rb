@@ -105,6 +105,7 @@ RSpec.describe HouseRent, type: :model do
     end
 
     it 'is idempotent'
+    it 'does not freakout if everybody leaves'
   end
 end
 

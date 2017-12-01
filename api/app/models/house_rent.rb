@@ -49,7 +49,10 @@ class HouseRent
     calendar.map do |row|
       j = 1
       amount = row[1..-1].inject(0) do |sum, presence|
-        res = sum + (presence * ((@house.amount / (nb_per_day[j] * days_total)) - amount_per_day))
+        res = 0
+        if not presence.zero?
+          res = sum + ((@house.amount / (nb_per_day[j] * days_total)) - amount_per_day)
+        end
         j += 1
         res
       end

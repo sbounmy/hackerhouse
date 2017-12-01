@@ -1,6 +1,7 @@
 class HousesAPI < Grape::API
 
   resource :houses do
+
     route_param :slug_id do
 
       desc "Get a house"
@@ -8,6 +9,18 @@ class HousesAPI < Grape::API
         House.find_by(slug_id: params[:slug_id])
       end
 
+      get 'pay' do
+        @house = House.find_by(slug_id: params[:slug_id])
+        # return 404 if !@house.v2?
+        puts HouseRent.new(@house, Date.today).users.inspect
+        HouseRent.new(@house, Date.today).users.each do |item|
+          puts item.inspect
+          HouseRentMailer.pay_email(item[0], item[1]).deliver
+          item[0] #user
+          item[1] #amount
+        end
+        @house
+      end
     end
 
     params do
