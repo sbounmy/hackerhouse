@@ -100,9 +100,11 @@ describe HousesAPI do
   describe "GET /v1/houses/:id/pay" do
     let(:hq) { create(:house, slug_id: 'hq', rent_monthly: 10_000) } # 10 000 euros / month
     let(:stripe) { StripeMock.create_test_helper }
+
     def create_user(firstname, dates)
         create(:user, firstname: firstname, house: hq,
-        check_in: Date.parse(dates[0]), check_out: Date.parse(dates[1]))
+        check_in: Date.parse(dates[0]), check_out: Date.parse(dates[1]),
+        stripe: true)
     end
 
     before do
@@ -112,7 +114,7 @@ describe HousesAPI do
       @val = create_user 'val', ['2017-06-01', '2017-12-3']
       @hugo = create_user 'hugo', ['2017-06-01', '2017-12-3']
     end
-    
+
     after do
       Timecop.return
     end
@@ -134,6 +136,16 @@ describe HousesAPI do
     end
 
     it 'charges users who needs to pay through Stripe' do
+      get '/v1/houses/hq/pay'
+      App.stripe do
+        @items = Stripe::InvoiceItem.list(limit: 10, customer: @val.stripe_id)
+        expect(@items.count).to eq 1
+        expect(@items.first.amount).to eq 445_00
+
+        @items = Stripe::InvoiceItem.list(limit: 10, customer: @brian.stripe_id)
+        expect(@items.count).to eq 1
+        expect(@items.first.amount).to eq 445_00
+      end
     end
 
   end
