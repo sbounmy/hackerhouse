@@ -11,7 +11,7 @@ jobs:
       - image: buildpack-deps:trusty # primary container
         environment:
           ENV: CI
-      - image: circleci/ruby:2.4.1-node
+      - image: circleci/ruby:2.4.1-node-browsers
       - image: mongo:3.4.6
         command: [--smallfiles]
       # Specify service dependencies here if necessary
