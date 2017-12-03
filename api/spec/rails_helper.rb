@@ -78,6 +78,5 @@ Capybara.register_driver :firefox do |app|
   options = Selenium::WebDriver::Firefox::Options.new
   options.profile = profile
   Capybara::Selenium::Driver.new(app, browser: :remote,
-    url: ENV.fetch('SELENIUM_DRIVER_URL'),
-    options: options)
+    url: ENV.fetch('SELENIUM_DRIVER_URL'))
 end
