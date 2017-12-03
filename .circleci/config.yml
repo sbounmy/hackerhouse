@@ -14,9 +14,7 @@ jobs:
       - image: circleci/ruby:2.4.1-node-browsers
       - image: mongo:3.4.6
         command: [--smallfiles]
-      - image: selenium/standalone-firefox:latest
-        environment:
-          DISPLAY: 99
+      - image: selenium/standalone-firefox:2.53.0
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
