@@ -141,6 +141,10 @@ test:
         read:
           mode: :primary
         max_pool_size: 1
+        # # In the test environment we lower the retries and retry interval to
+        # # low amounts for fast failures.
+        # max_retries: 1
+        # retry_interval: 0
 
 production:
   clients:
