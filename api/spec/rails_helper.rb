@@ -77,5 +77,6 @@ Capybara.register_driver :firefox do |app|
   profile["intl.accept_languages"] =  "en-US"
   options = Selenium::WebDriver::Firefox::Options.new
   options.profile = profile
-  Capybara::Selenium::Driver.new(app, browser: :firefox, options: options)
+  Capybara::Selenium::Driver.new(app, browser: :firefox,
+    options: options, url: ENV.fetch('SELENIUM_DRIVER_URL'))
 end

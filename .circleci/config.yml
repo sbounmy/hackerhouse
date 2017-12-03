@@ -12,6 +12,8 @@ jobs:
         # environment:
         #   ENV: CI
       - image: circleci/ruby:2.4.1
+        environment:
+          SELENIUM_DRIVER_URL: http://127.0.0.1:4444/wd/hub
       - image: mongo:3.4.6
         command: [--smallfiles]
       - image: selenium/standalone-firefox:latest
