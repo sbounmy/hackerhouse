@@ -11,10 +11,10 @@ jobs:
       # - image: buildpack-deps:trusty # primary container
         # environment:
         #   ENV: CI
-      - image: circleci/ruby:2.4.1
+      - image: circleci/ruby:2.4.1-node-browsers
       - image: mongo:3.4.6
         command: [--smallfiles]
-      - image: selenium/standalone-firefox:latest
+      # - image: selenium/standalone-firefox:latest
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
