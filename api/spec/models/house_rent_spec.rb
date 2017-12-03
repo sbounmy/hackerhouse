@@ -4,6 +4,9 @@ RSpec.describe HouseRent, type: :model do
   let(:hq) { create(:house, rent_monthly: 10_000) } # 10 000 euros / month
   let(:stripe) { StripeMock.create_test_helper }
 
+  before { Timecop.travel(Date.parse('2017-11-25')) }
+  after { Timecop.return }
+
   def create_user(firstname, dates)
     create(:user, firstname: firstname, house: hq,
         check_in: Date.parse(dates[0]), check_out: Date.parse(dates[1]))
@@ -51,7 +54,7 @@ RSpec.describe HouseRent, type: :model do
   end
 
   describe '#users' do
-    let(:rent) { HouseRent.new(hq, Date.today) }
+    let(:rent) { HouseRent.new(hq, Date.parse('2017-11-25')) }
     before do
       @nadia = create_user 'nadia', ['2017-09-02', '2017-11-15']
       @brian = create_user 'brian', ['2017-06-01', '2017-12-3']

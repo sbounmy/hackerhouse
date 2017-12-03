@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe UsersAPI do
-  let!(:hq) { create(:house, stripe_access_token: 'sk_test_4h4o1ck9feZX9VzinYNX4Vwm') }
+  let!(:hq) { create(:house) }
 
   def token u
     JsonWebToken.encode(user_id: u.id.to_s)
@@ -12,15 +12,16 @@ describe UsersAPI do
     let(:stripe) { StripeMock.create_test_helper }
     let(:tomorrow) { 1.days.from_now }
     let(:default_params) { { slug_id: hq.slug_id,
-        token: stripe.generate_card_token, email: 'paul@42.student.fr',
+        token: App.stripe { stripe.generate_card_token }, email: 'paul@42.student.fr',
         check_in: tomorrow, check_out: 4.months.from_now } }
 
     before do
       StripeMock.toggle_live(true)
       StripeMock.start
-      Stripe.api_key = hq.stripe_access_token
-      stripe.create_plan(id: 'work_monthly', amount: 300_00)
-      stripe.create_plan(id: 'sleep_monthly', amount: 220_00)
+      App.stripe do
+        stripe.create_plan(id: 'work_monthly', amount: 300_00)
+        stripe.create_plan(id: 'sleep_monthly', amount: 220_00)
+      end
     end
 
     after { StripeMock.stop }
@@ -89,7 +90,7 @@ describe UsersAPI do
       end
 
       it 'accepts localized date %d\/%m\/%Y' do
-        nexthyear = Date.today.year + 1
+        nextyear = Date.today.year + 1
         date = Date.new(nextyear, 2, 1) # next year 1st february
         expect {
           create_user check_in: date.strftime("%d/%m/%Y")  

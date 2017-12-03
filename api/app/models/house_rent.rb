@@ -51,10 +51,10 @@ class HouseRent
       amount = row[1..-1].inject(0) do |sum, presence|
         res = 0
         if not presence.zero?
-          res = sum + ((@house.amount / (nb_per_day[j] * days_total)) - amount_per_day)
+          res =  ((@house.amount / (nb_per_day[j] * days_total)) - amount_per_day)
         end
         j += 1
-        res
+        sum + res
       end
       [row[0], amount.ceil]
     end
