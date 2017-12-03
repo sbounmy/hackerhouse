@@ -48,7 +48,7 @@ jobs:
       - run: bundle exec rake db:schema:load
       - run:
           name: Install latest version of GeckoDriver
-          command: apt-get install geckodriver
+          command: sudo apt-get install geckodriver
       # Run XVFB for features specs (firefox)
       # - run:
       #     name: Running X virtual framebuffer
@@ -56,11 +56,12 @@ jobs:
       #     background: true
 
       # run tests!
+      # "spec/**/*_spec.rb" 
       - run:
           name: run tests
           command: |
             mkdir /tmp/test-results
-            TEST_FILES="$(circleci tests glob "spec/**/*_feature.rb" "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
+            TEST_FILES="$(circleci tests glob "spec/**/*_feature.rb"| circleci tests split --split-by=timings)"
             DISPLAY=:99
             bundle exec rspec --format progress \
                             --format RspecJunitFormatter \
