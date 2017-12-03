@@ -15,7 +15,7 @@ jobs:
       - image: mongo:3.4.6
         command: [--smallfiles]
       - image: selenium/standalone-firefox:latest
-        command: Xvfb -ac :99 -screen 0 1280x1024x16 +extension RANDR
+        command: Xvfb -ac :99 -screen 0 1280x1024x16
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
