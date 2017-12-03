@@ -48,10 +48,10 @@ jobs:
       - run: bundle exec rake db:schema:load
 
       # Run XVFB for features specs (firefox)
-      - run:
-          name: Running X virtual framebuffer
-          command: Xvfb -ac :99 -screen 0 1280x1024x16 +extension RANDR
-          background: true
+      # - run:
+      #     name: Running X virtual framebuffer
+      #     command: Xvfb -ac :99 -screen 0 1280x1024x16 +extension RANDR
+      #     background: true
 
       # run tests!
       - run:
