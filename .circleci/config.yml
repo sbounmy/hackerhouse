@@ -16,6 +16,8 @@ jobs:
         command: [--smallfiles]
       - image: selenium/standalone-firefox:latest
         command: Xvfb -ac :99 -screen 0 1280x1024x16
+        environment:
+          DISPLAY: 99
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
@@ -49,10 +51,10 @@ jobs:
       - run: bundle exec rake db:schema:load
 
       # Run XVFB for features specs (firefox)
-      - run:
-          name: Running X virtual framebuffer
-          command: Xvfb -ac :99 -screen 0 1280x1024x16 +extension RANDR > /dev/null 2>&1
-          background: true
+      # - run:
+      #     name: Running X virtual framebuffer
+      #     command: Xvfb -ac :99 -screen 0 1280x1024x16 +extension RANDR > /dev/null 2>&1
+      #     background: true
 
       # run tests!
       - run:
