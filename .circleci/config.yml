@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - checkout:
-        working_directory: api
+          working_directory: api
 
       # Download and cache dependencies
       - restore_cache:
