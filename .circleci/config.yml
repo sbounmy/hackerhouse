@@ -8,7 +8,7 @@ jobs:
     docker:
       # specify the version you desire here
        # - image: circleci/ruby:2.4.1-node-browsers
-      - image: buildpack-deps:trusty # primary container
+      # - image: buildpack-deps:trusty # primary container
         # environment:
         #   ENV: CI
       - image: circleci/ruby:2.4.1-node-browsers
