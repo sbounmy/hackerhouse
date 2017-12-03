@@ -31,6 +31,7 @@ class ApplicationAPI < Grape::API
   end
 
   # APIs
+  mount BalancesAPI
   mount HousesAPI
   mount UsersAPI
 end

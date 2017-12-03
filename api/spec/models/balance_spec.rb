@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe HouseRent, type: :model do
+RSpec.describe Balance, type: :model do
   let(:hq) { create(:house, rent_monthly: 10_000) } # 10 000 euros / month
   let(:stripe) { StripeMock.create_test_helper }
 
@@ -14,27 +14,27 @@ RSpec.describe HouseRent, type: :model do
 
   describe '#days_total' do
     it 'returns 28 on February' do
-      expect(HouseRent.new(hq, Date.new(2017, 02, 01)).days_total).to eq 28
+      expect(Balance.new(hq, Date.new(2017, 02, 01)).days_total).to eq 28
     end
 
     it 'returns 31 on January' do
-      expect(HouseRent.new(hq, Date.new(2017, 01, 01)).days_total).to eq 31
+      expect(Balance.new(hq, Date.new(2017, 01, 01)).days_total).to eq 31
     end
   end
 
   describe '#amount_per_day' do
     it 'is in cents' do
-      expect(HouseRent.new(hq, Date.today).amount_per_day).to eq 83.33333333333333
+      expect(Balance.new(hq, Date.today).amount_per_day).to eq 83.33333333333333
     end
 
     it 'changes when max user changes' do
       hq.update_attributes max_users: 5
-      expect(HouseRent.new(hq, Date.today).amount_per_day).to eq 66.66666666666667
+      expect(Balance.new(hq, Date.today).amount_per_day).to eq 66.66666666666667
     end
 
     it 'should not fail if amount is too small' do
       hq.update_attributes rent_monthly: 10_00
-      expect(HouseRent.new(hq, Date.today).amount_per_day).to eq 8.333333333333334
+      expect(Balance.new(hq, Date.today).amount_per_day).to eq 8.333333333333334
     end
   end
 
@@ -42,7 +42,7 @@ RSpec.describe HouseRent, type: :model do
 
     it 'returns an array' do
       House.v2.each do |house|
-        HouseRent.new(house, Date.today.month).users.each do |user, amount|
+        Balance.new(house, Date.today.month).users.each do |user, amount|
         # house.users_need_to_pay(Date.today).each do |user, amount|
           Stripe::Charge.new(user, amount)
           Mail.deliver(user.email, 'ta contribution solidaire.... #{amount}')
@@ -54,7 +54,7 @@ RSpec.describe HouseRent, type: :model do
   end
 
   describe '#users' do
-    let(:rent) { HouseRent.new(hq, Date.parse('2017-11-25')) }
+    let(:rent) { Balance.new(hq, Date.parse('2017-11-25')) }
     before do
       @nadia = create_user 'nadia', ['2017-09-02', '2017-11-15']
       @brian = create_user 'brian', ['2017-06-01', '2017-12-3']

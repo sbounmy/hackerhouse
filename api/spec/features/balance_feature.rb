@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'house rent' do
+feature 'Balance' do
 
   context 'with an existing house max users 4' do
     let(:hq) { create(:house, slug_id: 'hq', rent_monthly: 10_000) }
@@ -29,13 +29,13 @@ feature 'house rent' do
         }.to change { User.count }.by(1)
 
         expect(
-          HouseRent.new(hq, Date.today).users
+          Balance.new(hq, Date.today).users
         ).to contain_exactly([brian, 445], [val, 445], [hugo, 445], [nadia, 0])
 
       end
       expect(
         Timecop.travel(2.months.from_now) do
-          HouseRent.new(hq, Date.today).users
+          Balance.new(hq, Date.today).users
         end
       ).to contain_exactly([brian, 0], [val, 0], [hugo, 0], [User.last, 0])
 

@@ -8,22 +8,6 @@ class HousesAPI < Grape::API
       get do
         House.find_by(slug_id: params[:slug_id])
       end
-
-      get 'pay' do
-        @house = House.find_by(slug_id: params[:slug_id])
-        # return 404 if !@house.v2?
-        puts HouseRent.new(@house, Date.today).users.inspect
-        HouseRent.new(@house, Date.today).users.each do |item|
-          HouseRentMailer.pay_email(item[0], item[1]).deliver
-          App.stripe do
-            Stripe::InvoiceItem.create(customer: item[0].stripe_id,
-              amount: item[1] * 100, currency: 'eur', description: "Contribution solidaire de #{I18n.l Date.today, format: :month}")
-          end
-           #user
-          item[1] #amount
-        end
-        @house
-      end
     end
 
     params do

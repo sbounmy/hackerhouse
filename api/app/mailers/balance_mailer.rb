@@ -1,4 +1,4 @@
-class HouseRentMailer < ApplicationMailer
+class BalanceMailer < ApplicationMailer
   add_template_helper(GpHelper)
 
   default from: 'nadia@hackerhouse.paris'

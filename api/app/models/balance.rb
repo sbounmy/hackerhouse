@@ -1,10 +1,11 @@
-class HouseRent
+class Balance
+include ActiveModel::Serializers::JSON
 
+  attr_accessor :house, :date
   def initialize(house, date)
     @house = house
     @date = date
   end
-
 
   def users
     generate_calendar
@@ -51,7 +52,7 @@ class HouseRent
       amount = row[1..-1].inject(0) do |sum, presence|
         res = 0
         if not presence.zero?
-          res =  ((@house.amount / (nb_per_day[j] * days_total)) - amount_per_day)
+          res = ((@house.amount / (nb_per_day[j] * days_total)) - amount_per_day)
         end
         j += 1
         sum + res
