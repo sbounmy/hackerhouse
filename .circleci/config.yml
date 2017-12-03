@@ -46,7 +46,9 @@ jobs:
       # Database setup
       - run: bundle exec rake db:create
       - run: bundle exec rake db:schema:load
-
+      - run:
+          name: Install latest version of GeckoDriver
+          command: apt-get install geckodriver
       # Run XVFB for features specs (firefox)
       # - run:
       #     name: Running X virtual framebuffer
