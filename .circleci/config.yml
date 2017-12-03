@@ -58,6 +58,7 @@ jobs:
       #     command: Xvfb -ac :99 -screen 0 1280x1024x16 +extension RANDR
       #     background: true
 
+      - run: 'ln -s /usr/bin/firefox-bin /usr/bin/firefox'
       # run tests!
       # "spec/**/*_spec.rb"
       - run:
