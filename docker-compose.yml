@@ -1,0 +1,21 @@
+version: '2.2'
+
+services:
+  mongo:
+    image: mongo:3.6.0
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: hacker
+    #   MONGO_INITDB_ROOT_PASSWORD: durianlover
+    ports:
+      - "27018:27017"
+  app:
+    build: .
+    command: bundle exec rails server -p 3000 -b '0.0.0.0'
+    volumes:
+      - ./api/:/usr/src/app/
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    environment:
+      HEROKU_API_KEY: #c08c067a7361f49b2452e1d20efb356b

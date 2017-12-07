@@ -78,7 +78,7 @@ group :test do
   gem 'factory_girl_rails'
   gem 'launchy'
   gem 'rspec-collection_matchers'
-  gem 'stripe-ruby-mock', require: 'stripe_mock', git: 'git@github.com:rebelidealist/stripe-ruby-mock.git'
+  gem 'stripe-ruby-mock', require: 'stripe_mock'
   gem 'selenium-webdriver'
   gem 'timecop'
 
