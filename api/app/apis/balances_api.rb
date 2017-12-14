@@ -10,7 +10,6 @@ class BalancesAPI < Grape::API
       get do
         @house = House.find_by(slug_id: params[:slug_id])
         # return 404 if !@house.v2?
-        puts @house.inspect
         Balance.new(@house, Date.today)
       end
 
