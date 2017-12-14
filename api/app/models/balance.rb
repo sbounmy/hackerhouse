@@ -1,10 +1,12 @@
 class Balance
-include ActiveModel::Serializers::JSON
+  include ActiveModel::Serializers::JSON
 
   attr_accessor :house, :date
+
   def initialize(house, date)
     @house = house
     @date = date
+    generate_calendar
   end
 
   def users
@@ -42,25 +44,26 @@ include ActiveModel::Serializers::JSON
     @calendar
   end
 
-   def nb_per_day 
-      @nb_per_day = Array.new(days_total + 1) {0}.each_with_index.map do |day, i|
+  def nb_per_day
+    @nb_per_day ||= Array.new(days_total + 1) {0}.each_with_index.map do |day, i|
       @calendar.inject(0) do |sum, hacker|
         sum + hacker[i]
       end if i > 0
-      @nb_per_day
     end
+  end
 
-    def balance_amount
-      @calendar.map do |row|
-        j = 1
-        amount = row[1..-1].inject(0) do |sum, presence|
-          res = 0
-          if not presence.zero?
-            res = ((@house.amount / (@nb_per_day[j] * days_total)) - amount_per_day)
-          end
-          j += 1
-          sum + res
+  def balance_amount
+    @calendar.map do |row|
+      j = 1
+      amount = row[1..-1].inject(0) do |sum, presence|
+        res = 0
+        if not presence.zero?
+          res = ((@house.amount / (nb_per_day[j] * days_total)) - amount_per_day)
         end
+        j += 1
+        sum + res
+      end
       [row[0], amount.ceil]
     end
+  end
 end

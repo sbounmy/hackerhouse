@@ -26,10 +26,8 @@ describe BalancesAPI do
   describe "GET /v1/balances/:slug_id" do
 
     it 'responds succesfully' do
-      expect {
-        get '/v1/balances/hq'
-      }.to change(response, :status).to(200)
-        # expect(response.status).to eq 200
+      get '/v1/balances/hq'
+      expect(response.status).to eq 200
     end
 
   end
@@ -37,10 +35,8 @@ describe BalancesAPI do
   describe 'POST /v1/balances/:slug_id' do
 
     it 'responds succesfully' do
-      expect {
-        post '/v1/balances/hq'
-      }.to change(response, :status).to(200)
-        # expect(response.status).to eq 200
+      post '/v1/balances/hq'
+      expect(response.status).to eq 201
     end
 
     it 'delivers email with the amount of the solidary contribution' do
