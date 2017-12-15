@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe UsersAPI do
-  let!(:hq) { create(:house) }
+  let!(:hq) { create(:house, stripe_plan_ids: ['rent_monthly', 'fee_monthly']) }
 
   def token u
     JsonWebToken.encode(user_id: u.id.to_s)
@@ -12,15 +12,15 @@ describe UsersAPI do
     let(:stripe) { StripeMock.create_test_helper }
     let(:tomorrow) { 1.days.from_now }
     let(:default_params) { { slug_id: hq.slug_id,
-        token: App.stripe { stripe.generate_card_token }, email: 'paul@42.student.fr',
+        token: stripe.generate_card_token, email: 'paul@42.student.fr',
         check_in: tomorrow, check_out: 4.months.from_now } }
 
     before do
-      StripeMock.toggle_live(true)
+      # StripeMock.toggle_live(true)
       StripeMock.start
       App.stripe do
-        stripe.create_plan(id: 'work_monthly', amount: 300_00)
-        stripe.create_plan(id: 'sleep_monthly', amount: 220_00)
+        stripe.create_plan(id: 'rent_monthly', amount: 1, currency: 'eur')
+        stripe.create_plan(id: 'fee_monthly', amount: 1, currency: 'eur')
       end
     end
 
@@ -61,32 +61,26 @@ describe UsersAPI do
           create_user
         }.to change { hq.users.count }.by(1)
         user = User.last
-        expect(user.token).to eq "test_tok_1"
-        expect(user.plan).to eq "basic_monthly"
-        expect(user.stripe_id).to eq "test_cus_3"
-        expect(user.moving_on).to eq tomorrow.strftime("%Y-%m-%d")
+        expect(user.token).to match /tok_/
+        expect(user.stripe_id).to match "cus_"
+        u = json_response
+        expect(u['check_in']).to eq tomorrow.strftime("%Y-%m-%d")
+        expect(u['check_out']).to eq 4.months.from_now.strftime("%Y-%m-%d")
       end
 
       it 'doesnt display sensible information' do
         create_user
-        expect(json_response.keys).to eq ["id", "firstname", "lastname", "avatar_url", "bio_title", "bio_url"]
-      end
-
-      it 'creates subscriptions with default application fee' do
-        create_user
-        customer = Stripe::Customer.retrieve('test_cus_3')
-        expect(customer.subscriptions.count).to eq 1
-        expect(customer.subscriptions.first.application_fee_percent).to eq 20
+        expect(json_response.keys).to eq ["id", "firstname", "lastname", "avatar_url", "bio_title", "bio_url", "check_in", "check_out"]
       end
 
       it 'accepts date as %d\/%m\/%Y' do
         expect {
           create_user check_in: tomorrow.strftime("%d/%m/%Y")  
         }.to change { hq.users.count }.by(1)
-        
+
         customer = Stripe::Customer.retrieve('test_cus_3')
         expect(customer.subscriptions.count).to eq 1
-        expect(customer.subscriptions.first.application_fee_percent).to eq 20
+        expect(customer.subscriptions.first.trial_end).to eq Time.parse(tomorrow.strftime("%d/%m/%Y")).to_i
       end
 
       it 'accepts localized date %d\/%m\/%Y' do
@@ -95,29 +89,36 @@ describe UsersAPI do
         expect {
           create_user check_in: date.strftime("%d/%m/%Y")  
         }.to change { hq.users.count }.by(1)
-        
+
         customer = Stripe::Customer.retrieve('test_cus_3')
         expect(customer.subscriptions.count).to eq 1
-        expect(customer.subscriptions.first.application_fee_percent).to eq 20
-        expect(customer.subscriptions.trial_until).to eq "01/02/#{nextyear}"
+        expect(customer.subscriptions.first.trial_end).to eq Time.parse("01/02/#{nextyear}").to_i
       end
 
-      it 'creates subscriptions with custom application fee' do
-        hq.update_attributes stripe_application_fee_percent: 30
+      it 'creates subscriptions with custom application fee on v2 false' do
+        hq.update_attributes v2: false, stripe_application_fee_percent: 30
         create_user
         customer = Stripe::Customer.retrieve('test_cus_3')
         expect(customer.subscriptions.count).to eq 1
         expect(customer.subscriptions.first.application_fee_percent).to eq 30
       end
+
+      it 'creates subscriptions without application fee on v2' do
+        create_user
+        customer = Stripe::Customer.retrieve('test_cus_3')
+        expect(customer.subscriptions.count).to eq 1
+        expect(customer.subscriptions.first.try(:application_fee_percent)).to eq nil
+      end
+
     end
 
     context 'with invalid params' do
       it 'raises error when no plan' do
-        stripe.delete_plan 'basic_monthly'
+        stripe.delete_plan 'rent_monthly'
         expect {
           expect {
             create_user
-          }.to raise_error(Stripe::InvalidRequestError, 'No such plan: basic_monthly')
+          }.to raise_error(Stripe::InvalidRequestError, 'No such plan: rent_monthly')
         }.to_not change { User.count }
       end
 

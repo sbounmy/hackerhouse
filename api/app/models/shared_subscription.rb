@@ -5,8 +5,8 @@ class SharedSubscription
       customer: customer,
       items: house.stripe_items,
       metadata: { account_id: house.stripe_id },
-      trial_end: trial_end.to_i,
-      prorate: false }
+      trial_end: trial_end.to_i }
+
     App.stripe do
       Stripe::Subscription.create(params)
     end

@@ -89,7 +89,7 @@ class House
         Stripe.api_key = stripe_access_token
       end
       yield
-    rescue Exception => e
+    rescue => e
       raise e
     ensure
       Stripe.api_key = nil

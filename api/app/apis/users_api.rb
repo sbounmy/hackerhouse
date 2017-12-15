@@ -17,7 +17,8 @@ class UsersAPI < Grape::API
         house.stripe do
           @c = Stripe::Customer.create(
             source: declared_params[:token], # obtained from Stripe.js
-            email:  declared_params[:email]
+            email:  declared_params[:email],
+            currency: 'eur'
           )
         end
         begin
@@ -32,8 +33,7 @@ class UsersAPI < Grape::API
               items: house.stripe_plan_ids.map { |pid| { plan: pid, quantity: 1} },
               metadata: { account_id: house.stripe_id },
               trial_end: check_in.to_i,
-              application_fee_percent: house.stripe_application_fee_percent,
-              prorate: false) }
+              application_fee_percent: house.stripe_application_fee_percent) }
           end
         rescue Exception => e
           @c.delete #rollbacks customer creation if any issue and raise
