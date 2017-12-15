@@ -62,5 +62,11 @@ describe BalancesAPI do
       end
     end
 
+    it 'does not notify if false' do
+      expect {
+        post '/v1/balances/hq', notify: false
+      }.to_not change { ActionMailer::Base.deliveries.count }
+    end
+
   end
 end
