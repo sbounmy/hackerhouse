@@ -142,11 +142,8 @@ class House
     end
   end
 
-  # So we have ceil value to compute total or fee
   def amount
-    [rent_monthly, utilities_monthly, cleaning_monthly, pantry_monthly].inject(0) do |sum, n|
-      sum + (n / max_users).ceil
-    end * max_users
+    rent_monthly + utilities_monthly + cleaning_monthly + pantry_monthly
   end
 
 end

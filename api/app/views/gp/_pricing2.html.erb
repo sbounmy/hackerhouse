@@ -1,9 +1,9 @@
 <table class='table prices'>
   <% house.subscription_items.each do |id, s| %>
   <tr>
-    <td><div class='text-left'><%= s[:name] %> <i class="fa fa-question-circle fa-padding" title='<%= t ".plan.#{id}", amount: cents(house.amount_for(id)), users: house.max_users, amount_per_user: cents(house.amount_for_user(id)) -%>'
+    <td><div class='text-left'><%= s[:name] %> <i class="fa fa-question-circle fa-padding" title='<%= t ".plan.#{id}", amount: cents(house.amount_for(id)), users: house.max_users, amount_per_user: cents(house.subscription_items[id][:quantity]) -%>'
     data-toggle="tooltip" data-placement="right"></i></div></td>
-    <td class='text-right'><%= cents house.amount_for_user(id) %></td>
+    <td class='text-right'><%= cents house.subscription_items[id][:quantity] %></td>
   </tr>
   <% end %>
   <tr>
