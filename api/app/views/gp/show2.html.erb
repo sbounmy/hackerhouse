@@ -14,11 +14,12 @@
 
   <script type="text/javascript">
     $(document).ready(function() {
-      var today = new Date();
       var options = {        
         locale: 'fr',
-        dateFormat: 'd/m/Y',
-        minDate: new Date(today.getYear(), today.getMonth() + 1, 1)
+        altFormat: "d/m/Y",
+        altInput: true,
+        dateFormat: 'd-m-Y',
+        minDate: new Date().fp_incr(1)
       }
 
       const check_in = flatpickr('#check_in', $.extend(options, {
@@ -26,8 +27,15 @@
           check_out.set("minDate", d[0].fp_incr(<%= @house.min_stay_in_days -%>));
           
           check_out.set("enable", [function(d2) {
-            const lastDayOfMonth = new Date(d2.getYear(), d2.getMonth() + 1, 0);
-            return (lastDayOfMonth.getDate() === d2.getDate());
+            const date = d2.getDate();
+            if (d[0].getDate() === date) {
+              return(true);
+            }
+            const lastDateOfPrevMonth = new Date(d2.getYear(), d2.getMonth(), 0);
+            if (d[0].getDate() > lastDateOfPrevMonth.getDate()) {
+              return(Math.abs(lastDateOfPrevMonth.getDate() - d[0].getDate()) === d2.getDate());
+            }
+            return(false);
           }]);
         }
       }));
@@ -37,12 +45,6 @@
             check_in.set("maxDate", d[0]);
           }
       }));
-
-      check_in.set("enable", [function(d2) {
-        const date = d2.getDate();
-        return (date === 1)
-      }]);
-
     });
   </script>
 
