@@ -60,6 +60,13 @@ RSpec.configure do |config|
   config.after(:each) do
     Mongoid::Config.purge!
   end
+  
+  config.before(type: :feature) do
+    Rails.application.config.action_dispatch.show_exceptions = true
+  end
+  config.after(type: :feature) do
+    Rails.application.config.action_dispatch.show_exceptions = false
+  end
 
   # let spec/apis/* access to request helpers : get, post, put ...
   config.include RSpec::Rails::RequestExampleGroup, type: :request, parent_example_group: {

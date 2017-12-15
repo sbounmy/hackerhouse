@@ -32,4 +32,20 @@ class User
 
   # Bcrypt
   has_secure_password
+
+  # Scope
+  scope :staying_on, ->(date, house) { where(house_id: house.id, :check_out.gt => date.beginning_of_month, :check_in.lte => date.end_of_month) }
+
+  # Validations
+  validate :should_stay_at_least_1_month
+
+  def should_stay_at_least_1_month
+    if check_out < check_in + 1.month
+      errors.add(:check_out, "should not be less than #{check_in + 1.month}")
+    end
+  end
+
+  def check=(dates)
+    self.check_in, self.check_out = dates
+  end
 end

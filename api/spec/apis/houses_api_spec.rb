@@ -36,7 +36,7 @@ describe HousesAPI do
 
   describe "POST /v1/houses" do
 
-    def create_house(params={})
+     def create_house(params={})
       post "/v1/houses", build(:house).attributes.merge(params)
     end
 

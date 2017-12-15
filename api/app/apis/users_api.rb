@@ -8,7 +8,7 @@ class UsersAPI < Grape::API
       requires :slug_id,                type: String, desc: "House slug id ex: hq"
       requires :email,                  type: String
       requires :check_in,               type: Date,   desc: 'Check in date'
-      requires :check_out,              type: Date,   desc: 'Check out date'      
+      requires :check_out,              type: Date,   desc: 'Check out date'
     end
 
     post do
@@ -23,18 +23,16 @@ class UsersAPI < Grape::API
         begin
           check_in = declared_params[:check_in].to_time
           if house.v2?
-            @sub = SharedSubscription.create(house.stripe_id, house.amount, house.min_users,
+            @sub = SharedSubscription.create(house, {
               customer: @c.id,
-              plans: ['rent_monthly', 'fee_monthly', 'utilities_monthly'],
-              trial_end: check_in
+              trial_end: check_in }
             )
           else #v1 remove
             house.stripe { @sub = Stripe::Subscription.create(customer: @c.id,
               items: house.stripe_plan_ids.map { |pid| { plan: pid, quantity: 1} },
               metadata: { account_id: house.stripe_id },
               trial_end: check_in.to_i,
-              application_fee_percent: house.stripe_application_fee_percent,
-              prorate: false) }
+              application_fee_percent: house.stripe_application_fee_percent) }
           end
         rescue Exception => e
           @c.delete #rollbacks customer creation if any issue and raise
