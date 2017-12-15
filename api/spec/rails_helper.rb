@@ -62,10 +62,10 @@ RSpec.configure do |config|
   end
   
   config.before(type: :feature) do
-    Rails.config.action_dispatch.show_exceptions = true
+    Rails.application.config.action_dispatch.show_exceptions = true
   end
   config.after(type: :feature) do
-    Rails.config.action_dispatch.show_exceptions = false
+    Rails.application.config.action_dispatch.show_exceptions = false
   end
 
   # let spec/apis/* access to request helpers : get, post, put ...

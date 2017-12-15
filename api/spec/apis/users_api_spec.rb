@@ -19,8 +19,8 @@ describe UsersAPI do
       # StripeMock.toggle_live(true)
       StripeMock.start
       App.stripe do
-        stripe.create_plan(id: 'rent_monthly', amount: 1, currency: 'eur')
-        stripe.create_plan(id: 'fee_monthly', amount: 1, currency: 'eur')
+        stripe.create_plan(id: 'rent_monthly', amount: 1)
+        stripe.create_plan(id: 'fee_monthly', amount: 1)
       end
     end
 

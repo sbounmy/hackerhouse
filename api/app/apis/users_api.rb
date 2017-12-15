@@ -17,8 +17,7 @@ class UsersAPI < Grape::API
         house.stripe do
           @c = Stripe::Customer.create(
             source: declared_params[:token], # obtained from Stripe.js
-            email:  declared_params[:email],
-            currency: 'eur'
+            email:  declared_params[:email]
           )
         end
         begin
