@@ -146,7 +146,7 @@ class House
   def amount
     [rent_monthly, utilities_monthly, cleaning_monthly, pantry_monthly].inject(0) do |sum, n|
       sum + (n / max_users).ceil
-    end
+    end * max_users
   end
 
 end
