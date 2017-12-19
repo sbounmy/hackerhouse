@@ -16,7 +16,7 @@ describe BalancesAPI do
 
   let(:hq) { create(:house, slug_id: 'hq', rent_monthly: 10_000) } # 10 000 euros / month
   let(:stripe) { StripeMock.create_test_helper }
-
+  let(:admin) { create(:user, admin: true) }
   def create_user(firstname, dates)
       create(:user, firstname: firstname, house: hq,
       check_in: Date.parse(dates[0]), check_out: Date.parse(dates[1]),
@@ -26,22 +26,31 @@ describe BalancesAPI do
   describe "GET /v1/balances/:slug_id" do
 
     it 'responds succesfully' do
-      get '/v1/balances/hq'
+      get '/v1/balances/hq', token: token(admin)
       expect(response.status).to eq 200
     end
 
+    it 'is error on guest' do
+      get '/v1/balances/hq'
+      expect(response.status).to eq 403
+    end
+
+    it 'is error on invalid token' do
+      get '/v1/balances/hq', token: 'blabla'
+      expect(response.status).to eq 403
+    end
   end
 
   describe 'POST /v1/balances/:slug_id' do
 
     it 'responds succesfully' do
-      post '/v1/balances/hq'
+      post '/v1/balances/hq', token: token(admin)
       expect(response.status).to eq 201
     end
 
     it 'delivers email with the amount of the solidary contribution' do
       expect {
-        post '/v1/balances/hq'
+        post '/v1/balances/hq', token: token(admin)
       }.to change { ActionMailer::Base.deliveries.count }.by(4)
       expect(ActionMailer::Base.deliveries.last.body).to include 'hugo', '445 €'
       expect(ActionMailer::Base.deliveries[0].body).to include 'nadia', '0 €'
@@ -50,7 +59,7 @@ describe BalancesAPI do
     end
 
     it 'charges users who needs to pay through Stripe' do
-      post '/v1/balances/hq'
+      post '/v1/balances/hq', token: token(admin)
       App.stripe do
         @items = Stripe::InvoiceItem.list(limit: 10, customer: @val.stripe_id)
         expect(@items.count).to eq 1
@@ -64,7 +73,7 @@ describe BalancesAPI do
 
     it 'does not notify if false' do
       expect {
-        post '/v1/balances/hq', notify: false
+        post '/v1/balances/hq', notify: false, token: token(admin)
       }.to_not change { ActionMailer::Base.deliveries.count }
     end
 

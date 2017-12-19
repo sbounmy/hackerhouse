@@ -3,10 +3,6 @@ require 'rails_helper'
 describe UsersAPI do
   let!(:hq) { create(:house, stripe_plan_ids: ['rent_monthly', 'fee_monthly']) }
 
-  def token u
-    JsonWebToken.encode(user_id: u.id.to_s)
-  end
-
   describe "POST /v1/users" do
 
     let(:stripe) { StripeMock.create_test_helper }

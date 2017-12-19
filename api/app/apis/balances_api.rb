@@ -10,7 +10,9 @@ class BalancesAPI < Grape::API
       get do
         @house = House.find_by(slug_id: params[:slug_id])
         # return 404 if !@house.v2?
-        Balance.new(@house, Date.today)
+        Balance.new(@house, Date.today).tap do |balance|
+          authorize balance, :show?
+        end
       end
 
       params do
@@ -20,6 +22,7 @@ class BalancesAPI < Grape::API
         @house = House.find_by(slug_id: params[:slug_id])
         # return 404 if !@house.v2?
         Balance.new(@house, Date.today).tap do |balance|
+          authorize balance, :update?
           balance.users.each do |item|
             BalanceMailer.pay_email(item[0], item[1]).deliver if declared_params[:notify]
             App.stripe do
