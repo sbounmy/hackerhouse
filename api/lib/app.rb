@@ -17,5 +17,6 @@ class App
     raise e
   ensure
     Stripe.api_key = nil
+    @res
   end
 end

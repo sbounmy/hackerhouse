@@ -8,6 +8,10 @@ class House
 
   # Constants
   RESIDENT_SERVICE_FEE =  0.2
+  OWNER_SERVICE_FEE = 0.12
+
+  # Email text
+  field :email, type: String
 
   # HackerHouse name
   field :name, type: String
