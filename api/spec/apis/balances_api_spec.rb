@@ -26,7 +26,7 @@ describe BalancesAPI do
   describe "GET /v1/balances/:slug_id" do
 
     it 'responds succesfully' do
-      get '/v1/balances/hq', token: token(admin)
+      get_as :admin, '/v1/balances/hq'
       expect(response.status).to eq 200
     end
 
@@ -44,13 +44,18 @@ describe BalancesAPI do
   describe 'POST /v1/balances/:slug_id' do
 
     it 'responds succesfully' do
-      post '/v1/balances/hq', token: token(admin)
+      post_as :admin, '/v1/balances/hq'
       expect(response.status).to eq 201
+    end
+
+    it 'is forbidden on guest' do
+      post '/v1/balances/hq'
+      expect(response.status).to eq 403
     end
 
     it 'delivers email with the amount of the solidary contribution' do
       expect {
-        post '/v1/balances/hq', token: token(admin)
+        post_as :admin, '/v1/balances/hq'
       }.to change { ActionMailer::Base.deliveries.count }.by(4)
       expect(ActionMailer::Base.deliveries.last.body).to include 'hugo', '445 €'
       expect(ActionMailer::Base.deliveries[0].body).to include 'nadia', '0 €'
@@ -59,7 +64,7 @@ describe BalancesAPI do
     end
 
     it 'charges users who needs to pay through Stripe' do
-      post '/v1/balances/hq', token: token(admin)
+      post_as :admin, '/v1/balances/hq'
       App.stripe do
         @items = Stripe::InvoiceItem.list(limit: 10, customer: @val.stripe_id)
         expect(@items.count).to eq 1
@@ -73,7 +78,7 @@ describe BalancesAPI do
 
     it 'does not notify if false' do
       expect {
-        post '/v1/balances/hq', notify: false, token: token(admin)
+        post_as :admin, '/v1/balances/hq', notify: false
       }.to_not change { ActionMailer::Base.deliveries.count }
     end
 

@@ -8,6 +8,7 @@ class TransfersAPI < Grape::API
       post do
         house = House.find_by(slug_id: params[:slug_id])
         name = Date.today.strftime("Loyer-%Y-%m")
+        authorize Transfer, :create?
         App.stripe do
           error!("Already paid out ! #{house.stripe_id}##{name}", 422) if Stripe::Transfer.list(limit: 10, transfer_group: name, destination: house.stripe_id).to_a.size > 0
         end
