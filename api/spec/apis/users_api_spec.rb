@@ -2,10 +2,10 @@ require 'rails_helper'
 
 describe UsersAPI do
   let!(:hq) { create(:house, stripe_plan_ids: ['rent_monthly', 'fee_monthly']) }
+  let(:stripe) { StripeMock.create_test_helper }
 
   describe "POST /v1/users" do
 
-    let(:stripe) { StripeMock.create_test_helper }
     let(:tomorrow) { 1.days.from_now }
     let(:default_params) { { slug_id: hq.slug_id,
         token: stripe.generate_card_token, email: 'paul@42.student.fr',
@@ -183,6 +183,16 @@ describe UsersAPI do
         put "/v1/users/#{user2.id}", { avatar_url: avatar }, { 'Authorization' => token(user) }
       }.to change { user2.reload.avatar_url }.from(nil).to(avatar)
       expect(response.status).to eq 200
+    end
+
+    it 'can update stripe_source' do
+      App.stripe do
+        token = stripe.generate_card_token
+        user = create(:user, stripe: true)
+        expect {
+          put_as :admin, "/v1/users/#{user.id}", stripe_source: token
+        }.to change { Stripe::Customer.retrieve(user.stripe_id).sources.to_a.size }.from(0).to(1)
+      end
     end
   end
 

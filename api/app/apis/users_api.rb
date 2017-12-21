@@ -50,11 +50,13 @@ class UsersAPI < Grape::API
     params do
       optional :avatar_url,             type: String, desc: "Avatar url"
       optional :bio_title,              type: String, desc: "Bio Title"
+      optional :stripe_source,          type: String, desc: "Source Token"
     end
     put ':id' do
       User.find(params[:id]).tap do |user|
         authorize user, :update?
-        user.update_attributes! declared_params
+        user.update_attributes! declared_params.except(:stripe_source)
+        user.push! source: declared_params[:stripe_source] #push changes to stripe
       end
     end
 

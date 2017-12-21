@@ -11,7 +11,6 @@ class User
   field :firstname, type: String
   field :lastname, type: String
   field :email, type: String
-  field :moving_on, type: String
   field :check_in, type: Date
   field :check_out, type: Date
   field :password_digest, type: String
@@ -47,5 +46,21 @@ class User
 
   def check=(dates)
     self.check_in, self.check_out = dates
+  end
+
+  def push!(params={})
+    App.stripe do
+      Stripe::Customer.retrieve(stripe_id).tap do |c|
+        c.email = email
+        c.metadata[:oid] = id.to_s
+        c.metadata[:house] = house.slug_id
+        c.metadata[:check_in] = check_in
+        c.metadata[:check_out] = check_out
+        params.each do |method, value|
+          c.send "#{method}=", value
+        end
+        c.save
+      end
+    end
   end
 end
