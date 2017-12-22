@@ -1,12 +1,24 @@
 class TransfersAPI < Grape::API
+  helpers do
+    def house
+      @house ||= House.find_by(slug_id: params[:slug_id])
+    end
 
+    def amount
+      return (declared_params[:amount].to_i * 100) if declared_params[:amount]
+
+      (house.amount * ( 1 - House::OWNER_SERVICE_FEE) * 100).ceil
+    end
+  end
   resource :transfers do
 
     route_param :slug_id do
 
       desc "Create a transfer"
+      params do
+        optional :amount, type: Float
+      end
       post do
-        house = House.find_by(slug_id: params[:slug_id])
         name = Date.today.strftime("Loyer-%Y-%m")
         authorize Transfer, :create?
         App.stripe do
@@ -19,7 +31,7 @@ class TransfersAPI < Grape::API
         end
         App.stripe do
           Stripe::Transfer.create(
-            amount: (house.amount * ( 1 - House::OWNER_SERVICE_FEE) * 100).ceil,
+            amount: amount,
             currency: "eur",
             destination: house.stripe_id,
             transfer_group: name,

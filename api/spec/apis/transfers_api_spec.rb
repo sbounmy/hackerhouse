@@ -47,5 +47,12 @@ describe TransfersAPI do
       expect(transfers.map &:transfer_group).to contain_exactly("Loyer-2017-12", "Loyer-2018-01")
     end
 
+    it 'can be a manual net amount' do
+      expect {
+        post_as :admin, '/v1/transfers/hq', amount: 3_400
+      }.to change { transfers.to_a.size }.by(1)
+      expect(transfers.map &:amount).to contain_exactly(3_400_00)
+      expect(transfers.map &:transfer_group).to contain_exactly("Loyer-2017-12")
+    end
   end
 end
