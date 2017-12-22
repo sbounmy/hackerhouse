@@ -68,7 +68,9 @@
 
     $(document).ready(function() {
       $('#iban_new').on('submit', function() {
-        var stripe = Stripe('pk_test_21qRqUH6SVBHRDvg7Zk48YPA');
+        var stripe = Stripe('pk_live_IJhLXrw0qcJqFwUqlDuDOt7H');
+        // Use this one for test need to be env independant
+        // var stripe = Stripe('pk_test_21qRqUH6SVBHRDvg7Zk48YPA');
 
         stripe.createSource({
           type: 'sepa_debit',
