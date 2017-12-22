@@ -16,7 +16,7 @@ class TransfersAPI < Grape::API
 
       desc "Create a transfer"
       params do
-        optional :amount, type: Float, desc: "Net amount to pay to Owner"
+        optional :amount, type: Float, desc: "Net amount in euros to transfer to Owner"
       end
       post do
         name = Date.today.strftime("Loyer-%Y-%m")
