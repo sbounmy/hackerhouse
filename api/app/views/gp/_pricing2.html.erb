@@ -12,13 +12,12 @@
   </tr>
 </table>
 
+<% if house.coupons.any? %>
 <p>
-  <% if house.coupons.any? %>
-    <h6>Remises exceptionnelles <i class="fa fa-question-circle fa-padding" title="La remise sera appliquée après validation par la HackerHouse" data-toggle="tooltip" data-placement="right"></i></h6> 
-    <p><i><%= house.coupon_to_s %></i></p>
-  <% end %>
+  <h6>Remises exceptionnelles <i class="fa fa-question-circle fa-padding" title="La remise sera appliquée après validation par la HackerHouse" data-toggle="tooltip" data-placement="right"></i></h6> 
+  <p><i><%= house.coupon_to_s %></i></p>
 </p>
+<% end %>
 
-<h6>Qu'est ce que le loyer solidaire ?</h6>
-
-<p>Un jour tu devras t'envoler de tes propres ailes. Toutes les bonnes choses ont une fin et de nouveaux défis t'attendent ! Avant ton départ tu seras prié de bien vouloir trouver un potentiel successeur afin que tes colocs continuent à profiter du même loyer %></p>
+<p>Au départ d'un colocataire, celui-ci devra être remplacé par les résidents de ta HackerHouse.
+A défaut de relocation, une contribution solidaire sera calculée et exigée à la fin de chaque mois.</p>
