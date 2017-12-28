@@ -56,7 +56,7 @@ class UsersAPI < Grape::API
       User.find(params[:id]).tap do |user|
         authorize user, :update?
         user.update_attributes! declared_params.except(:stripe_source)
-        user.push! source: declared_params[:stripe_source] #push changes to stripe
+        user.push!
       end
     end
 

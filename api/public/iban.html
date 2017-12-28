@@ -68,6 +68,7 @@
 
     $(document).ready(function() {
       $('#iban_new').on('submit', function() {
+        // dirtyfix for production
         var stripe = Stripe('pk_live_IJhLXrw0qcJqFwUqlDuDOt7H');
         // Use this one for test need to be env independant
         // var stripe = Stripe('pk_test_21qRqUH6SVBHRDvg7Zk48YPA');
@@ -83,11 +84,11 @@
           },
         }).then(function(result) {
            $.ajax(
-             window.location.origin + '/v1/users/' + $('#user_id').val() + '.json', {
-             type: "PUT",
+             window.location.origin + '/v1/users/' + $('#user_id').val() + '/sources.json', {
+             type: "POST",
              data: {
-               stripe_source: result.source.id,
-               token: $('#token').val()
+               source: result.source.id, // stripe source iban id
+               token: $('#token').val() // JWT token
              }
             }).done(function(data) {
               alert('yay!');

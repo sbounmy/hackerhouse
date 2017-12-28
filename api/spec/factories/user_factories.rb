@@ -21,7 +21,7 @@ FactoryGirl.define do
     before(:create) do |user, evaluator|
       if evaluator.stripe
         App.stripe do
-          c = Stripe::Customer.create(email: evaluator.email)
+          c = Stripe::Customer.create(email: evaluator.email, card: StripeMock.create_test_helper.generate_card_token)
           evaluator.stripe_id = c.id
         end
       end
