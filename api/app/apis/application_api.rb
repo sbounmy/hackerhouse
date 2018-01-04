@@ -33,6 +33,7 @@ class ApplicationAPI < Grape::API
   # APIs
   mount BalancesAPI
   mount HousesAPI
+  mount SessionsAPI
   mount SourcesAPI
   mount TransfersAPI
   mount UsersAPI
