@@ -5,12 +5,15 @@ class SessionsAPI < Grape::API
     desc "Create a Session"
     params do
       requires :email,    type: String, desc: "User email"
-      requires :password, type: String, desc: "User password"
+      optional :password, type: String, desc: "User password"
+      optional :linkedin_access_token, type: String
+      at_least_one_of :password, :linkedin_access_token
     end
 
     post do
       command = AuthenticateUser.call(declared_params[:email],
-                           declared_params[:password]).call
+                           declared_params[:password],
+                           declared_params[:linkedin_access_token]).call
       if command.success?
         command.result
       else
@@ -28,5 +31,6 @@ class SessionsAPI < Grape::API
         error!('invalid', 403)
       end
     end
+
   end
 end

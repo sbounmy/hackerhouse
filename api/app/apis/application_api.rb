@@ -36,5 +36,7 @@ class ApplicationAPI < Grape::API
   mount SessionsAPI
   mount SourcesAPI
   mount TransfersAPI
+  mount TokensAPI
   mount UsersAPI
+  mount UsersV2API
 end

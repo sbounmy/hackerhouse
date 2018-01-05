@@ -4,6 +4,8 @@ import { createSession } from '../actions';
 import { Link } from 'react-router-dom';
 import { Field, reduxForm } from 'redux-form';
 
+export const LINKEDIN_REDIRECT_URI = "http%3A%2F%2Flocalhost:3000%2Fsessions%2Flinkedin";
+
 class SessionsNew extends Component {
   onSubmit(values) {
     this.props.createSession(values, this.props.history);
@@ -28,25 +30,34 @@ class SessionsNew extends Component {
 
   render() {
     const { handleSubmit } = this.props;
+    const clientId = '780cbbzyluuf0f';
+    const linkedinOauth = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${LINKEDIN_REDIRECT_URI}&state=kef`
     return (
-      <form  onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-        <Field
-          label="Email"
-          name="email"
-          type="text"
-          component={this.renderField}
-        />
-        <Field
-          label="Password"
-          name="password"
-          type="password"
-          component={this.renderField}
-        />
-        <button type="submit" className="btn btn-primary">Submit</button>
-        <Link className="btn btn-danger" to="/">
-          Cancel
-        </Link>
-      </form>
+      <div>
+        <a className='btn btn-primary btn-lg btn-block' href={linkedinOauth}>
+          Continuer avec LinkedIn
+        </a>
+        <p className='text-center'>ou</p>
+        <form  onSubmit={handleSubmit(this.onSubmit.bind(this))}>
+          <Field
+            label="Email"
+            name="email"
+            type="text"
+            component={this.renderField}
+          />
+          <Field
+            label="Password"
+            name="password"
+            type="password"
+            component={this.renderField}
+          />
+          <button type="submit" className="btn btn-primary">Submit</button>
+          <Link className="btn btn-danger" to="/">
+            Cancel
+          </Link>
+        </form>
+
+      </div>
     );
   }
 }

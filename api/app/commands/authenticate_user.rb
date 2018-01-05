@@ -1,9 +1,10 @@
 class AuthenticateUser
   prepend SimpleCommand
 
-  def initialize(email, password)
+  def initialize(email, password, linkedin_access_token=nil)
     @email = email
     @password = password
+    @linkedin_access_token = linkedin_access_token
   end
 
   def call
@@ -19,6 +20,7 @@ class AuthenticateUser
   def user
     user = User.find_by(email: email)
     return user if user && user.authenticate(password)
+    return user if user && user.authenticate_linkedin(@linkedin_access_token)
 
     errors.add :user_authentication, 'invalid credentials'
     nil
