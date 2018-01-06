@@ -4,7 +4,7 @@ import { createSession } from '../actions';
 import { Link } from 'react-router-dom';
 import { Field, reduxForm } from 'redux-form';
 
-export const LINKEDIN_REDIRECT_URI = "http%3A%2F%2Flocalhost:3000%2Fsessions%2Flinkedin";
+export const LINKEDIN_REDIRECT_URI = process.env.REACT_APP_LINKEDIN_REDIRECT_URI;
 
 class SessionsNew extends Component {
   onSubmit(values) {

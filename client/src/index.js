@@ -20,6 +20,7 @@ import registerServiceWorker from './registerServiceWorker';
 
 import { SESSION_CREATED } from './actions/types';
 
+import './index.css';
 import './toolkit.min.css';
 
 const createStoreWithMiddleware = applyMiddleware(ReduxPromise, ReduxThunk)(createStore);

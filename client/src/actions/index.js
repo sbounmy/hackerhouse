@@ -2,7 +2,7 @@ import axios from 'axios';
 import cookie from 'react-cookie';
 import { SESSION_CREATED, SESSION_FAILED, SESSION_DESTROYED, USER_CREATED } from './types';
 
-const ROOT_URL = `/v1`;
+const ROOT_URL = `${process.env.REACT_APP_API}/v1`;
 
 export function createSession({ email, password, linkedin_access_token }, history) {
   const url = `${ROOT_URL}/sessions`;
@@ -32,7 +32,7 @@ export function destroySession() {
 }
 
 export function createUser(data) {
-  const url = `/v2/users`;
+  const url = `${process.env.REACT_APP_API}/v2/users`;
   return (dispatch) => {
     return axios.post(url, data).then((res) => {
       dispatch({ type: USER_CREATED, payload: res.data });
