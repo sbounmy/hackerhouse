@@ -6,20 +6,28 @@ import { LINKEDIN_REDIRECT_URI } from './sessions_new';
 
 class SessionsProvider extends Component {
   componentDidMount() {
-    const { code } = qs.parse(this.props.location.search);
-    this.props.createLinkedInSession({code, redirect_uri: LINKEDIN_REDIRECT_URI}, this.props.history);
+    if (this.props.authenticated) {
+      this.props.history.push('/dashboard');
+    }
+    else {
+      const { code } = qs.parse(this.props.location.search);
+      this.props.createLinkedInSession({code, redirect_uri: LINKEDIN_REDIRECT_URI}, this.props.history);
+    }
   }
 
   render() {
     const { code } = qs.parse(this.props.location.search)
     return (
-      <p>Connecting....</p>
+      <div className='text-center'>
+        <h3>Loading....</h3>
+        <p>Remember to get up and stretch once in a while. 💪</p>
+      </div>
     );
   }
 }
 
-function mapStateToProps({ posts }) {
-  return { posts }; // { posts } == { posts: posts }
+function mapStateToProps({ session: { authenticated } }) {
+  return { authenticated };
 }
 
-export default connect(null, { createLinkedInSession })(SessionsProvider);
+export default connect(mapStateToProps, { createLinkedInSession })(SessionsProvider);

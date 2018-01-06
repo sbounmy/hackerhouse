@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { IntercomAPI } from 'react-intercom';
 import TrelloBoard from './trello_board';
+import TypeForm from './typeform';
 
 import _ from 'lodash';
 
@@ -51,10 +52,27 @@ class ActionsPanel extends Component {
     );
   }
 
+  renderEventActions() {
+     return (
+      <div className="card mb-4 d-lg-block">
+        <div className="card-body">
+          <h6 className="mb-3">Mes meetups 🗣</h6>
+          <div data-grid="images" data-target-height="150">
+            {/*<img className="media-object" data-width="640" data-height="640" data-action="zoom" src="assets/img/instagram_2.jpg" styles="width: 180px; height: 169px; margin-bottom: 10px; margin-right: 0px; display: inline-block; vertical-align: bottom;"/>*/}
+          </div>
+          <p>Chaque semaine un meetup : https://www.meetup.com/HackerHouse-Paris</p>
+          <p>MardX : de 19:00 à 20:30</p>
+          <TypeForm id="f6Lzio" text="Organiser mon meetup 🎤"/>
+        </div>
+      </div>
+    );
+  }
+
   render() {
 
     return (
       <div>
+      {this.renderEventActions()}
       {this.renderStayActions()}
       {this.renderFoodActions()}
       </div>
