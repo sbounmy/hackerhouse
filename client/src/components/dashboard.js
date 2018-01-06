@@ -16,7 +16,7 @@ class Dashboard extends Component {
     };
     return (
       <div className="row">
-        <Intercom appID="az33rewf" { ...user } />
+        <Intercom appID="fhj2ew9z" { ...user } />
         <div className="col-lg-3">
           <Profile user={this.props.user}/>
         </div>
