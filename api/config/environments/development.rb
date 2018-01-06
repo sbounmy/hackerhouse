@@ -43,7 +43,7 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
   config.middleware.insert_before 0, "Rack::Cors" do
     allow do
-      origins 'http://localhost:8080' # allow react js
+      origins 'http://localhost:8080', 'http://localhost:3000' # allow react js
       resource '*', headers: :any, methods: [:get, :post, :options]
     end
   end

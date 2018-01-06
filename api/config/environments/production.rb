@@ -75,7 +75,7 @@ Rails.application.configure do
 
   config.middleware.insert_before 0, "Rack::Cors" do
     allow do
-      origins 'http://www.hackerhouse.paris' # allow squarespace
+      origins 'http://www.hackerhouse.paris', 'https://app.hackerhouse.paris' # allow squarespace
       resource '*', headers: :any, methods: [:get, :post, :options]
     end
   end
