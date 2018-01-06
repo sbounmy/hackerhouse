@@ -15,6 +15,7 @@ class SessionsAPI < Grape::API
                            declared_params[:password],
                            declared_params[:linkedin_access_token]).call
       if command.success?
+        params[:token] = command.token #set token so serializer get the current_user to show email and protected attributes
         command.result
       else
         error!({ 'errors' => { 'forbidden' => 'wrong email or password' } }, 401)

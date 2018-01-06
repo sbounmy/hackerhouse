@@ -31,6 +31,7 @@ describe SessionsAPI do
         expect(response.status).to eql 201
         expect(json_response['token']).to match /eyJ0/
         expect(json_response['user']['firstname']).to eql 'john'
+        expect(json_response['user']['email']).to eql 'john.snow@gmail.com' #since its current user it can see it
       end
     end
 

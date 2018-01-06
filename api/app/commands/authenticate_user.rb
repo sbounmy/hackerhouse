@@ -9,8 +9,12 @@ class AuthenticateUser
 
   def call
     if user
-      Session.new(JsonWebToken.encode(user_id: user.id.to_s), user)
+      Session.new(token, user)
     end
+  end
+
+  def token
+    JsonWebToken.encode(user_id: user.id.to_s)
   end
 
   private

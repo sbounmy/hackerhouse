@@ -11,7 +11,8 @@ describe UsersV2API do
         firstname: 'Stephane',
         lastname: 'Bounmy',
         bio_title: 'Software Engineer',
-        bio_url: 'https://www.linkedin.com/in/stephanebounmy'
+        bio_url: 'https://www.linkedin.com/in/stephanebounmy',
+        avatar_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/a/a6/Goofy.svg/1200px-Goofy.svg.png'
       }.merge(params)
     end
 
@@ -26,8 +27,13 @@ describe UsersV2API do
         expect {
           create_user
         }.to change(User, :count).by(1)
+      end
+
+      it 'has correct attributes' do
+        create_user
         expect(json_response['firstname']).to eql 'Stephane'
         expect(json_response['lastname']).to eql 'Bounmy'
+        expect(json_response['email']).to eql nil
       end
 
       it "returns success code" do
