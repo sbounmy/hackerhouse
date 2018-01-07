@@ -5,7 +5,7 @@ class TransfersAPI < Grape::API
     end
 
     def amount
-      return (declared_params[:amount].to_i * 100) if declared_params[:amount]
+      return (declared_params[:amount] * 100).to_i if declared_params[:amount]
 
       (house.amount * ( 1 - House::OWNER_SERVICE_FEE) * 100).ceil
     end
@@ -19,6 +19,7 @@ class TransfersAPI < Grape::API
         optional :amount, type: Float, desc: "Net amount in euros to transfer to Owner"
       end
       post do
+        puts amount.inspect
         name = Date.today.strftime("Loyer-%Y-%m")
         authorize Transfer, :create?
         App.stripe do
