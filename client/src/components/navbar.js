@@ -33,7 +33,7 @@ class NavBar extends Component {
       <nav className="navbar navbar-expand-md fixed-top navbar-dark bg-primary app-navbar">
 
       <a className="navbar-brand" href="index.html">
-        <img src="assets/img/brand-white.png" alt="brand"/>
+        <img src="/logo-hh.png" width="45" alt="brand"/>
       </a>
 
       <button className="navbar-toggler navbar-toggler-right d-md-none" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">

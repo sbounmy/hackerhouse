@@ -6,8 +6,11 @@ import { Field, reduxForm } from 'redux-form';
 import { destroySession } from '../actions';
 
 class Home extends Component {
-  logoutOnClick() {
-    this.props.destroySession(this.props.history);
+
+  componentDidMount() {
+    if (!this.props.authenticated) {
+      this.props.history.push('/sessions/new')
+    }
   }
 
   renderNavLinks() {
@@ -33,7 +36,6 @@ class Home extends Component {
     return (
       <div>
         <h3>Welcome!</h3>
-        {this.renderNavLinks()}
       </div>
     );
   }

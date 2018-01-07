@@ -33,11 +33,22 @@ class SessionsNew extends Component {
     const clientId = '780cbbzyluuf0f';
     const linkedinOauth = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${LINKEDIN_REDIRECT_URI}&state=kef`
     return (
-      <div>
-        <a className='btn btn-primary btn-lg btn-block' href={linkedinOauth}>
-          Continuer avec LinkedIn
-        </a>
-        <p className='text-center'>ou</p>
+      <div className='row align-items-center'>
+        <div className='col-lg-6 text-center'>
+          <div class="card d-md-block d-lg-block mb-4">
+            <img className="card-img-top" src="/login_banner.png" alt="Card image cap"/>
+            <div class="card-body">
+              <h2>Move ideas forward 🍄</h2>
+              <p>Finally the perfect place to work & live with people like you.</p>
+              <a className='btn btn-primary btn-lg btn-block' href={linkedinOauth}>
+                Let me <span class="icon icon-linkedin"> </span>
+              </a>
+              <p><small>LinkedIn is the best way for us to know you.</small></p>
+            </div>
+          </div>
+        </div>
+
+{/*        <p className='text-center'>ou</p>
         <form  onSubmit={handleSubmit(this.onSubmit.bind(this))}>
           <Field
             label="Email"
@@ -56,7 +67,7 @@ class SessionsNew extends Component {
             Cancel
           </Link>
         </form>
-
+*/}
       </div>
     );
   }
