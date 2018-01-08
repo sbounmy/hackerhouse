@@ -9,7 +9,6 @@ class UsersAPI < Grape::API
       requires :email,                  type: String
       requires :check_in,               type: Date,   desc: 'Check in date'
       requires :check_out,              type: Date,   desc: 'Check out date'
-      requires :avatar_url,             type: String, desc: 'Avatar url'
     end
 
     post do
