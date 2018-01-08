@@ -11,11 +11,13 @@ class App
   end
 
   def self.stripe
+    @prev = Stripe.api_key
     Stripe.api_key = Rails.application.secrets.stripe_secret_key
     @res = yield
   rescue Exception => e
     raise e
   ensure
-    Stripe.api_key = nil
+    Stripe.api_key = @prev || nil
+    @res
   end
 end

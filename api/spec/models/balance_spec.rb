@@ -16,7 +16,6 @@ RSpec.describe Balance, type: :model do
     it 'returns 28 on February' do
       expect(Balance.new(hq, Date.new(2017, 02, 01)).days_total).to eq 28
     end
-
     it 'returns 31 on January' do
       expect(Balance.new(hq, Date.new(2017, 01, 01)).days_total).to eq 31
     end
@@ -38,7 +37,7 @@ RSpec.describe Balance, type: :model do
     end
   end
 
-  describe '' do
+  describe 'send the email to everyone' do
 
     it 'returns an array' do
       House.v2.each do |house|
@@ -54,39 +53,39 @@ RSpec.describe Balance, type: :model do
   end
 
   describe '#users' do
-    let(:rent) { Balance.new(hq, Date.parse('2017-11-25')) }
+    let(:balance) { Balance.new(hq, Date.parse('2017-11-25')) }
     before do
       @nadia = create_user 'nadia', ['2017-09-02', '2017-11-15']
       @brian = create_user 'brian', ['2017-06-01', '2017-12-3']
     end
 
     it 'returns an array of users who needs to pay' do
-      expect(rent.users).to be_instance_of(Array)
+      expect(balance.users).to be_instance_of(Array)
     end
 
     it 'returns as parameter user who have to pay' do
-      expect(rent.users).to contain_exactly([@nadia, 1167], [@brian, 5167])
+      expect(balance.users).to contain_exactly([@nadia, 1167], [@brian, 5167])
     end
 
     it 'is empty if everyone is there' do
       @nadia.update_attributes check_out: Date.new(2018, 02, 12)
       @val = create_user 'val', ['2017-06-01', '2017-12-3']
       @hugo = create_user 'hugo', ['2017-06-01', '2017-12-3']
-      expect(rent.users).to contain_exactly([@val, 0], [@hugo, 0], [@nadia, 0], [@brian, 0])
+      expect(balance.users).to contain_exactly([@val, 0], [@hugo, 0], [@nadia, 0], [@brian, 0])
     end
 
     it 'does not freakout when nadia leave the first day of month' do
       @nadia.update_attributes check_out: Date.new(2017, 11, 01)
       @val = create_user 'val', ['2017-06-01', '2017-12-3']
       @hugo = create_user 'hugo', ['2017-06-01', '2017-12-3']
-      expect(rent.users).to contain_exactly([@val, 834], [@hugo, 834], [@brian, 834])
+      expect(balance.users).to contain_exactly([@val, 834], [@hugo, 834], [@brian, 834])
     end
 
     it 'have few days of non-occupancy' do
       hq.update_attributes max_users: 3
       @val = create_user 'val', ['2017-11-18', '2018-01-03']
       @hugo = create_user 'hugo', ['2017-06-01', '2017-12-3']
-      expect(rent.users).to contain_exactly([@hugo, 167], [@brian, 167], [@nadia, 0], [@val, 0])
+      expect(balance.users).to contain_exactly([@hugo, 167], [@brian, 167], [@nadia, 0], [@val, 0])
     end
 
     it 'Nadia 15 days in 1 month' do
@@ -96,19 +95,24 @@ RSpec.describe Balance, type: :model do
       }.to raise_error(Mongoid::Errors::Validations, /should not be less than 2017-12-04/)
       @val = create_user 'val', ['2017-06-01', '2018-12-03']
       @hugo = create_user 'hugo', ['2017-06-01', '2017-12-03']
-      expect(rent.users).to contain_exactly([@hugo, 445], [@brian, 445], [@nadia, 0], [@val, 445])
+      expect(balance.users).to contain_exactly([@hugo, 445], [@brian, 445], [@nadia, 0], [@val, 445])
     end
 
     it 'does not count someone who arrive way later' do
       @nadia.update_attributes check_out: Date.new(2018, 02, 12)
       @val = create_user 'val', ['2017-06-01', '2017-12-3']
       @hugo = create_user 'hugo', ['2017-12-31', '2018-12-3']
-      expect(rent.users).to have(3).items
-      expect(rent.users).to contain_exactly([@val, 834], [@nadia, 834], [@brian, 834])
+      expect(balance.users).to have(3).items
+      expect(balance.users).to contain_exactly([@val, 834], [@nadia, 834], [@brian, 834])
     end
 
-    it 'is idempotent'
-    it 'does not freakout if everybody leaves'
+    it('is idempotent')
+    it 'does not freakout if everybody leaves' do
+      @nadia.update_attributes check_out: Date.new(2017, 10, 10)
+      @brian.update_attributes check_out: Date.new(2017, 10, 10)
+      @val = create_user 'val', ['2017-06-01', '2017-10-3']
+      @hugo = create_user 'hugo', ['2017-07-31', '2017-10-3']
+      expect(balance.users).to have(0).items
+    end
   end
 end
-

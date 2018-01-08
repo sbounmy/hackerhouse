@@ -1,7 +1,7 @@
 FactoryGirl.define do
 
   factory :user do
-    email { "#{firstname.parameterize(separator: '_')}@42.student.fr" }
+    sequence(:email) { |n| "#{firstname.parameterize(separator: '_')}-#{n}@42.student.fr" }
     firstname 'Paul'
     lastname 'Amicel'
     password 'tiramisu42'
@@ -21,7 +21,7 @@ FactoryGirl.define do
     before(:create) do |user, evaluator|
       if evaluator.stripe
         App.stripe do
-          c = Stripe::Customer.create(email: evaluator.email)
+          c = Stripe::Customer.create(email: evaluator.email, card: StripeMock.create_test_helper.generate_card_token)
           evaluator.stripe_id = c.id
         end
       end

@@ -8,6 +8,10 @@ class House
 
   # Constants
   RESIDENT_SERVICE_FEE =  0.2
+  OWNER_SERVICE_FEE = 0.12
+
+  # Email text
+  field :email, type: String
 
   # HackerHouse name
   field :name, type: String
@@ -89,7 +93,7 @@ class House
         Stripe.api_key = stripe_access_token
       end
       yield
-    rescue Exception => e
+    rescue => e
       raise e
     ensure
       Stripe.api_key = nil
@@ -145,5 +149,4 @@ class House
   def amount
     rent_monthly + utilities_monthly + cleaning_monthly + pantry_monthly
   end
-
 end

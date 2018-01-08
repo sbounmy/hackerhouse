@@ -1,3 +1,5 @@
 class BalanceSerializer < ActiveModel::Serializer
-  attributes  :house, :date, :users
+  attributes :date
+  belongs_to :house
+  has_many :users
 end

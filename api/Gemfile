@@ -78,7 +78,8 @@ group :test do
   gem 'factory_girl_rails'
   gem 'launchy'
   gem 'rspec-collection_matchers'
-  gem 'stripe-ruby-mock', require: 'stripe_mock'
+  # need to use master because 2.5.0 does not work with subscription#items https://github.com/rebelidealist/stripe-ruby-mock/issues/464
+  gem 'stripe-ruby-mock', require: 'stripe_mock', github: 'rebelidealist/stripe-ruby-mock'
   gem 'selenium-webdriver'
   gem 'timecop'
 

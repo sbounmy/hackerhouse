@@ -32,8 +32,7 @@ class UsersAPI < Grape::API
               items: house.stripe_plan_ids.map { |pid| { plan: pid, quantity: 1} },
               metadata: { account_id: house.stripe_id },
               trial_end: check_in.to_i,
-              application_fee_percent: house.stripe_application_fee_percent,
-              prorate: false) }
+              application_fee_percent: house.stripe_application_fee_percent) }
           end
         rescue Exception => e
           @c.delete #rollbacks customer creation if any issue and raise
@@ -56,6 +55,7 @@ class UsersAPI < Grape::API
       User.find(params[:id]).tap do |user|
         authorize user, :update?
         user.update_attributes! declared_params
+        user.push!
       end
     end
 

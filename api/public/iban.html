@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>HackerHouse Paris</title>
+  <meta name="description" content="Are you ready ?">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <script src="https://checkout.stripe.com/checkout.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- Start of HubSpot Embed Code -->
+  <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/3327857.js"></script>
+<!-- End of HubSpot Embed Code -->
+
+  <script src="https://js.stripe.com/v3/"></script>
+
+  <link rel="stylesheet" href="https://unpkg.com/flatpickr/dist/flatpickr.min.css">
+  <script src="https://unpkg.com/flatpickr"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+
+  </head>
+
+  <body class='container-fluid'>
+    <div class="row">
+      <div class="col-lg-offset-4 col-lg-4">
+        <form id='iban_new'>
+          <h3 id='name'></h3>
+          <div class="form-group">
+            <label for="iban">IBAN</label>
+            <input id='iban' type='text' class="form-control" placeholder="FR76 3000 4008 4200 0042 4242 842" />
+            <label for="fullname">Prenom Nom</label>
+            <input id='fullname' type='text' class="form-control" placeholder="Steve Jobs" />
+            <label for="user_id">User ID (HackerHouse)</label>
+            <input id='user_id' type='text' class="form-control" placeholder="5a341970d1f3810004fd6f76" />
+            <label for="token">Ton token admin (HackerHouse)</label>
+            <input id='token' type='text' class="form-control" placeholder="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNWEzNDE5NzBkMWYzODEwMDA0ZmQ2Zjc2IiwiZXhwIjoxNTEzOTczMDA2fQ.I1zaQl-C2Q71QS9Zn5W6O8Mzu3ywureC0f6KR6i-F-U" />
+          </div>
+          <button id="customButton" type="submit" class="btn btn-default">Ajouter 🚀</button>
+        </form>
+      </div>
+    </div>
+    <!-- This should always be after form until we move to (document).ready -->
+    <script type='text/javascript'>
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    };
+
+    $(document).ready(function() {
+      $('#iban_new').on('submit', function() {
+        // dirtyfix for production
+        var stripe = Stripe('pk_live_IJhLXrw0qcJqFwUqlDuDOt7H');
+        // Use this one for test need to be env independant
+        // var stripe = Stripe('pk_test_21qRqUH6SVBHRDvg7Zk48YPA');
+
+        stripe.createSource({
+          type: 'sepa_debit',
+          sepa_debit: {
+            iban: $('#iban').val().replace(/ /g, ''),
+          },
+          currency: 'eur',
+          owner: {
+            name: $('#fullname').val(),
+          },
+        }).then(function(result) {
+           $.ajax(
+             window.location.origin + '/v1/users/' + $('#user_id').val() + '/sources.json', {
+             type: "POST",
+             data: {
+               source: result.source.id, // stripe source iban id
+               token: $('#token').val() // JWT token
+             }
+            }).done(function(data) {
+              alert('yay!');
+          }).fail(function(error) {
+            alert(error.responseText);
+          });
+          // handle result.error or result.source
+        });
+        return false;
+      });
+    });
+
+    </script>
+  </body>
+</html>

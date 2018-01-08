@@ -1,5 +1,6 @@
 class IframesController < ApplicationController
   def show
+    I18n.locale = :fr
     @house = House.find_by(slug_id: params[:id])
   end
   
