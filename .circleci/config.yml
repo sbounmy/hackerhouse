@@ -40,6 +40,8 @@ jobs:
       - run:
           command: docker info
 
+      - run:
+          command: ls -la
       # build our Docker images
       - run:
           command: docker-compose build
