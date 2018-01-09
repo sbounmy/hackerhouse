@@ -5,7 +5,11 @@
 version: 2
 jobs:
   build:
-    machine: true
+    machine:
+      services:
+        - docker
+      environment:
+        RAILS_ENV: test
     # docker:
       # specify the version you desire here
        # - image: circleci/ruby:2.4.1-node-browsers
@@ -32,33 +36,36 @@ jobs:
     # working_directory: ~/repo/api
 
     steps:
-      - checkout:
-          path: ~/repo
+      # output information about the docker environment
+      - docker info
 
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "Gemfile.lock" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-      - run:
-          name: Install Docker Compose
-          command: |
-            curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-            chmod +x ~/docker-compose
-            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+    # build our Docker images
+      - docker-compose build
 
-            # collect reports
-            - store_test_results:
-                path: /tmp/test-results
-            - store_artifacts:
-                path: /tmp/test-results
-                destination: test-results
-      - setup_remote_docker
-      - run:
-          name: Start container and verify it's working
-          command: |
-            set -x
-            docker-compose up -d
-            docker run --network container:contacts \
-              appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:8080/contacts/test
+      # # Download and cache dependencies
+      # - restore_cache:
+      #     keys:
+      #     - v1-dependencies-{{ checksum "Gemfile.lock" }}
+      #     # fallback to using the latest cache if no exact match is found
+      #     - v1-dependencies-
+      # - run:
+      #     name: Install Docker Compose
+      #     command: |
+      #       curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+      #       chmod +x ~/docker-compose
+      #       sudo mv ~/docker-compose /usr/local/bin/docker-compose
+
+      #       # collect reports
+      #       - store_test_results:
+      #           path: /tmp/test-results
+      #       - store_artifacts:
+      #           path: /tmp/test-results
+      #           destination: test-results
+      # - setup_remote_docker
+      # - run:
+      #     name: Start container and verify it's working
+      #     command: |
+      #       set -x
+      #       docker-compose up -d
+      #       docker run --network container:contacts \
+      #         appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:8080/contacts/test
