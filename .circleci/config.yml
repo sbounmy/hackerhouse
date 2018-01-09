@@ -46,7 +46,8 @@ jobs:
       # build our Docker images
       - run:
           command: docker-compose build
-
+      - run:
+          command: docker-compose up test
       # # Download and cache dependencies
       # - restore_cache:
       #     keys:
