@@ -11,24 +11,24 @@ jobs:
       # - image: buildpack-deps:trusty # primary container
         # environment:
         #   ENV: CI
-      - image: circleci/ruby:2.4.1
-        environment:
-          SELENIUM_REMOTE_HOST: selenium
-          # SELENIUM_DRIVER_URL: http://127.0.0.1:4444/wd/hub
-      - image: mongo:3.4.6
-        command: [--smallfiles]
-        container_name: mongo
-      - image: selenium/standalone-firefox-debug:latest
-        container_name: selenium
-        ports:
-          - 4444:4444
-          - 5900:5900
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
+    #   - image: circleci/ruby:2.4.1
+    #     environment:
+    #       SELENIUM_REMOTE_HOST: selenium
+    #       # SELENIUM_DRIVER_URL: http://127.0.0.1:4444/wd/hub
+    #   - image: mongo:3.4.6
+    #     command: [--smallfiles]
+    #     container_name: mongo
+    #   - image: selenium/standalone-firefox-debug:latest
+    #     container_name: selenium
+    #     ports:
+    #       - 4444:4444
+    #       - 5900:5900
+    #   # Specify service dependencies here if necessary
+    #   # CircleCI maintains a library of pre-built images
+    #   # documented at https://circleci.com/docs/2.0/circleci-images/
+    #   # - image: circleci/postgres:9.4
 
-    working_directory: ~/repo/api
+    # working_directory: ~/repo/api
 
     steps:
       - checkout:
@@ -40,49 +40,24 @@ jobs:
           - v1-dependencies-{{ checksum "Gemfile.lock" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
-
       - run:
-          name: install dependencies
+          name: Install Docker Compose
           command: |
-            bundle install --jobs=4 --retry=3 --path vendor/bundle
+            curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
 
-      - save_cache:
-          paths:
-            - ./vendor/bundle
-          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
-
-      # Database setup
-      - run: bundle exec rake db:create
-      - run: bundle exec rake db:schema:load
+            # collect reports
+            - store_test_results:
+                path: /tmp/test-results
+            - store_artifacts:
+                path: /tmp/test-results
+                destination: test-results
+      - setup_remote_docker
       - run:
-          name: Install latest version of GeckoDriver
+          name: Start container and verify it's working
           command: |
-            curl -L https://github.com/mozilla/geckodriver/releases/download/v0.19.1/geckodriver-v0.19.1-linux64.tar.gz | tar xz
-            chmod +x geckodriver
-            sudo mv geckodriver /usr/bin/
-      # Run XVFB for features specs (firefox)
-      # - run:
-      #     name: Running X virtual framebuffer
-      #     command: Xvfb -ac :99 -screen 0 1280x1024x16 +extension RANDR
-      #     background: true
-
-      - run: 'sudo ln -s /usr/bin/firefox-bin /usr/bin/firefox'
-      # run tests!
-      # "spec/**/*_spec.rb"
-      - run:
-          name: run tests
-          command: |
-            mkdir /tmp/test-results
-            TEST_FILES="$(circleci tests glob "spec/**/*_feature.rb"| circleci tests split --split-by=timings)"
-            bundle exec rspec --format progress \
-                            --format RspecJunitFormatter \
-                            --out /tmp/test-results/rspec.xml \
-                            --format progress \
-                            -- $(sed -e 's/\n/\\n/' -e 's/ /\ /' <<< "${TEST_FILES}")
-
-      # collect reports
-      - store_test_results:
-          path: /tmp/test-results
-      - store_artifacts:
-          path: /tmp/test-results
-          destination: test-results
+            set -x
+            docker-compose up -d
+            docker run --network container:contacts \
+              appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:8080/contacts/test
