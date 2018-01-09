@@ -114,7 +114,6 @@
         token: function(token) {
           var check_in = $('#check_in').val();
           var check_out = $('#check_out').val();
-          $('#user_new').replace('Vérification en cours...<br/> Soit patient petit padawan 🤘');
 
           $.post(
            window.location.origin + '/v1/users.json', {

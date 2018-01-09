@@ -56,11 +56,25 @@ RSpec.configure do |config|
 
   config.include ControllerHelper
   config.include StripeHelper, type: :feature
+
+  config.before(:each) do
+    Capybara.reset_sessions!
+    if /remote_firefox/.match Capybara.current_driver.to_s
+      ip = `/sbin/ip route|awk '/scope/ { print $9 }'`
+      ip = ip.gsub "\n", ""
+      puts "$$$$$$$IP :#{ip.inspect}"
+      Capybara.server_port = "3000"
+      Capybara.server_host = ip
+      Capybara.app_host = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}"
+    end
+  end
   # Wipe database to have a clean test environment
   config.after(:each) do
     Mongoid::Config.purge!
+    Capybara.use_default_driver
+    Capybara.app_host = nil
   end
-  
+
   config.before(type: :feature) do
     Rails.application.config.action_dispatch.show_exceptions = true
   end
@@ -74,15 +88,20 @@ RSpec.configure do |config|
   }
 
 end
-
-Capybara.server_port = "4242"
-Capybara.default_driver = :firefox
+docker_ip = %x(/sbin/ip route|awk '/default/ { print $3 }').strip
+# Capybara.server_host = '0.0.0.0'
+# Capybara.server_port = "3010"
+Capybara.default_driver = :remote_firefox
 Capybara.default_max_wait_time = 5
+# Capybara.app_host = "http://#{docker_ip}:3010"
 
-Capybara.register_driver :firefox do |app|
+Capybara.register_driver :remote_firefox do |app|
+  firefox_capabilities = Selenium::WebDriver::Remote::Capabilities.firefox()
   profile = Selenium::WebDriver::Firefox::Profile.new
   profile["intl.accept_languages"] =  "en-US"
   options = Selenium::WebDriver::Firefox::Options.new
   options.profile = profile
-  Capybara::Selenium::Driver.new(app, browser: :firefox, options: options)
+  Capybara::Selenium::Driver.new(app, browser: :remote,
+    # url: ENV.fetch('SELENIUM_DRIVER_URL'), desired_capabilities: :firefox)
+    url: "http://#{ENV['SELENIUM_REMOTE_HOST']}:4444/wd/hub", desired_capabilities: firefox_capabilities)
 end

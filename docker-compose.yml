@@ -14,8 +14,25 @@ services:
     volumes:
       - ./api/:/usr/src/app/
     ports:
-      - "3000:3000"
+      - 3000:3000
     depends_on:
       - mongo
     environment:
       HEROKU_API_KEY: #c08c067a7361f49b2452e1d20efb356b
+  test:
+    build: .
+    command: bundle exec rspec spec spec/features
+    container_name: test_app
+    environment:
+      - SELENIUM_REMOTE_HOST=selenium
+    volumes:
+      - ./api/:/usr/src/app/
+    depends_on:
+      - selenium
+      - mongo
+  selenium:
+    image: selenium/standalone-firefox-debug:latest
+    container_name: selenium
+    ports:
+      - 4444:4444
+      - 5900:5900
