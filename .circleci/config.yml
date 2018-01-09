@@ -5,7 +5,8 @@
 version: 2
 jobs:
   build:
-    docker:
+    machine: true
+    # docker:
       # specify the version you desire here
        # - image: circleci/ruby:2.4.1-node-browsers
       # - image: buildpack-deps:trusty # primary container
