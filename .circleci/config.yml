@@ -51,8 +51,22 @@ jobs:
       - save_cache:
           key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "Dokerfile" }}
       - run:
-          command: docker-compose up test
-      # # Download and cache dependencies
+          name: run tests
+          command: |
+            mkdir /tmp/test-results
+            TEST_FILES="$(circleci tests glob "api/spec/**/*_feature.rb"| circleci tests split --split-by=timings)"
+            docker-compose run test bundle exec rspec --format progress \
+                            --format RspecJunitFormatter \
+                            --out /tmp/test-results/rspec.xml \
+                            --format progress \
+                            -- $(sed -e 's/\n/\\n/' -e 's/ /\ /' <<< "${TEST_FILES}")
+
+      # collect reports
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results      # # Download and cache dependencies
       # - restore_cache:
       #     keys:
       #     - v1-dependencies-{{ checksum "Gemfile.lock" }}
