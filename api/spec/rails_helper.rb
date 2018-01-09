@@ -57,7 +57,13 @@ RSpec.configure do |config|
   config.include ControllerHelper
   config.include StripeHelper, type: :feature
 
-  config.before(:each) do
+  # Wipe database to have a clean test environment
+  config.after(:each) do
+    Mongoid::Config.purge!
+  end
+
+  config.before(type: :feature) do
+    Rails.application.config.action_dispatch.show_exceptions = true
     Capybara.reset_sessions!
     if /remote_firefox/.match Capybara.current_driver.to_s
       ip = `/sbin/ip route|awk '/scope/ { print $9 }'`
@@ -68,18 +74,11 @@ RSpec.configure do |config|
       Capybara.app_host = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}"
     end
   end
-  # Wipe database to have a clean test environment
-  config.after(:each) do
-    Mongoid::Config.purge!
-    Capybara.use_default_driver
-    Capybara.app_host = nil
-  end
 
-  config.before(type: :feature) do
-    Rails.application.config.action_dispatch.show_exceptions = true
-  end
   config.after(type: :feature) do
     Rails.application.config.action_dispatch.show_exceptions = false
+    Capybara.use_default_driver
+    Capybara.app_host = nil
   end
 
   # let spec/apis/* access to request helpers : get, post, put ...
