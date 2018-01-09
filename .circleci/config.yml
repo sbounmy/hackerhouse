@@ -50,6 +50,7 @@ jobs:
           command: docker-compose build test
       - save_cache:
           key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "Dokerfile" }}
+          path: ./docker-build
       - run:
           name: run tests
           command: |
