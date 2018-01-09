@@ -45,11 +45,11 @@ jobs:
           command: ls -la
       # build our Docker images
       - restore_cache:
-          key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "Dokerfile" }}
+          key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "Dockerfile" }}
       - run:
           command: docker-compose build test
       - save_cache:
-          key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "Dokerfile" }}
+          key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "Dockerfile" }}
           paths:
             - ./docker-build
       - run:
