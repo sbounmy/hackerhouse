@@ -44,8 +44,12 @@ jobs:
       - run:
           command: ls -la
       # build our Docker images
+      - restore_cache:
+          key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "Dokerfile" }}
       - run:
-          command: docker-compose build
+          command: docker-compose build test
+      - save_cache:
+          key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "Dokerfile" }}
       - run:
           command: docker-compose up test
       # # Download and cache dependencies
