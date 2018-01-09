@@ -37,14 +37,15 @@ jobs:
 
     steps:
       # output information about the docker environment
-      - run:
-          command: docker info
+      - checkout
+        - run:
+            command: docker info
 
-      - run:
-          command: ls -la
-      # build our Docker images
-      - run:
-          command: docker-compose build
+        - run:
+            command: ls -la
+        # build our Docker images
+        - run:
+            command: docker-compose build
 
       # # Download and cache dependencies
       # - restore_cache:
