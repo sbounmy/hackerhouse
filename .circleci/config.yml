@@ -17,6 +17,7 @@ jobs:
           # SELENIUM_DRIVER_URL: http://127.0.0.1:4444/wd/hub
       - image: mongo:3.4.6
         command: [--smallfiles]
+        container_name: mongo
       - image: selenium/standalone-firefox-debug:latest
         container_name: selenium
         ports:
