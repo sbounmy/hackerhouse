@@ -10,8 +10,8 @@ feature 'Balance' do
     let!(:hugo) { create(:user, house: hq, check: ['2017-06-01', '2018-05-03']) }
 
     scenario 'when someone replace Nadia' do
-      pending 'review this spec with next year values'
       Timecop.freeze(Date.parse('2017-11-20')) do
+        skip 'review this spec with next year values'
         visit "/gp/hq"
         expect(page).to have_content('Canal Street')
         select_date(2.months.from_now.beginning_of_month, from: '#check_in')
