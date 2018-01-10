@@ -37,7 +37,7 @@ feature 'checkout' do
     create(:house, slug_id: 'hq', v2: false)
     visit "/gp/thefamily"
     Capybara.raise_server_errors = false
-    expect(page).to have_content('Document not found')
+    expect(page).to have_content('not found')
   end
 
   scenario 'it can have a custom plan' do
