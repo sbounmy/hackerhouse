@@ -22,7 +22,7 @@ services:
   test:
     build: .
     command: bundle exec rspec spec spec/features
-    container_name: test_app
+    container_name: test
     environment:
       - SELENIUM_REMOTE_HOST=selenium
     volumes:
