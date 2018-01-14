@@ -1,4 +1,4 @@
-version: '2.2'
+version: '3'
 
 services:
   mongo:
@@ -8,7 +8,7 @@ services:
     #   MONGO_INITDB_ROOT_PASSWORD: durianlover
     ports:
       - "27018:27017"
-  app:
+  api:
     build: .
     command: bundle exec rails server -p 3000 -b '0.0.0.0'
     volumes:
@@ -22,7 +22,7 @@ services:
   test:
     build: .
     command: bundle exec rspec spec spec/features
-    container_name: test
+    container_name: test_app
     environment:
       - SELENIUM_REMOTE_HOST=selenium
     volumes:
