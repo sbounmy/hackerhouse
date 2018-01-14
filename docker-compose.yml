@@ -3,26 +3,20 @@ version: '3'
 services:
   mongo:
     image: mongo:3.6.0
-    # environment:
-    #   MONGO_INITDB_ROOT_USERNAME: hacker
-    #   MONGO_INITDB_ROOT_PASSWORD: durianlover
     ports:
       - "27018:27017"
   api:
-    build: .
-    command: bundle exec rails server -p 3000 -b '0.0.0.0'
+    build: ./api
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
       - ./api/:/usr/src/app/
     ports:
       - 3000:3000
     depends_on:
       - mongo
-    environment:
-      HEROKU_API_KEY: #c08c067a7361f49b2452e1d20efb356b
   test:
-    build: .
+    build: ./api
     command: bundle exec rspec spec spec/features
-    container_name: test_app
     environment:
       - SELENIUM_REMOTE_HOST=selenium
     volumes:
@@ -30,9 +24,15 @@ services:
     depends_on:
       - selenium
       - mongo
+  app:
+    build: ./client
+    command: npm start
+    volumes:
+      - ./client:/app
+    ports:
+      - 3001:3001
   selenium:
     image: selenium/standalone-firefox-debug:latest
-    container_name: selenium
     ports:
       - 4444:4444
       - 5900:5900

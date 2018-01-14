@@ -35,13 +35,13 @@ class SessionsNew extends Component {
     return (
       <div className='row align-items-center'>
         <div className='col-lg-6 text-center'>
-          <div class="card d-md-block d-lg-block mb-4">
+          <div className="card d-md-block d-lg-block mb-4">
             <img className="card-img-top" src="/login_banner.png" alt="Card image cap"/>
-            <div class="card-body">
+            <div className="card-body">
               <h2>Move ideas forward 🍄</h2>
               <p>Finally the perfect place to work & live with people like you.</p>
               <a className='btn btn-primary btn-lg btn-block' href={linkedinOauth}>
-                Let me <span class="icon icon-linkedin"> </span>
+                Let me <span className="icon icon-linkedin"> </span>
               </a>
               <p><small>LinkedIn is the best way for us to know you.</small></p>
             </div>
