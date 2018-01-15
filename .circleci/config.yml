@@ -40,6 +40,8 @@ jobs:
       - checkout
       - run:
           command: docker info
+      - run:
+          command: cp ./api/.env.example ./api/.env
 
       - run:
           command: ls -la
