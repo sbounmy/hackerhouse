@@ -16,7 +16,6 @@ RSpec.describe Balance, type: :model do
     it 'returns 28 on February' do
       expect(Balance.new(hq, Date.new(2017, 02, 01)).days_total).to eq 28
     end
- 
     it 'returns 31 on January' do
       expect(Balance.new(hq, Date.new(2017, 01, 01)).days_total).to eq 31
     end

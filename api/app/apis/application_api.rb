@@ -2,7 +2,11 @@ class ApplicationAPI < Grape::API
   version 'v1', using: :path
   format :json
   formatter :json, Grape::Formatter::ActiveModelSerializers
-  insert_after Grape::Middleware::Formatter, Grape::Middleware::Logger
+  insert_after Grape::Middleware::Formatter, Grape::Middleware::Logger, {
+    logger: Logger.new(STDERR),
+    filter: Class.new { def filter(opts) opts.reject { |k, _| k.to_s == 'password' } end }.new,
+    headers: %w(version cache-control)
+  }
 
   # Helpers
   helpers do

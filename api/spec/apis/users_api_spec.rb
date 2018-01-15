@@ -8,16 +8,16 @@ describe UsersAPI do
 
     let(:tomorrow) { 1.days.from_now }
     let(:default_params) { { slug_id: hq.slug_id,
-        token: stripe.generate_card_token, email: 'paul@42.student.fr',
+        token: App.stripe { stripe.generate_card_token }, email: 'paul@42.student.fr',
         check_in: tomorrow, check_out: 4.months.from_now } }
 
     before do
       # StripeMock.toggle_live(true)
       StripeMock.start
-      App.stripe do
+      # App.stripe do
         stripe.create_plan(id: 'rent_monthly', amount: 1)
         stripe.create_plan(id: 'fee_monthly', amount: 1)
-      end
+      # end
     end
 
     after { StripeMock.stop }
@@ -41,14 +41,6 @@ describe UsersAPI do
 
       it "returns success code" do
         create_user
-        expect(response.status).to be 201
-      end
-
-      it "can create twice" do
-        expect {
-          create_user
-          create_user
-        }.to change { User.count }.by(2)
         expect(response.status).to be 201
       end
 
@@ -83,7 +75,7 @@ describe UsersAPI do
         nextyear = Date.today.year + 1
         date = Date.new(nextyear, 2, 1) # next year 1st february
         expect {
-          create_user check_in: date.strftime("%d/%m/%Y")  
+          create_user check_in: date.strftime("%d/%m/%Y"), check_out: (date + 2.months).strftime("%d/%m/%Y")
         }.to change { hq.users.count }.by(1)
 
         customer = Stripe::Customer.retrieve('test_cus_3')
@@ -136,17 +128,17 @@ describe UsersAPI do
       end
 
       it 'does not create duplicate users' do
-        pending
-        create_user
-        expect_any_instance_of(Stripe::Customer).to receive(:delete)
-        create_user
+        expect {
+          create_user
+          create_user
+        }.to change { User.count }.by(1)
       end
 
     end
   end
 
   describe "PUT /v1/users/:id" do
-    let(:user) { create(:user, avatar_url: nil) }
+    let(:user) { create(:user, avatar_url: nil, stripe: true) }
     let(:avatar) { "https://i1.wp.com/dev.slack.com/img/avatars/ava_0010-512.v1443724322.png" }
 
     it 'is forbidden to guest' do
@@ -176,8 +168,8 @@ describe UsersAPI do
       expect(response.status).to eq 403
     end
 
-    it 'is forbidden to update someone else avatar url if admin' do
-      user2 = create(:user, avatar_url: nil)
+    it 'is allowed to update someone else avatar url if admin' do
+      user2 = create(:user, avatar_url: nil, stripe: true)
       user.set admin: true
       expect {
         put "/v1/users/#{user2.id}", { avatar_url: avatar }, { 'Authorization' => token(user) }
@@ -185,15 +177,6 @@ describe UsersAPI do
       expect(response.status).to eq 200
     end
 
-    it 'can update stripe_source' do
-      App.stripe do
-        token = stripe.generate_card_token
-        user = create(:user, stripe: true)
-        expect {
-          put_as :admin, "/v1/users/#{user.id}", stripe_source: token
-        }.to change { Stripe::Customer.retrieve(user.stripe_id).sources.to_a.size }.from(0).to(1)
-      end
-    end
   end
 
   describe "GET /v1/users" do

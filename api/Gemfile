@@ -78,9 +78,13 @@ group :test do
   gem 'factory_girl_rails'
   gem 'launchy'
   gem 'rspec-collection_matchers'
-  gem 'stripe-ruby-mock', require: 'stripe_mock', git: 'git@github.com:rebelidealist/stripe-ruby-mock.git'
+  # need to use master because 2.5.0 does not work with subscription#items https://github.com/rebelidealist/stripe-ruby-mock/issues/464
+  gem 'stripe-ruby-mock', require: 'stripe_mock', github: 'rebelidealist/stripe-ruby-mock'
   gem 'selenium-webdriver'
   gem 'timecop'
+
+  # RSpec results formatted as JUnit XML that your CI can read
+  gem "rspec_junit_formatter"
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

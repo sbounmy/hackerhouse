@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo:3.6.0
+    ports:
+      - "27018:27017"
+  api:
+    build: ./api
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    volumes:
+      - ./api/:/usr/src/app/
+    ports:
+      - 3000:3000
+    depends_on:
+      - mongo
+    env_file:
+      - ./api/.env
+  test:
+    build: ./api
+    command: bundle exec rspec spec spec/features
+    environment:
+      - SELENIUM_REMOTE_HOST=selenium
+    volumes:
+      - ./api/:/usr/src/app/
+    depends_on:
+      - selenium
+      - mongo
+  app:
+    build: ./client
+    command: npm start
+    volumes:
+      - ./client:/app
+    ports:
+      - 3001:3001
+  selenium:
+    image: selenium/standalone-firefox-debug:latest
+    ports:
+      - 4444:4444
+      - 5900:5900

@@ -1,7 +1,7 @@
 FactoryGirl.define do
 
   factory :user do
-    email { "#{firstname.parameterize(separator: '_')}@42.student.fr" }
+    sequence(:email) { |n| "#{firstname.parameterize(separator: '_')}-#{n}@42.student.fr" }
     firstname 'Paul'
     lastname 'Amicel'
     password 'tiramisu42'

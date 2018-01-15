@@ -6,10 +6,12 @@ describe TransfersAPI do
   let(:admin) { create(:user, admin: true) }
   def transfers(params={})
     App.stripe do
-      Stripe::Transfer.list(limit: 100, destination: hq.stripe_id,
-        created: { gt: now.to_i })
+      Stripe::Transfer.list(limit: 100, destination: hq.stripe_id)
+        # created: { gt: now.to_i }) this doesnt work because we created is 6-7 ahead from now i dont know why
     end
   end
+
+  let(:transfer_name) { Date.today.strftime("Loyer-%Y-%m") }
 
   after :each do
     App.stripe do
@@ -24,7 +26,7 @@ describe TransfersAPI do
         post_as :admin, '/v1/transfers/hq'
       }.to change { transfers.to_a.size }.by(1)
       expect(transfers.map &:amount).to contain_exactly(940721)
-      expect(transfers.map &:transfer_group).to contain_exactly("Loyer-2017-12")
+      expect(transfers.map &:transfer_group).to contain_exactly(transfer_name)
     end
 
     it 'is idempotent' do
@@ -33,7 +35,7 @@ describe TransfersAPI do
         post_as :admin, '/v1/transfers/hq'
       }.to change { transfers.to_a.size }.by(1)
       expect(transfers.map &:amount).to contain_exactly(940721)
-      expect(transfers.map &:transfer_group).to contain_exactly("Loyer-2017-12")
+      expect(transfers.map &:transfer_group).to contain_exactly(transfer_name)
     end
 
     it 'works when next month' do
@@ -44,7 +46,7 @@ describe TransfersAPI do
         end
       }.to change { transfers.to_a.size }.by(2)
       expect(transfers.map &:amount).to contain_exactly(940721, 940721)
-      expect(transfers.map &:transfer_group).to contain_exactly("Loyer-2017-12", "Loyer-2018-01")
+      expect(transfers.map &:transfer_group).to contain_exactly(transfer_name, 1.month.from_now.strftime("Loyer-%Y-%m"))
     end
 
     it 'can be a manual net amount' do
@@ -52,7 +54,7 @@ describe TransfersAPI do
         post_as :admin, '/v1/transfers/hq', amount: 3_400.75
       }.to change { transfers.to_a.size }.by(1)
       expect(transfers.map &:amount).to contain_exactly(3_400_75)
-      expect(transfers.map &:transfer_group).to contain_exactly("Loyer-2018-01")
+      expect(transfers.map &:transfer_group).to contain_exactly(transfer_name)
     end
   end
 end

@@ -26,7 +26,7 @@ feature 'checkout' do
     expect {
       fill_credit_card
       expect(page).to have_no_css('.stripe_checkout_app')
-      sleep 5
+      sleep 4
       alert = page.driver.browser.switch_to.alert
       expect(alert.text).to match /42 x Merci/
       alert.accept
@@ -37,7 +37,7 @@ feature 'checkout' do
     create(:house, slug_id: 'hq', v2: false)
     visit "/gp/thefamily"
     Capybara.raise_server_errors = false
-    expect(page).to have_content('Document not found')
+    expect(page).to have_content('not found')
   end
 
   scenario 'it can have a custom plan' do
@@ -69,7 +69,7 @@ feature 'checkout' do
   end
 
   scenario 'when paying v2' do
-    create(:house, name: "HackerHouse VH", slug_id: 'vh', stripe_id: 'acct_1B1FYLBnBiKe4QYN')
+    create(:house, name: "HackerHouse VH", slug_id: 'vh', stripe: true)
     visit "/gp/vh"
     expect(page).to have_content('VH')
     select_date(2.months.from_now.beginning_of_month, from: '#check_in')
@@ -77,7 +77,7 @@ feature 'checkout' do
 
     check 'terms'
     click_on "customButton"
-    
+
     expect {
       fill_credit_card
       expect(page).to have_no_css('.stripe_checkout_app')
@@ -102,7 +102,7 @@ feature 'checkout' do
 
     check 'terms'
     click_on "customButton"
-    
+
     expect {
       fill_credit_card
       expect(page).to have_no_css('.stripe_checkout_app')

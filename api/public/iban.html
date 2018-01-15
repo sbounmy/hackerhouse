@@ -66,12 +66,31 @@
         }
     };
 
+    function attachSource(result) {
+      if (result.error) {
+        alert("stripe error: " + result.error.message);
+      } else {
+        $.ajax(
+          window.location.origin + '/v1/users/' + $('#user_id').val() + '/sources.json', {
+            type: "POST",
+            data: {
+              source: result.source.id, // stripe source iban id
+              token: $('#token').val() // JWT token
+            }
+          })
+        .then(function(data) { alert('yay!'); },
+              function(error) { alert(error.responseText); });
+      }
+    }
+
     $(document).ready(function() {
       $('#iban_new').on('submit', function() {
         // dirtyfix for production
-        var stripe = Stripe('pk_live_IJhLXrw0qcJqFwUqlDuDOt7H');
-        // Use this one for test need to be env independant
-        // var stripe = Stripe('pk_test_21qRqUH6SVBHRDvg7Zk48YPA');
+        if (window.location.origin.match('hackerhouse.paris')) {
+          var stripe = Stripe('pk_live_IJhLXrw0qcJqFwUqlDuDOt7H');
+        } else {
+          var stripe = Stripe('pk_test_21qRqUH6SVBHRDvg7Zk48YPA');
+        }
 
         stripe.createSource({
           type: 'sepa_debit',
@@ -82,21 +101,8 @@
           owner: {
             name: $('#fullname').val(),
           },
-        }).then(function(result) {
-           $.ajax(
-             window.location.origin + '/v1/users/' + $('#user_id').val() + '/sources.json', {
-             type: "POST",
-             data: {
-               source: result.source.id, // stripe source iban id
-               token: $('#token').val() // JWT token
-             }
-            }).done(function(data) {
-              alert('yay!');
-          }).fail(function(error) {
-            alert(error.responseText);
-          });
-          // handle result.error or result.source
-        });
+        })
+        .then(attachSource);
         return false;
       });
     });

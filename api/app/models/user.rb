@@ -74,4 +74,5 @@ class User
     return false if linkedin_access_token.nil? || tk.nil?
     linkedin_access_token == tk
   end
+
 end

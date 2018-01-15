@@ -30,10 +30,8 @@ WORKDIR /usr/src/app
 # the RubyGems. This is a separate step so the dependencies 
 # will be cached unless changes to one of those two files 
 # are made.
-COPY /api/Gemfile* ./
+COPY Gemfile* ./
 RUN gem install bundler && bundle install --jobs 20 --retry 5
 
 # Copy the main application.
-COPY /api .
-
-RUN ln -s . api
+COPY . .

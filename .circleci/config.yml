@@ -1,0 +1,99 @@
+# Ruby CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-ruby/ for more details
+#
+version: 2
+jobs:
+  build:
+    machine:
+      services:
+        - docker
+      environment:
+        RAILS_ENV: test
+    # docker:
+      # specify the version you desire here
+       # - image: circleci/ruby:2.4.1-node-browsers
+      # - image: buildpack-deps:trusty # primary container
+        # environment:
+        #   ENV: CI
+    #   - image: circleci/ruby:2.4.1
+    #     environment:
+    #       SELENIUM_REMOTE_HOST: selenium
+    #       # SELENIUM_DRIVER_URL: http://127.0.0.1:4444/wd/hub
+    #   - image: mongo:3.4.6
+    #     command: [--smallfiles]
+    #     container_name: mongo
+    #   - image: selenium/standalone-firefox-debug:latest
+    #     container_name: selenium
+    #     ports:
+    #       - 4444:4444
+    #       - 5900:5900
+    #   # Specify service dependencies here if necessary
+    #   # CircleCI maintains a library of pre-built images
+    #   # documented at https://circleci.com/docs/2.0/circleci-images/
+    #   # - image: circleci/postgres:9.4
+
+    # working_directory: ~/repo
+
+    steps:
+      # output information about the docker environment
+      - checkout
+      - run:
+          command: docker info
+      - run:
+          command: cp ./api/.env.example ./api/.env
+
+      - run:
+          command: ls -la
+      # build our Docker images
+      - restore_cache:
+          key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "Dockerfile" }}
+      - run:
+          command: docker-compose build test
+      - save_cache:
+          key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "Dockerfile" }}
+          paths:
+            - ./docker-build
+      - run:
+          name: run tests
+          command: |
+            mkdir /tmp/test-results
+            TEST_FILES="$(circleci tests glob "api/spec/**/*_feature.rb"| circleci tests split --split-by=timings)"
+            docker-compose run test bundle exec rspec --format progress \
+                            --format RspecJunitFormatter \
+                            --out /tmp/test-results/rspec.xml \
+                            --format progress \
+                            -- $(sed -e 's/\n/\\n/' -e 's/ /\ /' <<< "${TEST_FILES}")
+
+      # collect reports
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results      # # Download and cache dependencies
+      # - restore_cache:
+      #     keys:
+      #     - v1-dependencies-{{ checksum "Gemfile.lock" }}
+      #     # fallback to using the latest cache if no exact match is found
+      #     - v1-dependencies-
+      # - run:
+      #     name: Install Docker Compose
+      #     command: |
+      #       curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+      #       chmod +x ~/docker-compose
+      #       sudo mv ~/docker-compose /usr/local/bin/docker-compose
+
+      #       # collect reports
+      #       - store_test_results:
+      #           path: /tmp/test-results
+      #       - store_artifacts:
+      #           path: /tmp/test-results
+      #           destination: test-results
+      # - setup_remote_docker
+      # - run:
+      #     name: Start container and verify it's working
+      #     command: |
+      #       set -x
+      #       docker-compose up -d
+      #       docker run --network container:contacts \
+      #         appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:8080/contacts/test

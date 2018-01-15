@@ -26,6 +26,7 @@ feature 'iban' do
     sleep 4
     alert = page.driver.browser.switch_to.alert
     expect(alert.text).to match /yay/
+    alert.accept
     App.stripe do
       c = Stripe::Customer.retrieve(user.stripe_id)
       expect(c.sources.to_a.size).to eq 2

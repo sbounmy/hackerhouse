@@ -9,8 +9,8 @@ module ControllerHelper
 
   def user_role(role)
     case role
-    when :admin then double("User", admin?: true)
-    when :guest then double("Guest", admin?: false)
+    when :admin then double("User", admin?: true, id: '123')
+    when :guest then double("Guest", admin?: false, id: nil)
     end
   end
 

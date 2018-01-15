@@ -1,6 +1,6 @@
 GIT
-  remote: git@github.com:rebelidealist/stripe-ruby-mock.git
-  revision: 4db5af2f448ee605cd1134edd71b6997f7be5d3c
+  remote: git://github.com/rebelidealist/stripe-ruby-mock.git
+  revision: 1f477d6cffa0ca79db3c0662aba5ac08b6613d9b
   specs:
     stripe-ruby-mock (2.5.0)
       dante (>= 0.2.0)
@@ -72,7 +72,7 @@ GEM
       xpath (~> 2.0)
     case_transform (0.2)
       activesupport
-    childprocess (0.7.1)
+    childprocess (0.8.0)
       ffi (~> 1.0, >= 1.0.11)
     coderay (1.1.1)
     coercible (1.0.0)
@@ -222,8 +222,10 @@ GEM
       rspec-mocks (~> 3.5.0)
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
+    rspec_junit_formatter (0.3.0)
+      rspec-core (>= 2, < 4, != 2.12.0)
     rubyzip (1.2.1)
-    selenium-webdriver (3.4.4)
+    selenium-webdriver (3.8.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.0)
     simple_command (0.0.9)
@@ -285,6 +287,7 @@ DEPENDENCIES
   rails (~> 5.0.0, >= 5.0.0.1)
   rspec-collection_matchers
   rspec-rails
+  rspec_junit_formatter
   selenium-webdriver
   simple_command
   spring
@@ -295,4 +298,4 @@ DEPENDENCIES
   tzinfo-data
 
 BUNDLED WITH
-   1.15.1
+   1.16.1

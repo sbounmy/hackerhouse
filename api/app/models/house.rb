@@ -149,5 +149,4 @@ class House
   def amount
     rent_monthly + utilities_monthly + cleaning_monthly + pantry_monthly
   end
-
 end
