@@ -14,6 +14,8 @@ services:
       - 3000:3000
     depends_on:
       - mongo
+    env_file:
+      - ./api/.env
   test:
     build: ./api
     command: bundle exec rspec spec spec/features
