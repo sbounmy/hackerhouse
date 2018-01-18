@@ -35,3 +35,9 @@ RUN gem install bundler && bundle install --jobs 20 --retry 5
 
 # Copy the main application.
 COPY . .
+
+# Fixes sublime text relative path so docker-compose run test work whenever we run from ./hackerhouse or ./hackerhouse/api
+# Example :
+# In /usr/src/app
+# docker-compose run --rm test bundle exec rspec api/spec/features/login_feature_spec.rb:14
+RUN ln -s . api
