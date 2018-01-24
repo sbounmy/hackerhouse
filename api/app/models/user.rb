@@ -35,7 +35,12 @@ class User
 
   # Scope
   scope :staying_on, ->(date, house) { where(house_id: house.id, :check_out.gt => date.beginning_of_month, :check_in.lte => date.end_of_month) }
-  scope :active, -> { where(:check_out.gt => Date.today, :house_id.ne => nil) }
+  scope :active, ->(val=1) { where(:check_out.gt => Date.today, :house_id.ne => nil) }
+  # hack val=1 to preserve client behavior. it sends a param by default
+
+  def self.queryable_scopes
+    [:active]
+  end
 
   # Validations
   validate :should_stay_at_least_1_month

@@ -57,6 +57,18 @@ RSpec.describe User, type: :model do
         user.update_attributes house: nil
       }.to change { User.active.to_a }.from([user]).to([])
     end
+
+    it 'works with #search' do
+      expect {
+        user.update_attributes check_out: 2.days.ago
+      }.to change { User.search(active: 'true').to_a }.from([user]).to([])
+    end
+
+    it 'works with #search 1' do
+      expect {
+        user.update_attributes check_out: 2.days.ago
+      }.to change { User.search(active: 1).to_a }.from([user]).to([])
+    end
   end
 
   describe '#active' do

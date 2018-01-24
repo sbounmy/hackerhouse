@@ -10,8 +10,9 @@ module Concerns
         search_scope(query).where(to_origin(query))
       end
 
+      # MAKE SURE TO DEFINE THIS IN YOUR MODEL.
       def queryable_scopes()
-        []
+        raise 'please define this method. it returns an array of queryable scopes example : [:active, :out_of_stock]'
       end
 
       private
