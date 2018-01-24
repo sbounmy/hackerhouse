@@ -34,6 +34,7 @@ describe UsersV2API do
         expect(json_response['firstname']).to eql 'Stephane'
         expect(json_response['lastname']).to eql 'Bounmy'
         expect(json_response['email']).to eql nil
+        expect(json_response['active']).to eql false
       end
 
       it "returns success code" do

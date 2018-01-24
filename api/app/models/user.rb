@@ -5,7 +5,6 @@ class User
   include Concerns::MongoidQuery
 
   # Fields
-  field :active, type: Boolean, default: false
   field :admin, type: Boolean, default: false
   field :avatar_url, type: String
   field :firstname, type: String
@@ -27,7 +26,6 @@ class User
   field :linkedin_access_token, type: String
 
   # Indexes
-  index active: 1
 
   # Associations
   belongs_to :house, index: true, optional: true
@@ -37,11 +35,16 @@ class User
 
   # Scope
   scope :staying_on, ->(date, house) { where(house_id: house.id, :check_out.gt => date.beginning_of_month, :check_in.lte => date.end_of_month) }
+  scope :active, -> { where(:check_out.gt => Date.today, :house_id.ne => nil) }
 
   # Validations
   validate :should_stay_at_least_1_month
 
   validates :email, uniqueness: true
+
+  def active
+    !!check_out && !check_out.past? && house_id.present?
+  end
 
   def should_stay_at_least_1_month
     return if check_out.nil? || check_in.nil? # now can create account without checkin/checkout

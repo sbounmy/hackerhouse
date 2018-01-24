@@ -33,6 +33,13 @@ describe SessionsAPI do
         expect(json_response['user']['firstname']).to eql 'john'
         expect(json_response['user']['email']).to eql 'john.snow@gmail.com' #since its current user it can see it
       end
+
+      it "user active can be false" do
+        user.update_attributes check_out: 2.days.ago
+        new_session
+        expect(response.status).to be 201
+        expect(json_response['user']['active']).to eq false
+      end
     end
 
     context 'with invalid params' do

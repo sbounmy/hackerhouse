@@ -9,7 +9,6 @@ FactoryGirl.define do
     check_out '2017-02-20'
     avatar_url 'http://avatar.slack.com/paul.jpg'
     house
-    active true
 
     transient do
       stripe false

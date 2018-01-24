@@ -43,4 +43,52 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '.active' do
+    let(:user) { create(:user, check_out: 3.months.from_now) }
+
+    it 'fetch all active users' do
+      expect {
+        user.update_attributes check_out: 2.days.ago
+      }.to change { User.active.to_a }.from([user]).to([])
+    end
+
+    it 'fetch user who has house' do
+      expect {
+        user.update_attributes house: nil
+      }.to change { User.active.to_a }.from([user]).to([])
+    end
+  end
+
+  describe '#active' do
+    let(:user) { create(:user, check_out: 3.months.from_now) }
+
+    context 'it is false when' do
+
+      it 'changes when checkout is in the past' do
+        expect {
+          user.update_attributes check_out: 2.days.ago
+        }.to change(user, :active).to false
+      end
+
+      it 'house is nil' do
+        expect {
+          user.update_attributes house_id: nil
+        }.to change(user, :active).to false
+      end
+
+    end
+
+    context 'it is true when' do
+
+      it 'checkout in future and house_id is not null' do
+        user.update_attributes check_out: 2.days.from_now
+        expect(user.check_out.future?).to eq true
+        expect(user.house_id).to_not eq nil
+        expect(user.active).to eq true
+      end
+
+    end
+
+  end
+
 end
