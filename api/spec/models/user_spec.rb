@@ -52,12 +52,6 @@ RSpec.describe User, type: :model do
       }.to change { User.active.to_a }.from([user]).to([])
     end
 
-    it 'fetch user who has house' do
-      expect {
-        user.update_attributes house: nil
-      }.to change { User.active.to_a }.from([user]).to([])
-    end
-
     it 'works with #search' do
       expect {
         user.update_attributes check_out: 2.days.ago
