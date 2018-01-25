@@ -31,6 +31,31 @@ describe HousesAPI do
         expect(json_response['user_ids']).to have(1).items
         expect(json_response['user_ids']).to eq [user.id.to_s]
       end
+
+      it 'returns pantry attributes if user belongs to house' do
+        user = create(:user, house: hq)
+        get_as user, "/v1/houses/#{hq.slug_id}"
+
+        expect(json_response['pantry_login']).to eq 'pantry@hackerhouse.paris'
+        expect(json_response['pantry_password']).to eq 'pantry42'
+        expect(json_response['pantry_budget']).to eq 100
+        expect(json_response['pantry_description']).to eq 'Livraison bi-mensuel'
+        expect(json_response['pantry_url']).to eq 'https://courses-en-ligne.carrefour.fr'
+      end
+
+      it 'returns pantry attributes if current user is a guest' do
+        user = create(:user, house: hq)
+        get_as :guest, "/v1/houses/#{hq.slug_id}"
+
+        expect(json_response.keys).to_not include('pantry_login', 'pantry_password', 'pantry_url', 'pantry_description', 'pantry_budget')
+      end
+
+      it 'returns pantry attributes if user does not belongs to house' do
+        user = create(:user, house: create(:house))
+        get_as user, "/v1/houses/#{hq.slug_id}"
+
+        expect(json_response.keys).to_not include('pantry_login', 'pantry_password', 'pantry_url', 'pantry_description', 'pantry_budget')
+      end
     end
   end
 

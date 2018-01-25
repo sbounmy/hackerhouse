@@ -18,10 +18,10 @@ class LinksPanel extends Component {
 
   render() {
     return (
-      <div class="card d-md-block d-lg-block mb-4">
-        <div class="card-body">
-          <h6 class="mb-3">Liens important <small>· <a href="#">Edit</a></small></h6>
-          <ul class="list-unstyled list-spaced">
+      <div className="card d-md-block d-lg-block mb-4">
+        <div className="card-body">
+          <h6 className="mb-3">Liens important <small>· <a href="#">Edit</a></small></h6>
+          <ul className="list-unstyled list-spaced">
             {this.renderLink('slack', 'Slack', 'https://hackerhouseparis.slack.com')}
             {this.renderLink('meetup', 'Meetup', 'https://www.meetup.com/HackerHouse-Paris')}
             {this.renderLink('instagram-with-circle', 'Instagram', 'https://www.instagram.com/hackerhouseparis/')}

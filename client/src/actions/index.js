@@ -1,6 +1,6 @@
 import axios from 'axios';
 import cookie from 'react-cookie';
-import { SESSION_CREATED, SESSION_FAILED, SESSION_DESTROYED, USER_CREATED } from './types';
+import { HOUSE_FETCHED, SESSION_CREATED, SESSION_FAILED, SESSION_DESTROYED, USER_CREATED } from './types';
 
 const ROOT_URL = `${process.env.REACT_APP_API}/v1`;
 
@@ -53,14 +53,16 @@ export function createLinkedInSession({code, redirect_uri}, history) {
           dispatch(createSession({ email: data.email, linkedin_access_token: data.token }, history));
         });
       });
+  };
+}
 
-      // localStorage.setItem('token', res.data.token);
-      // localStorage.setItem('user',  JSON.stringify(res.data.user));
-    // } catch(error) {
-    //   dispatch({
-    //     type: SESSION_FAILED,
-    //     payload: 'Invalid email or password'
-    //   });
-    // }
+export function fetchHouse(id) {
+  const url = `${ROOT_URL}/houses/${id}`;
+
+  return async (dispatch) => {
+      const res = await axios.get(url, { headers: { 'Authorization': localStorage.getItem('token') } })
+      .then(({data}) => {
+        dispatch({type: HOUSE_FETCHED, payload: data})
+      });
   };
 }

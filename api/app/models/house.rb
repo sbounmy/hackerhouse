@@ -49,6 +49,13 @@ class House
   # Must match a slack channel ID without #
   field :slug_id, type: String
 
+  # Pantry
+  field :pantry_budget, type: Float
+  field :pantry_description, type: String
+  field :pantry_login, type: String
+  field :pantry_url, type: String
+  field :pantry_password, type: String
+
   # Associations
   has_many :users
 
