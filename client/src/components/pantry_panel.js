@@ -56,7 +56,7 @@ class PantryPanel extends Component {
           <div data-grid="images" data-target-height="150"><img className="media-object" data-width="640" data-height="640" data-action="zoom" src="assets/img/instagram_2.jpg" styles="width: 179px; height: 168px; margin-bottom: 10px; margin-right: 0px; display: inline-block; vertical-align: bottom;"/></div>
           <p>{house.pantry_description}</p>
 
-          <form className="form-inline">
+          <form>
             <p>💰 <small>{house.pantry_budget}€ pour 15 jours</small></p>
             <div className="input-group mb-1 mr-sm-1">
               <label className="sr-only" for="inlineFormInputGroupLogin">Login</label>
