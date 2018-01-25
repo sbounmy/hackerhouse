@@ -34,9 +34,8 @@ class PantryPanel extends Component {
         <input type={this.state.type}
         className="form-control"
         value={value}
-        disabled="true"
         />
-        <div className="input-group-append">
+        <div className="input-group-addon">
           <div onClick={this.showHide} className="input-group-text" style={{'font-size': '21px', cursor: 'pointer'}}>👀</div>
         </div>
       </div>
@@ -59,10 +58,16 @@ class PantryPanel extends Component {
 
           <form className="form-inline">
             <p>💰 <small>{house.pantry_budget}€ pour 15 jours</small></p>
-            <input type="text" className="form-control mb-1 mr-sm-1" value={house.pantry_login} disabled="disabled"/>
+            <div className="input-group mb-1 mr-sm-1">
+              <label className="sr-only" for="inlineFormInputGroupLogin">Login</label>
+              <input type="text" style={{'text-overflow': 'ellipsis'}} className="form-control" value={house.pantry_login} />
+              <div className="input-group-addon">
+                <div className="input-group-text" style={{'font-size': '21px'}}>👈</div>
+              </div>
+            </div>
 
             {this.password(house.pantry_password)}
-            <Link className="btn btn-outline-primary btn-sm" to={house.pantry_url} target="_blank">Faire les courses</Link>
+            <Link className="btn btn-outline-primary btn-sm btn-block" to={house.pantry_url} target="_blank">Faire les courses</Link>
           </form>
         </div>
       </div>
