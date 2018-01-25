@@ -52,11 +52,12 @@ class NavBar extends Component {
             <a className="nav-link" data-toggle="modal" href="#msgModal">Messages</a>
           </li>
           <li className="nav-item">
-            <button
+            <a
               className='nav-link'
+              href="#"
               onClick={this.logoutOnClick.bind(this)}>
-              Logout
-            </button>
+              🔜 Logout
+            </a>
           </li>
 
           <li className="nav-item d-md-none">
