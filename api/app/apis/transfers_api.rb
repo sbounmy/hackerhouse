@@ -19,7 +19,6 @@ class TransfersAPI < Grape::API
         optional :amount, type: Float, desc: "Net amount in euros to transfer to Owner"
       end
       post do
-        puts amount.inspect
         name = Date.today.strftime("Loyer-%Y-%m")
         authorize Transfer, :create?
         App.stripe do
