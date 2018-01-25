@@ -67,6 +67,12 @@ RSpec.describe Balance, type: :model do
       expect(balance.users).to contain_exactly([@nadia, 1167], [@brian, 5167])
     end
 
+    it 'does not count admins' do
+      @nadia.update_attributes admin: true
+      expect(balance.users.count).to eq 1
+      expect(balance.users).to contain_exactly([@brian, 7500])
+    end
+
     it 'is empty if everyone is there' do
       @nadia.update_attributes check_out: Date.new(2018, 02, 12)
       @val = create_user 'val', ['2017-06-01', '2017-12-3']
@@ -106,7 +112,8 @@ RSpec.describe Balance, type: :model do
       expect(balance.users).to contain_exactly([@val, 834], [@nadia, 834], [@brian, 834])
     end
 
-    it('is idempotent')
+    it 'is idempotent'
+
     it 'does not freakout if everybody leaves' do
       @nadia.update_attributes check_out: Date.new(2017, 10, 10)
       @brian.update_attributes check_out: Date.new(2017, 10, 10)
@@ -114,5 +121,6 @@ RSpec.describe Balance, type: :model do
       @hugo = create_user 'hugo', ['2017-07-31', '2017-10-3']
       expect(balance.users).to have(0).items
     end
+
   end
 end

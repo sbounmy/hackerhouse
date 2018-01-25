@@ -34,6 +34,7 @@ class User
   has_secure_password
 
   # Scope
+  scope :customer, -> { where(admin: false) }
   scope :staying_on, ->(date, house) { where(house_id: house.id, :check_out.gt => date.beginning_of_month, :check_in.lte => date.end_of_month) }
   scope :active, ->(val=1) { where(:check_out.gt => Date.today) }
   # hack val=1 to preserve client behavior. it sends a param by default

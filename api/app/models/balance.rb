@@ -24,7 +24,7 @@ class Balance
   private
 
   def find_users
-    User.staying_on(@date, @house)
+    User.customer.staying_on(@date, @house)
   end
 
   def generate_calendar
