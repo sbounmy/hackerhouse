@@ -58,7 +58,9 @@ describe UsersAPI do
 
       it 'doesnt display sensible information' do
         create_user
-        expect(json_response.keys).to eq ["id", "firstname", "lastname", "avatar_url", "bio_title", "bio_url", "check_in", "check_out"]
+        expect(json_response.keys).to eq ["id", "firstname", "lastname",
+          "avatar_url", "bio_title", "bio_url", "check_in", "check_out",
+          "active", "admin", "house_slug_id"]
       end
 
       it 'accepts date as %d\/%m\/%Y' do
@@ -204,18 +206,18 @@ describe UsersAPI do
 
     it 'can filter by inactive' do
       user
-      ghost = create(:user, firstname: 'Brian', lastname: 'Ghost', active: false)
+      ghost = create(:user, firstname: 'Brian', lastname: 'Ghost', check_out: 2.months.ago)
       get "/v1/users", q: { active: false }
       expect(response.status).to eq 200
 
-      expect(json_response).to have(1).items
-      expect(json_response[0]['firstname']).to eq 'Brian'
-      expect(json_response[0]['lastname']).to eq 'Ghost'
+      expect(json_response).to have(2).items
+      expect(json_response[1]['firstname']).to eq 'Brian'
+      expect(json_response[1]['lastname']).to eq 'Ghost'
     end
 
     it 'can filter by active' do
-      user
-      ghost = create(:user, firstname: 'Brian', lastname: 'Ghost', active: false)
+      user.update_attributes check_out: 2.months.from_now
+      ghost = create(:user, firstname: 'Brian', lastname: 'Ghost',  check_out: 2.months.ago)
       get "/v1/users", q: { active: true }
       expect(response.status).to eq 200
 

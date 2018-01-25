@@ -35,8 +35,10 @@ class User
 
   # Scope
   scope :customer, -> { where(admin: false) }
-  scope :staying_on, ->(date, house) { where(house_id: house.id, :check_out.gt => date.beginning_of_month, :check_in.lte => date.end_of_month) }
-  scope :active, ->(val=1) { where(:check_out.gt => Date.today) }
+  scope :staying_on, -> (date, house) { where(house_id: house.id, :check_out.gt => date.beginning_of_month, :check_in.lte => date.end_of_month) }
+  scope :active, -> (value=true) {
+    value.to_s == 'true' ? where(:check_out.gt => Date.today) : where(:check_out.lt => Date.today)
+  }
   # hack val=1 to preserve client behavior. it sends a param by default
 
   def self.queryable_scopes
