@@ -10,6 +10,6 @@ class UserSerializer < ActiveModel::Serializer
 
   # overkill but clean for API call
   def house_slug_id
-    object.house.slug_id
+    object.house.try(:slug_id)
   end
 end

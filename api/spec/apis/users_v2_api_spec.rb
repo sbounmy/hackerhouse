@@ -52,7 +52,7 @@ describe UsersV2API do
 
       it 'doesnt display sensible information' do
         create_user
-        expect(json_response.keys).to eq ["id", "firstname", "lastname", "avatar_url", "bio_title", "bio_url", "check_in", "check_out"]
+        expect(json_response.keys).to eq ["id", "firstname", "lastname", "avatar_url", "bio_title", "bio_url", "check_in", "check_out", "active", "admin", "house_slug_id"]
       end
 
     end
