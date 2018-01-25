@@ -226,5 +226,16 @@ describe UsersAPI do
       expect(json_response[0]['lastname']).to eq 'Amicel'
     end
 
+    it 'can filter by active with integer 1' do
+      user.update_attributes check_out: 2.months.from_now
+      ghost = create(:user, firstname: 'Brian', lastname: 'Ghost',  check_out: 2.months.ago)
+      get "/v1/users", q: { active: 1 }
+      expect(response.status).to eq 200
+
+      expect(json_response).to have(1).items
+      expect(json_response[0]['firstname']).to eq 'Paul'
+      expect(json_response[0]['lastname']).to eq 'Amicel'
+    end
+
   end
 end

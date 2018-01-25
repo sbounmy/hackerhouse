@@ -38,7 +38,7 @@ module Concerns
 
           # skip param if 'true' string like ransack
           # https://github.com/activerecord-hackery/ransack#using-scopesclass-methods
-          if value == 'true'
+          if ['true', '1'].include? value
             scp.send(name)
           else
             scp.send(name, value)
