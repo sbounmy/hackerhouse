@@ -5,7 +5,7 @@ class UsersV2API < Grape::API
 
     desc "Create an or updates an User by its email"
     params do
-      requires :email,     type: String, regexp: /.+@.+/
+      requires :email,     type: String, regexp: /.+@.+/, coerce_with: ->(val) { val.downcase }
       requires :avatar_url,type: String, allow_blank: false
       requires :password,  type: String, allow_blank: false
       requires :firstname, type: String, allow_blank: false

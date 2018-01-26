@@ -50,6 +50,14 @@ describe UsersV2API do
         expect(User.last.bio_title).to eq 'Sushi Lover'
       end
 
+      it 'is case incensitive' do
+        expect {
+          create_user
+          create_user email: 'STEPHANE@hackerhouse.paris'
+        }.to change { User.count }.by(1)
+        expect(User.last.email).to eq 'stephane@hackerhouse.paris'
+      end
+
       it 'doesnt display sensible information' do
         create_user
         expect(json_response.keys).to eq ["id", "firstname", "lastname", "avatar_url", "bio_title", "bio_url", "check_in", "check_out", "active", "admin", "house_slug_id"]
