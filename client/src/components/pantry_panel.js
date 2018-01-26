@@ -53,7 +53,10 @@ class PantryPanel extends Component {
       <div className="card mb-4 d-block d-lg-block">
         <div className="card-body">
           <h6 className="mb-3">Produits du quotidien</h6>
-          <div data-grid="images" data-target-height="150"><img className="media-object" data-width="640" data-height="640" data-action="zoom" src="assets/img/instagram_2.jpg" styles="width: 179px; height: 168px; margin-bottom: 10px; margin-right: 0px; display: inline-block; vertical-align: bottom;"/></div>
+          <div className="embed-responsive embed-responsive-16by9">
+            <iframe className="embed-responsive-item" src="https://www.youtube.com/embed/W2jP20qrVPA" allowfullscreen='true'></iframe>
+          </div>
+
           <p>{house.pantry_description}</p>
 
           <form>
