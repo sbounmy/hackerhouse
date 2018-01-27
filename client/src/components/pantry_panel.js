@@ -70,7 +70,9 @@ class PantryPanel extends Component {
             </div>
 
             {this.password(house.pantry_password)}
-            <Link className="btn btn-outline-primary btn-sm btn-block" to={house.pantry_url} target="_blank">Faire les courses</Link>
+            <a  className="btn btn-outline-primary btn-sm btn-block"
+                href={house.pantry_url}
+                target="_blank">Faire les courses</a>
           </form>
         </div>
       </div>
