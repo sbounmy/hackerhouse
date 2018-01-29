@@ -23,7 +23,7 @@ class TransfersAPI < Grape::API
         name = Date.today.strftime("Loyer-%Y-%m")
         authorize Transfer, :create?
         App.stripe do
-          error!("Already paid out ! #{house.stripe_id}##{name}", 422) if Stripe::Transfer.list(limit: 10, transfer_group: name, destination: house.stripe_id).to_a.size > 0
+          # error!("Already paid out ! #{house.stripe_id}##{name}", 422) if Stripe::Transfer.list(limit: 10, transfer_group: name, destination: house.stripe_id).to_a.size > 0
         end
         error!("Amount is too high, cant be higher than house amount : #{house.amount}") if declared_params[:amount] && declared_params[:amount] > house.amount
         # need to do this out of App.stripe otherwise it resets its scope value
