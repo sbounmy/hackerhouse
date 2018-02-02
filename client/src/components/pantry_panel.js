@@ -54,7 +54,7 @@ class PantryPanel extends Component {
         <div className="card-body">
           <h6 className="mb-3">Produits du quotidien</h6>
           <div className="embed-responsive embed-responsive-16by9">
-            <iframe className="embed-responsive-item" src="https://www.youtube.com/embed/W2jP20qrVPA" allowfullscreen='true'></iframe>
+            <iframe className="embed-responsive-item" src="https://www.youtube.com/embed/5cVv2AXd_qY" allowfullscreen='true'></iframe>
           </div>
 
           <p>{house.pantry_description}</p>
