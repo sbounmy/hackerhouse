@@ -53,6 +53,7 @@ class House
   field :pantry_budget, type: Float
   field :pantry_description, type: String
   field :pantry_login, type: String
+  field :pantry_name, type: String
   field :pantry_url, type: String
   field :pantry_password, type: String
 

@@ -7,6 +7,7 @@ class HouseSerializer < ActiveModel::Serializer
   attribute :pantry_login, if: :current_user?
   attribute :pantry_password, if: :current_user?
   attribute :pantry_url, if: :current_user?
+  attribute :pantry_name, if: :current_user?
 
   def current_user?
     !!scope.current_user.id && object.user_ids.include?(scope.current_user.id)

@@ -61,6 +61,14 @@ class PantryPanel extends Component {
 
           <form>
             <p>💰 <small>{house.pantry_budget}€ pour 15 jours</small></p>
+
+            <div className="input-group mb-1 mr-sm-1">
+              <label className="sr-only" for="inlineFormInputGroupLogin">Drive</label>
+              <input type="text" style={{'text-overflow': 'ellipsis'}} className="form-control" value={house.pantry_name} disabled/>
+              <div className="input-group-addon">
+                <div className="input-group-text" style={{'font-size': '21px'}}>🚗</div>
+              </div>
+            </div>
             <div className="input-group mb-1 mr-sm-1">
               <label className="sr-only" for="inlineFormInputGroupLogin">Login</label>
               <input type="text" style={{'text-overflow': 'ellipsis'}} className="form-control" value={house.pantry_login} />
