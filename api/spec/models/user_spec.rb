@@ -5,8 +5,13 @@ RSpec.describe User, type: :model do
   describe '#staying_on' do
 
     before do
+      Timecop.travel(2018, 01, 05)
       @nadia = create(:user, check_in: Date.new(2017, 9, 2), check_out: Date.new(2018, 2, 1), house: hq)
       @brian = create(:user, check_in: Date.new(2017, 6, 1), check_out: Date.new(2017, 8, 1), house: hq)
+    end
+
+    after do
+      Timecop.return
     end
 
     it 'returns users staying at a given house users' do
@@ -56,12 +61,6 @@ RSpec.describe User, type: :model do
       expect {
         user.update_attributes check_out: 2.days.ago
       }.to change { User.search(active: 'true').to_a }.from([user]).to([])
-    end
-
-    it 'works with #search 1' do
-      expect {
-        user.update_attributes check_out: 2.days.ago
-      }.to change { User.search(active: 1).to_a }.from([user]).to([])
     end
   end
 
