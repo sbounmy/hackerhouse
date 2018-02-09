@@ -87,6 +87,13 @@ RSpec.describe Balance, type: :model do
       expect(balance.users).to contain_exactly([@val, 834], [@hugo, 834], [@brian, 834])
     end
 
+    it 'does not freakout on year' do
+      @nadia.update_attributes check_out: Date.new(2017, 11, 01)
+      @val = create_user 'val', ['2016-11-03', '2017-12-3']
+      @hugo = create_user 'hugo', ['2017-06-01', '2017-12-3']
+      expect(balance.users).to contain_exactly([@val, 834], [@hugo, 834], [@brian, 834])
+    end
+
     it 'have few days of non-occupancy' do
       hq.update_attributes max_users: 3
       @val = create_user 'val', ['2017-11-18', '2018-01-03']

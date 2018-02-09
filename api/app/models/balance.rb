@@ -37,7 +37,7 @@ class Balance
         @calendar[i].fill(0, user.check_out.day)
       end
       #someone arrive during the month
-      if user.check_in.month === @date.month
+      if [user.check_in.year, user.check_in.month] === [@date.year, @date.month]
         @calendar[i].fill(0, 1, user.check_in.day - 1)
       end
     end
