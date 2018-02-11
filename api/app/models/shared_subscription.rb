@@ -29,7 +29,7 @@ class SharedSubscription
   end
 
   def beginning_of_month?
-    return false #todo : wait bugfix stripe
+    return true #todo : wait bugfix stripe
     @trial_end.day == 1
   end
 end
