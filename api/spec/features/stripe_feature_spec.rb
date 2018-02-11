@@ -68,11 +68,37 @@ feature 'checkout' do
     }.to change { User.count }.by(1)
   end
 
-  scenario 'when paying v2' do
+  scenario 'when paying v2 at beginning_of_month' do
     create(:house, name: "HackerHouse VH", slug_id: 'vh', stripe: true)
     visit "/gp/vh"
     expect(page).to have_content('VH')
     select_date(2.months.from_now.beginning_of_month, from: '#check_in')
+    select_date(4.months.from_now.end_of_month, from: '#check_out')
+
+    check 'terms'
+    click_on "customButton"
+
+    expect {
+      fill_credit_card
+      expect(page).to have_no_css('.stripe_checkout_app')
+      sleep 10
+      alert = page.driver.browser.switch_to.alert
+      expect(alert.text).to match /42 x Merci/
+      alert.accept
+    }.to change { User.count }.by(1)
+    # no prorate flag on subscription
+    # App.stripe do
+    #   expect(Stripe::Subscription.retrieve(User.last.stripe_subscription_ids[0]).prorate).to eq false
+    # end
+  end
+
+  scenario 'when paying v2 in middle of month' do
+    create(:house, name: "HackerHouse VH", slug_id: 'vh', stripe: true)
+    visit "/gp/vh"
+    expect(page).to have_content('VH')
+    # next_mid_month = Date.new(1.month.from_now.year, 1.month.from_now.month, 15)
+    next_mid_month = Date.new(2018, 2, 15)
+    select_date(next_mid_month, from: '#check_in')
     select_date(4.months.from_now.end_of_month, from: '#check_out')
 
     check 'terms'

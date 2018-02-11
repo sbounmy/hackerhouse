@@ -23,10 +23,12 @@ class UsersAPI < Grape::API
         begin
           check_in = declared_params[:check_in].to_time
           if house.v2?
-            @sub = SharedSubscription.create(house, {
+            @sub = SharedSubscription.new(house, {
               customer: @c.id,
               trial_end: check_in }
             )
+            @sub.save
+            puts @sub.inspect
           else #v1 remove
             house.stripe { @sub = Stripe::Subscription.create(customer: @c.id,
               items: house.stripe_plan_ids.map { |pid| { plan: pid, quantity: 1} },
