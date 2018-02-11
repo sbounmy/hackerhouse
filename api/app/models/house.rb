@@ -149,7 +149,7 @@ class House
   # Need products to fetch plan's name Stripe API update 2018-02-05
   def products
     return @products if @products
-    data = App.stripe { Stripe::Product.list(type: 'service').data }
+    data = stripe { Stripe::Product.list(type: 'service').data }
     @products ||= Hash[data.map { |item| [item.id, item] } ]
   end
 
