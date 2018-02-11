@@ -95,16 +95,18 @@ class House
 
   def stripe
     begin
+      @prev = Stripe.api_key
       if v2
         Stripe.api_key = Rails.application.secrets.stripe_secret_key
       else
         Stripe.api_key = stripe_access_token
       end
-      yield
+      @res = yield
     rescue => e
       raise e
     ensure
-      Stripe.api_key = nil
+      Stripe.api_key = @prev || nil
+      @res
     end
   end
 
@@ -139,9 +141,16 @@ class House
   def subscription_items
     {}.tap do |h|
       plans.each do |plan|
-        h[plan.id] = { name: plan.name, quantity: amount_for_user(plan.id).ceil }
+        h[plan.id] = { name: products[plan.product].name, quantity: amount_for_user(plan.id).ceil }
       end
     end
+  end
+
+  # Need products to fetch plan's name Stripe API update 2018-02-05
+  def products
+    return @products if @products
+    data = stripe { Stripe::Product.list(type: 'service').data }
+    @products ||= Hash[data.map { |item| [item.id, item] } ]
   end
 
   # Stripe API friendly format
