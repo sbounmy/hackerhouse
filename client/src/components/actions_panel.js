@@ -74,7 +74,6 @@ class ActionsPanel extends Component {
       <div>
       {this.renderEventActions()}
       {this.renderStayActions()}
-      {this.renderFoodActions()}
       </div>
     );
   }

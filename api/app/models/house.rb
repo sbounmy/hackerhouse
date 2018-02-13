@@ -15,6 +15,9 @@ class House
 
   # HackerHouse name
   field :name, type: String
+  field :address, type: String
+  field :zip_code, type: String
+  field :city, type: String
 
   # Description text
   field :description, type: String

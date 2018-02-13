@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchHouse } from '../actions';
 import { Link } from 'react-router-dom';
+import Moment from 'react-moment';
 
 import _ from 'lodash';
 
@@ -12,6 +13,16 @@ class PantryPanel extends Component {
       type: 'password'
     }
     this.showHide = this.showHide.bind(this);
+  }
+
+  nextDate() {
+    const today = new Date();
+    if (today.getDate() < 15) {
+      return new Date(today.getYear(), today.getMonth(), 15).toString()
+    }
+    else {
+      return new Date(today.getYear(), today.getMonth(), 1).toString()
+    }
   }
 
   componentDidMount() {
@@ -52,23 +63,14 @@ class PantryPanel extends Component {
     return (
       <div className="card mb-4 d-block d-lg-block">
         <div className="card-body">
-          <h6 className="mb-3">Produits du quotidien</h6>
-          <div className="embed-responsive embed-responsive-16by9">
-            <iframe className="embed-responsive-item" src="https://www.youtube.com/embed/5cVv2AXd_qY" allowfullscreen='true'></iframe>
-          </div>
-
-          <p>{house.pantry_description}</p>
+          <h6 className="mb-3">Produits du quotidien <small>· <a href="https://man.hackerhouse.paris/vivre/courses-produit-du-quotidien" target="_blank">Aide</a></small></h6>
+          <p>Courses à faire avant le&nbsp;
+            <strong><Moment format="DD/MM/YY">{this.nextDate()}</Moment></strong>
+          </p>
 
           <form>
             <p>💰 <small>{house.pantry_budget}€ pour 15 jours</small></p>
 
-            <div className="input-group mb-1 mr-sm-1">
-              <label className="sr-only" for="inlineFormInputGroupLogin">Drive</label>
-              <input type="text" style={{'text-overflow': 'ellipsis'}} className="form-control" value={house.pantry_name} disabled/>
-              <div className="input-group-addon">
-                <div className="input-group-text" style={{'font-size': '21px'}}>🚗</div>
-              </div>
-            </div>
             <div className="input-group mb-1 mr-sm-1">
               <label className="sr-only" for="inlineFormInputGroupLogin">Login</label>
               <input type="text" style={{'text-overflow': 'ellipsis'}} className="form-control" value={house.pantry_login} />
@@ -78,6 +80,14 @@ class PantryPanel extends Component {
             </div>
 
             {this.password(house.pantry_password)}
+
+            <div className="input-group mb-1 mr-sm-1">
+              <label className="sr-only" for="inlineFormInputGroupLogin">CVC</label>
+              <input type="text" style={{'text-overflow': 'ellipsis'}} className="form-control" value="745" />
+              <div className="input-group-addon">
+                <div className="input-group-text" style={{'font-size': '21px'}}>💳</div>
+              </div>
+            </div>
             <a  className="btn btn-outline-primary btn-sm btn-block"
                 href={house.pantry_url}
                 target="_blank">Faire les courses</a>
