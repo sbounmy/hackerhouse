@@ -73,8 +73,8 @@ class User
         # this will break if someone move to another hackerhouse
         Stripe::Subscription.list(customer: stripe_id).each do |s|
           s.metadata[:house] = house.slug_id
-          s.metadata[:check_in] = c.check_in
-          s.metadata[:check_out] = c.check_out
+          s.metadata[:check_in] = check_in
+          s.metadata[:check_out] = check_out
         end
         params.each do |method, value|
           c.send "#{method}=", value
