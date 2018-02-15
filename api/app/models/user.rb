@@ -75,6 +75,7 @@ class User
           s.metadata[:house] = house.slug_id
           s.metadata[:check_in] = check_in
           s.metadata[:check_out] = check_out
+          s.save
         end
         params.each do |method, value|
           c.send "#{method}=", value
