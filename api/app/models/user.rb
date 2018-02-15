@@ -70,9 +70,12 @@ class User
       Stripe::Customer.retrieve(stripe_id).tap do |c|
         c.email = email
         c.metadata[:oid] = id.to_s
-        c.metadata[:house] = house.slug_id
-        c.metadata[:check_in] = check_in
-        c.metadata[:check_out] = check_out
+        # this will break if someone move to another hackerhouse
+        Stripe::Subscription.list(customer: stripe_id).each do |s|
+          s.metadata[:house] = house.slug_id
+          s.metadata[:check_in] = c.check_in
+          s.metadata[:check_out] = c.check_out
+        end
         params.each do |method, value|
           c.send "#{method}=", value
         end

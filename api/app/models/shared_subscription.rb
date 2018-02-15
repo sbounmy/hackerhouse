@@ -2,8 +2,9 @@ class SharedSubscription
 
   attr_reader :id
 
-  def initialize house, customer:, trial_end:
+  def initialize house, customer:, trial_end:, cancel_at:
     @trial_end = trial_end
+    @cancel_at = cancel_at
     @customer = customer
     @house = house
   end
@@ -20,11 +21,15 @@ class SharedSubscription
      {
       customer: @customer,
       items: @house.stripe_items,
-      metadata: { account_id: @house.stripe_id },
-      trial_end: @trial_end.to_i
+      metadata: {
+        account_id: @house.stripe_id,
+        house: @house.slug_id,
+        check_in: @trial_end,
+        check_out: @cancel_at
+      },
+      trial_end: @trial_end.to_time.to_i
       # prorate: true
     }.tap do |p|
-      p.merge!(billing_cycle_anchor: @trial_end.at_beginning_of_month.next_month.to_time.to_i) if not beginning_of_month?
     end
   end
 

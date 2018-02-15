@@ -17,27 +17,22 @@ class UsersAPI < Grape::API
         house.stripe do
           @c = Stripe::Customer.create(
             source: declared_params[:token], # obtained from Stripe.js
-            email:  declared_params[:email],
-            metadata: {
-              house: house.slug_id,
-              check_in: declared_params[:check_in],
-              check_out: declared_params[:check_out]
-            }
+            email:  declared_params[:email]
           )
         end
         begin
-          check_in = declared_params[:check_in].to_time
           if house.v2?
             @sub = SharedSubscription.new(house, {
               customer: @c.id,
-              trial_end: check_in }
+              trial_end: declared_params[:check_in],
+              cancel_at: declared_params[:check_out] }
             )
             @sub.save
           else #v1 remove
             house.stripe { @sub = Stripe::Subscription.create(customer: @c.id,
               items: house.stripe_plan_ids.map { |pid| { plan: pid, quantity: 1} },
               metadata: { account_id: house.stripe_id },
-              trial_end: check_in.to_i,
+              trial_end: declared_params[:check_in].to_time.to_i,
               application_fee_percent: house.stripe_application_fee_percent) }
           end
         rescue Exception => e
