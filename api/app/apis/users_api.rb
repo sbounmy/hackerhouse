@@ -45,6 +45,7 @@ class UsersAPI < Grape::API
         u.stripe_subscription_ids.push @sub.id
         u.password = "#{u.email.split('@')[0]}42" # generate default password from email: stephane@hackerhouse.paris -> stephane42
         u.save!
+        u.push!
       end
     end
 
