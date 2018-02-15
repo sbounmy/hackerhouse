@@ -17,7 +17,12 @@ class UsersAPI < Grape::API
         house.stripe do
           @c = Stripe::Customer.create(
             source: declared_params[:token], # obtained from Stripe.js
-            email:  declared_params[:email]
+            email:  declared_params[:email],
+            metadata: {
+              house: house.slug_id,
+              check_in: declared_params[:check_in],
+              check_out: declared_params[:check_out]
+            }
           )
         end
         begin
@@ -28,7 +33,6 @@ class UsersAPI < Grape::API
               trial_end: check_in }
             )
             @sub.save
-            puts @sub.inspect
           else #v1 remove
             house.stripe { @sub = Stripe::Subscription.create(customer: @c.id,
               items: house.stripe_plan_ids.map { |pid| { plan: pid, quantity: 1} },
@@ -45,7 +49,6 @@ class UsersAPI < Grape::API
         u.stripe_subscription_ids.push @sub.id
         u.password = "#{u.email.split('@')[0]}42" # generate default password from email: stephane@hackerhouse.paris -> stephane42
         u.save!
-        u.push!
       end
     end
 
