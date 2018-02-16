@@ -100,6 +100,16 @@ describe UsersAPI do
         expect(customer.subscriptions.first.try(:application_fee_percent)).to eq nil
       end
 
+      it 'creates subscriptions in a middle week' do
+        create_user check_in: '2018-02-19'
+        customer = Stripe::Customer.retrieve('test_cus_3')
+        expect(customer.subscriptions.count).to eq 2
+        expect(customer.subscriptions[0].metadata[:once]).to eq true
+        expect(customer.subscriptions[0].current_period_start).to eq '2018-02-19'
+        expect(customer.subscriptions[0].current_period_end).to eq '2018-03-19'
+        expect(customer.subscriptions[1].metadata[:once]).to eq nil
+      end
+
     end
 
     context 'with invalid params' do
