@@ -114,7 +114,7 @@ feature 'checkout' do
     # no prorate flag on subscription
     App.stripe do
       subs = Stripe::Subscription.list(customer: User.last.stripe_id).data
-      expect(subs[1].metadata[:once]).to eq true
+      expect(subs[1].metadata[:once]).to eq "true"
       expect(subs[0].metadata[:once]).to eq nil
     end
   end
