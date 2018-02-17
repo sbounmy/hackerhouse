@@ -14,7 +14,7 @@
 
   <script type="text/javascript">
     $(document).ready(function() {
-      var options = {        
+      var options = {
         locale: 'fr',
         altFormat: "d/m/Y",
         altInput: true,
@@ -25,7 +25,7 @@
       const check_in = flatpickr('#check_in', $.extend(options, {
         onChange: function(d, n, str) {
           check_out.set("minDate", d[0].fp_incr(<%= @house.min_stay_in_days -%>));
-          
+
           check_out.set("enable", [function(d2) {
             const date = d2.getDate();
             if (d[0].getDate() === date) {
@@ -73,7 +73,7 @@
           <%= render "pricing2", house: @house %>
           <input type='checkbox' id='terms'> <label for="terms">J'ai lu et accepte les <a target="_blank" href="http://man.hackerhouse.paris/articles-a-la-une/les-x-commandements">conditions générales d'utilisation</a></label>
 
-          <button id="customButton" type="submit" class="btn btn-primary btn-lg btn-block" disabled=disabled>J'emménage 🚀</button>
+          <button id="customButton" type="submit" class="btn btn-primary btn-lg btn-block" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Don't panic... 🤖" disabled=disabled>J'emménage 🚀</button>
           <p class='help-block text-center'><small>Tu seras débité à ton emménagement</small></p>
 
         </form>
@@ -101,6 +101,7 @@
         token: function(token) {
           var check_in = $('#check_in').val();
           var check_out = $('#check_out').val();
+          $('#customButton').button('loading');
 
           $.post(
            window.location.origin + '/v1/users.json', {
@@ -113,7 +114,6 @@
               // convert local date to utc
               var hsq_in = createDateAsUTC(document.querySelector("#check_in")._flatpickr.selectedDates[0]).getTime();
               var hsq_out = createDateAsUTC(document.querySelector("#check_out")._flatpickr.selectedDates[0]).getTime();
-
               _hsq.push(['identify', {
                 email: token.email,
                 lifecyclestage: 'customer',
@@ -122,9 +122,11 @@
                 hackerhouse_name: '<%= @house.slug_id -%>'
               }]);
               _hsq.push(['trackPageView']);
+              $('#customButton').button('reset');
               alert('42 x Merci ! Ton paiement a bien été pris en compte, on te voit très bientôt :-). <%= @house.name %>'); })
             .fail(function (error) {
               alert(error.responseText);
+              $('#customButton').button('reset');
           });
           // POST /transactions?stripe_publishable_key=pk_test_w16a4DTyGylp8oAxNPmfXAqX&token=token.id&stripe_cust_id=?
           // You can access the token ID with `token.id`.

@@ -24,8 +24,8 @@ class UsersAPI < Grape::API
           if house.v2?
             @sub = SharedSubscription.new(house, {
               customer: @c.id,
-              trial_end: declared_params[:check_in],
-              cancel_at: declared_params[:check_out] }
+              check_in: declared_params[:check_in],
+              check_out: declared_params[:check_out] }
             )
             @sub.save
           else #v1 remove
