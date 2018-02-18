@@ -21,7 +21,7 @@ class PantryPanel extends Component {
       return new Date(today.getYear(), today.getMonth(), 15).toString()
     }
     else {
-      return new Date(today.getYear(), today.getMonth(), 1).toString()
+      return new Date(today.getYear(), today.getMonth() + 1, 1).toString()
     }
   }
 
