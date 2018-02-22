@@ -1,7 +1,7 @@
 class BalanceMailer < ApplicationMailer
   add_template_helper(GpHelper)
 
-  default from: 'stephane@hackerhouse.paris'
+  default from: 'julie@hackerhouse.paris', cc: 'stephane@hackerhouse.paris'
 
   def pay_email(user, amount)
     @user = user
