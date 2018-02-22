@@ -7,6 +7,6 @@ class BalanceMailer < ApplicationMailer
     @user = user
     @amount = amount
     @users_checkout_soon = user.house.users.active.asc(:check_out)
-    mail(to: @user.email, subject: "#{Date.today} - Contribution Solidaire #{@user.house.slug_id}")
+    mail(to: @user.email, subject: "#{Date.today} - Contribution Solidaire #{@user.house.slug_id}", track_opens: 'true')
   end
 end
