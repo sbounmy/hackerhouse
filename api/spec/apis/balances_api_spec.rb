@@ -63,9 +63,40 @@ describe BalancesAPI do
       expect(ActionMailer::Base.deliveries[2].body).to include  'val', '445 €'
     end
 
+    it 'doesnt freakout if no one have to pay' do
+      @nadia.update_attributes check_out: Date.parse("2017-12-03")
+      expect {
+        post_as :admin, '/v1/balances/hq'
+      }.to change { ActionMailer::Base.deliveries.count }.by(4)
+
+      expect(ActionMailer::Base.deliveries.last.body).to include 'hugo', '0 €'
+      expect(ActionMailer::Base.deliveries[0].body).to include 'nadia', '0 €'
+      expect(ActionMailer::Base.deliveries[1].body).to include  'brian', '0 €'
+      expect(ActionMailer::Base.deliveries[2].body).to include  'val', '0 €'
+
+        App.stripe do
+        [@nadia, @val, @hugo, @brian].each do |u|
+          items = Stripe::InvoiceItem.list(limit: 10, customer: u.stripe_id)
+          expect(items.count).to eq 1
+          expect(items.first.amount).to eq 0
+        end
+      end
+    end
+
+    it 'shows next check outs' do
+      expect {
+        post_as :admin, '/v1/balances/hq'
+      }.to change { ActionMailer::Base.deliveries.count }.by(4)
+      expect(ActionMailer::Base.deliveries.last.body).to include '2017-12-03 : brian', '2017-12-03 : val', '2017-12-03 : hugo'
+    end
+
     it 'charges users who needs to pay through Stripe' do
       post_as :admin, '/v1/balances/hq'
       App.stripe do
+        @items = Stripe::InvoiceItem.list(limit: 10, customer: @nadia.stripe_id)
+        expect(@items.count).to eq 1
+        expect(@items.first.amount).to eq 0
+
         @items = Stripe::InvoiceItem.list(limit: 10, customer: @val.stripe_id)
         expect(@items.count).to eq 1
         expect(@items.first.amount).to eq 445_00

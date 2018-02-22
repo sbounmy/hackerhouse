@@ -2,6 +2,13 @@ Hello <%= @user.firstname %>,
 
 Ce mois-ci ta contribution solidaire est de : <%= cents @amount %>
 
+Les prochains départs sont :
+<ul>
+  <% @users_checkout_soon.each do |u| %>
+    <li><%= u.check_out -%> : <%= u.firstname -%></li>
+  <% end %>
+</ul>
+
 À ta dispo,
 
 PS : si tu as des questions sur le montant de ta contribution solidaire, n'hésite pas à répondre à cet email.
