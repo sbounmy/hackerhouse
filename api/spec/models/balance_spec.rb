@@ -119,8 +119,6 @@ RSpec.describe Balance, type: :model do
       expect(balance.users).to contain_exactly([@val, 834], [@nadia, 834], [@brian, 834])
     end
 
-    it 'is idempotent'
-
     it 'does not freakout if everybody leaves' do
       @nadia.update_attributes check_out: Date.new(2017, 10, 10)
       @brian.update_attributes check_out: Date.new(2017, 10, 10)

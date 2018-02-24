@@ -113,5 +113,11 @@ describe BalancesAPI do
       }.to_not change { ActionMailer::Base.deliveries.count }
     end
 
+    it 'is idempotent' do
+      expect {
+        post_as :admin, '/v1/balances/hq'
+        post_as :admin, '/v1/balances/hq'
+      }.to change { App.stripe { Stripe::InvoiceItem.list(limit: 10, customer: @nadia.stripe_id) }.count }.by(1)
+    end
   end
 end
