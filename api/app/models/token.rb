@@ -17,7 +17,7 @@ class Token
       firstname: response['firstName'],
       lastname: response['lastName'],
       location: response['location']['name'],
-      avatar_url: response['pictureUrls']['values'][0],
+      avatar_url: response['pictureUrl'], # response['pictureUrls']['values'][0] not working
       bio_title: response['headline'],
       bio_url: response['publicProfileUrl']
     }
