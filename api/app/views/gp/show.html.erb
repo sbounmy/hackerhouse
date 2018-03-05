@@ -85,9 +85,8 @@
             </div>
           </div>
           <%= render "pricing", house: @house %>
-          <input type='checkbox' id='terms'> <label for="terms">J'ai lu et accepte les <a target="_blank" href="https://man.hackerhouse.paris/hc/fr/articles/115010135147">conditions générales d'utilisation</a></label>
 
-          <button id="customButton" type="submit" class="btn btn-primary btn-lg btn-block" disabled=disabled>J'emménage 🚀</button>
+          <button id="customButton" type="submit" class="btn btn-primary btn-lg btn-block">J'emménage 🚀</button>
           <p class='help-block text-center'><small>Tu seras débité à ton emménagement</small></p>
 
         </form>
@@ -100,12 +99,6 @@
       function createDateAsUTC(date) {
         return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()));
       }
-
-      $('#terms').on('change', function(event) {
-        var btn = $(this);
-        // console.log(btn.not(':checked'))
-        $('#customButton').prop('disabled', !btn.is(':checked'));
-      });
 
       var handler = StripeCheckout.configure({
         key: '<%= @house.stripe_publishable_key %>',

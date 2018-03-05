@@ -52,7 +52,6 @@ feature 'checkout' do
     select_date(2.months.from_now, from: '#check_in')
     select_date(4.months.from_now, from: '#check_out')
 
-    check 'terms'
     click_on "customButton"
     expect {
       within_frame find('.stripe_checkout_app') do
