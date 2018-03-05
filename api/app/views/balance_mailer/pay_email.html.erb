@@ -1,14 +1,16 @@
-Hello <%= @user.firstname %>,
+<p>Hello <%= @user.firstname %>,</p>
 
-Ce mois-ci ta contribution solidaire est de : <%= cents @amount %>
+<p>Ce mois-ci ta contribution solidaire est de : <%= cents @amount %></p>
 
-Les prochains départs sont :
-<ul>
-  <% @users_checkout_soon.each do |u| %>
-    <li><%= u.check_out -%> : <%= u.firstname -%></li>
-  <% end %>
-</ul>
+<p>Les prochains départs sont :
+  <ul>
+    <% @users_checkout_soon.each do |u| %>
+      <li><%= u.check_out -%> : <%= u.firstname -%></li>
+    <% end %>
+  </ul>
+</p>
 
-À ta dispo,
+<p>À ta dispo,</p>
 
-PS : si tu as des questions sur le montant de ta contribution solidaire, n'hésite pas à répondre à cet email.
+<p>PS : si tu as des questions sur le montant de ta contribution solidaire, n'hésite pas à répondre à cet email.
+</p>
