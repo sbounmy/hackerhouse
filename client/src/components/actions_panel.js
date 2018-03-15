@@ -50,7 +50,6 @@ class ActionsPanel extends Component {
           <div className="card-body">
             <h6 className="mb-3">Séjour 😴</h6>
             <ReactTypeformEmbed url={'https://hackerhouseparis.typeform.com/to/qmztfk'}
-                                hideFooter="true"
                                 hideHeader="true"
                                 style={{height: "400px", width: "100%"}} />
             <div data-grid="images" data-target-height="150">
