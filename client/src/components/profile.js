@@ -8,7 +8,7 @@ class Profile extends Component {
       house_slug_id = 'default';
 
     return {
-      'background-image': `url(img/${house_slug_id}.jpg)`
+      'backgroundImage': `url(img/${house_slug_id}.jpg)`
     }
   }
 

@@ -1,9 +1,9 @@
 class BalancePolicy < ApplicationPolicy
   def show?
-    user.admin?
+    user.admin? || user.house_id == record.house.id
   end
 
   def update?
-    show?
+    user.admin?
   end
 end

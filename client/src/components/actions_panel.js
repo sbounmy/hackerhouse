@@ -3,10 +3,18 @@ import { connect } from 'react-redux';
 import { IntercomAPI } from 'react-intercom';
 import TrelloBoard from './trello_board';
 import TypeForm from './typeform';
+import { fetchBalance } from '../actions';
+import { ReactTypeformEmbed } from 'react-typeform-embed';
 
 import _ from 'lodash';
 
 class ActionsPanel extends Component {
+  componentDidMount() {
+    if (this.props.user && this.props.user.house_slug_id) {
+      this.props.fetchBalance(this.props.user.house_slug_id, this.props.user.id);
+    }
+  }
+
   renderAction(actions) {
     return _.map(actions, action => {
       return (
@@ -16,22 +24,42 @@ class ActionsPanel extends Component {
   }
 
   renderStayActions() {
-    const content = (this.props.user && this.props.user.check_out) ? `Tu continues l'aventure jusqu'au ${this.props.user.check_out}` : 'Viens vivre avec nous !'
+    const staying = (this.props.user && this.props.user.house_slug_id && this.props.user.check_out)
 
-    return (
-       <div className="card mb-4 d-lg-block">
-        <div className="card-body">
-          <h6 className="mb-3">Séjour 😴</h6>
-          <div data-grid="images" data-target-height="150">
-            {/*<img className="media-object" data-width="640" data-height="640" data-action="zoom" src="assets/img/instagram_2.jpg" styles="width: 180px; height: 169px; margin-bottom: 10px; margin-right: 0px; display: inline-block; vertical-align: bottom;"/>*/}
+    if (staying) {
+      return (
+         <div className="card mb-4 d-lg-block">
+          <div className="card-body">
+            <h6 className="mb-3">Séjour 😴</h6>
+            <div data-grid="images" data-target-height="150">
+              {/*<img className="media-object" data-width="640" data-height="640" data-action="zoom" src="assets/img/instagram_2.jpg" styles="width: 180px; height: 169px; margin-bottom: 10px; margin-right: 0px; display: inline-block; vertical-align: bottom;"/>*/}
+            </div>
+            <p>{`Tu continues l'aventure jusqu'au ${this.props.user.check_out}`}</p>
+            <p>Ma contribution solidaire du mois : {this.props.balance}€</p>
+            {this.renderAction([{ name: 'Départ anticipé', message: 'Hello la HackerHouse ✈️\nJe souhaite partir le :' },
+                                { name: 'Prolonger mon séjour', message: 'Hello la HackerHouse 🤘\nJe souhaite prolonger mon séjour jusqu\'au ' }
+                               ])}
           </div>
-          <p>{content}</p>
-          {this.renderAction([{ name: 'Départ anticipé', message: 'Hello la HackerHouse ✈️\nJe souhaite partir le :' },
-                                    { name: 'Prolonger mon séjour', message: 'Hello la HackerHouse 🤘\nJe souhaite prolonger mon séjour jusqu\'au ' }
-                                   ])}
         </div>
-      </div>
-    );
+      )
+    }
+    else {
+      return (
+        // hack for height as form
+         <div className="card mb-4 d-lg-block" style={{height: "402px"}}>
+          <div className="card-body">
+            <h6 className="mb-3">Séjour 😴</h6>
+            <ReactTypeformEmbed url={'https://hackerhouseparis.typeform.com/to/qmztfk'}
+                                hideFooter="true"
+                                hideHeader="true"
+                                style={{height: "400px", width: "100%"}} />
+            <div data-grid="images" data-target-height="150">
+            </div>
+            <p>Viens vivre avec nous !</p>
+          </div>
+        </div>
+      );
+    }
   }
 
   renderFoodActions() {
@@ -72,15 +100,15 @@ class ActionsPanel extends Component {
 
     return (
       <div>
-      {this.renderEventActions()}
       {this.renderStayActions()}
+      {this.renderEventActions()}
       </div>
     );
   }
 }
 
-function mapStateToProps({session: {user}}) {
-  return { user }
+function mapStateToProps(state) {
+  return { user: state.session.user, balance: state.balance.amount }
 }
 
-export default connect(mapStateToProps, { })(ActionsPanel);
+export default connect(mapStateToProps, { fetchBalance })(ActionsPanel);

@@ -1,6 +1,8 @@
 import axios from 'axios';
 import cookie from 'react-cookie';
-import { HOUSE_FETCHED, SESSION_CREATED, SESSION_FAILED, SESSION_DESTROYED, USER_CREATED } from './types';
+import _ from 'lodash';
+
+import { BALANCE_FETCHED, HOUSE_FETCHED, SESSION_CREATED, SESSION_FAILED, SESSION_DESTROYED, USER_CREATED } from './types';
 
 const ROOT_URL = `${process.env.REACT_APP_API}/v1`;
 
@@ -63,6 +65,26 @@ export function fetchHouse(id) {
       const res = await axios.get(url, { headers: { 'Authorization': localStorage.getItem('token') } })
       .then(({data}) => {
         dispatch({type: HOUSE_FETCHED, payload: data})
+      });
+  };
+}
+
+export function fetchBalance(house_id, user_id) {
+  const url = `${ROOT_URL}/balances/${house_id}`;
+  console.log(url);
+  return async (dispatch) => {
+      const res = await axios.get(url, { headers: { 'Authorization': localStorage.getItem('token') } })
+      .then(({data}) => {
+        // Map balance array to user ids
+        // Transforms
+        // [ [ {_id: "596cbc5af1805b000401e3ea", active: true, admin: false, avatar_url: "https://media.licdn.com/mpr/mprx/0_xrDWFXkqOLidCle…-PE8mdpVUy6r0kqw-Po8mzPSUyw5XZNOHGi8JkVS0uE7yPdDy", bio_title: "Assistant chef de campagne Digital et CRM chez Natixis  ;          ↵Freelance Web-Marketing/Growth", …},
+        // 41], ...
+        // ]
+        // To :
+        // {596cbc5af1805b000401e3ea: {_id: "596cbc5af1805b000401e3ea", active: true, admin: false, avatar_url: "https://media.licdn.com/mpr/mprx/0_xrDWFXkqOLidCle…-PE8mdpVUy6r0kqw-Po8mzPSUyw5XZNOHGi8JkVS0uE7yPdDy", bio_title: "Assistant chef de campagne Digital et CRM chez Natixis  ;          ↵Freelance Web-Marketing/Growth", …},
+        // 41] }
+        const balances = _.mapKeys(data.users, function(value, key){ return value[0]._id });
+        dispatch({type: BALANCE_FETCHED, payload: balances[user_id][1]})
       });
   };
 }

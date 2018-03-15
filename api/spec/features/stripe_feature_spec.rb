@@ -85,6 +85,8 @@ feature 'checkout' do
       expect(alert.text).to match /42 x Merci/
       alert.accept
     }.to change { User.count }.by(1)
+    user = User.last
+    expect([user.check_in, user.check_out]).to eq [2.months.from_now.beginning_of_month, 4.months.from_now.end_of_month]
     # no prorate flag on subscription
     # App.stripe do
     #   expect(Stripe::Subscription.retrieve(User.last.stripe_subscription_ids[0]).prorate).to eq false
