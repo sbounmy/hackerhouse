@@ -16,7 +16,7 @@ import NavBar from './components/navbar';
 
 import reducers from './reducers';
 
-import registerServiceWorker from './registerServiceWorker';
+import registerServiceWorker, { unregister } from './registerServiceWorker';
 
 import { SESSION_CREATED } from './actions/types';
 
@@ -26,6 +26,9 @@ import './toolkit.min.css';
 const createStoreWithMiddleware = applyMiddleware(ReduxPromise, ReduxThunk)(createStore);
 const store = createStoreWithMiddleware(reducers);
 const token = localStorage.getItem('token');
+
+// https://github.com/facebook/create-react-app/issues/1910
+unregister() ;
 
 if(token) {
   store.dispatch({ type: SESSION_CREATED, payload:  JSON.parse(localStorage.getItem('user')) });
