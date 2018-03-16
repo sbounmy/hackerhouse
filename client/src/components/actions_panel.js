@@ -9,6 +9,15 @@ import { ReactTypeformEmbed } from 'react-typeform-embed';
 import _ from 'lodash';
 
 class ActionsPanel extends Component {
+  constructor(props) {
+    super(props);
+    this.openForm = this.openForm.bind(this);
+  }
+
+  openForm() {
+    this.typeformEmbed.typeform.open();
+  }
+
   componentDidMount() {
     if (this.props.user && this.props.user.house_slug_id) {
       this.props.fetchBalance(this.props.user.house_slug_id, this.props.user.id);
@@ -46,15 +55,21 @@ class ActionsPanel extends Component {
     else {
       return (
         // hack for height as form
-         <div className="card mb-4 d-lg-block" style={{height: "402px"}}>
+         <div className="card mb-4 d-lg-block">
           <div className="card-body">
             <h6 className="mb-3">Séjour 😴</h6>
-            <ReactTypeformEmbed url={'https://hackerhouseparis.typeform.com/to/qmztfk'}
-                                hideHeader="true"
-                                style={{height: "400px", width: "100%"}} />
+            <div class='apply-popup'>
+              <ReactTypeformEmbed url={'https://hackerhouseparis.typeform.com/to/qmztfk'}
+                    hideHeader={true}
+                    popup={true}
+                    mode="drawer_right"
+                    autoOpen={true}
+                    ref={(tf => this.typeformEmbed = tf)}/>
+            </div>
             <div data-grid="images" data-target-height="150">
             </div>
             <p>Viens vivre avec nous !</p>
+            <button className="button btn btn-primary" onClick={this.openForm} style={{cursor: 'pointer'}}>Postuler maintenant !</button>
           </div>
         </div>
       );

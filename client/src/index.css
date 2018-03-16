@@ -11,3 +11,8 @@ body {
 .btn:hover {
   cursor: pointer;
 }
+
+/* so popup dont overflow (absolute) */
+.apply-popup {
+  position: relative; 
+}
