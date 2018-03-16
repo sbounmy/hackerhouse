@@ -14,6 +14,13 @@ class ActionsPanel extends Component {
     this.openForm = this.openForm.bind(this);
   }
 
+  // return false when already applied
+  // return true otherwise
+  // should have a boolean flag on API
+  neverApplied() {
+    return true;
+  }
+
   openForm() {
     this.typeformEmbed.typeform.open();
   }
@@ -59,12 +66,13 @@ class ActionsPanel extends Component {
           <div className="card-body">
             <h6 className="mb-3">Séjour 😴</h6>
             <div class='apply-popup'>
-              <ReactTypeformEmbed url={'https://hackerhouseparis.typeform.com/to/qmztfk'}
-                    hideHeader={true}
-                    popup={true}
-                    mode="drawer_right"
-                    autoOpen={true}
-                    ref={(tf => this.typeformEmbed = tf)}/>
+              <ReactTypeformEmbed
+                url={'https://hackerhouseparis.typeform.com/to/qmztfk'}
+                hideHeader={true}
+                popup={true}
+                mode="drawer_right"
+                autoOpen={this.neverApplied}
+                ref={(tf => this.typeformEmbed = tf)}/>
             </div>
             <div data-grid="images" data-target-height="150">
             </div>
