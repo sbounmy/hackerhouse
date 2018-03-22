@@ -8,10 +8,14 @@ import ActionsPanel from './actions_panel';
 import LinksPanel from './links_panel';
 import PantryPanel from './pantry_panel';
 import Intercom, { IntercomAPI } from 'react-intercom';
-
+import _ from 'lodash';
 
 class Dashboard extends Component {
   render() {
+    if (_.isNil(this.props.user)) {
+      return ''
+    }
+
     const user = {
       user_id: this.props.user.id,
       email: this.props.user.email,

@@ -30,10 +30,6 @@ const token = localStorage.getItem('token');
 // https://github.com/facebook/create-react-app/issues/1910
 unregister() ;
 
-if(token) {
-  store.dispatch({ type: SESSION_CREATED, payload:  JSON.parse(localStorage.getItem('user')) });
-}
-
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>

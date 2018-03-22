@@ -7,8 +7,18 @@ import { Field, reduxForm } from 'redux-form';
 export const LINKEDIN_REDIRECT_URI = process.env.REACT_APP_LINKEDIN_REDIRECT_URI;
 
 class SessionsNew extends Component {
+  componentDidMount() {
+    const { history } = this.props;
+
+    // Just basic check if token exist in localstorage
+    // dashboard will check if token is valid
+    if (localStorage.getItem('token')) {
+      this.props.history.push('/dashboard');
+    }
+  }
+
   onSubmit(values) {
-    this.props.createSession(values, this.props.history);
+    // this.props.createSession(values, this.props.history);
   }
 
   renderField(field) {

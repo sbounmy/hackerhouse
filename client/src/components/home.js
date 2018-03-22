@@ -8,13 +8,13 @@ import { destroySession } from '../actions';
 class Home extends Component {
 
   componentDidMount() {
-    if (!this.props.authenticated) {
+    if (!this.props.user) {
       this.props.history.push('/sessions/new')
     }
   }
 
   renderNavLinks() {
-    if (this.props.authenticated) {
+    if (this.props.user) {
       return (
         <div>
           <h3>Welcome {this.props.user.firstname},</h3>
@@ -41,8 +41,8 @@ class Home extends Component {
   }
 }
 
-function mapStateToProps({session}) {
-  return { authenticated: session.authenticated, user: session.user }
+function mapStateToProps({session: { user }}) {
+  return { user }
 }
 
 export default connect(mapStateToProps, { destroySession })(Home);

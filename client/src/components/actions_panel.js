@@ -119,7 +119,6 @@ class ActionsPanel extends Component {
   }
 
   render() {
-
     return (
       <div>
       {this.renderStayActions()}

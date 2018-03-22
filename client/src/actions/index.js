@@ -2,11 +2,14 @@ import axios from 'axios';
 import cookie from 'react-cookie';
 import _ from 'lodash';
 
-import { BALANCE_FETCHED, HOUSE_FETCHED, SESSION_CREATED, SESSION_FAILED, SESSION_DESTROYED, USER_CREATED } from './types';
+import { BALANCE_FETCHED, HOUSE_FETCHED,
+  SESSION_CREATED, SESSION_FAILED, SESSION_DESTROYED,
+  SESSION_FROM_TOKEN, SESSION_FROM_TOKEN_SUCCESS, SESSION_FROM_TOKEN_FAILURE,
+  USER_CREATED } from './types';
 
 const ROOT_URL = `${process.env.REACT_APP_API}/v1`;
 
-export function createSession({ email, password, linkedin_access_token }, history) {
+export function createSession({ email, password, linkedin_access_token }) {
   const url = `${ROOT_URL}/sessions`;
 
   return async (dispatch) => {
@@ -15,8 +18,6 @@ export function createSession({ email, password, linkedin_access_token }, histor
 
       dispatch({ type: SESSION_CREATED, payload: res.data.user });
       localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user',  JSON.stringify(res.data.user));
-      history.push('/dashboard');
     } catch(error) {
       dispatch({
         type: SESSION_FAILED,
@@ -28,33 +29,30 @@ export function createSession({ email, password, linkedin_access_token }, histor
 
 export function destroySession() {
   localStorage.clear();
-  return {
-    type: SESSION_DESTROYED
+  return async (dispatch) => {
+    dispatch({type: SESSION_DESTROYED});
   };
 }
 
 export function createUser(data) {
   const url = `${process.env.REACT_APP_API}/v2/users`;
-  return (dispatch) => {
-    return axios.post(url, data).then((res) => {
-      dispatch({ type: USER_CREATED, payload: res.data });
-    })
+  return async (dispatch) => {
+    const response = await axios.post(url, data)
+    dispatch({ type: USER_CREATED, payload: response.data });
+    return response;
   };
 }
 
-export function createLinkedInSession({code, redirect_uri}, history) {
+export function createLinkedInSession({code, redirect_uri}) {
   const url = `${ROOT_URL}/tokens/linkedin`;
 
   return async (dispatch) => {
     // try {
-      const res = await axios.get(url, { params: { code, redirect_uri } })
-      .then(({data}) => {
-        data.linkedin_access_token = data.token
-        data.password = "blabla1234"
-        dispatch(createUser(data)).then(() => {
-          dispatch(createSession({ email: data.email, linkedin_access_token: data.token }, history));
-        });
-      });
+    var response = await axios.get(url, { params: { code, redirect_uri } })
+    response.data.linkedin_access_token = response.data.token
+    await dispatch(createUser(response.data))
+    const res = await dispatch(createSession({ email: response.data.email, password: null, linkedin_access_token: response.data.token }));
+    return res;
   };
 }
 
@@ -87,4 +85,28 @@ export function fetchBalance(house_id, user_id) {
         dispatch({type: BALANCE_FETCHED, payload: balances[user_id][1]})
       });
   };
+}
+
+export function sessionFromToken(tokenFromStorage) {
+  const url = `${ROOT_URL}/sessions?token=${tokenFromStorage}`
+  //check if the token is still valid, if so, get me from the server
+  return async (dispatch) => {
+    const response = await axios.get(url,
+    { headers: { 'Authorization': `Bearer ${tokenFromStorage}` } });
+
+    dispatch({type: SESSION_FROM_TOKEN, payload: response})
+    return response
+  }
+}
+
+export function sessionFromTokenSuccess(currentUser) {
+  return async (dispatch) => {
+    dispatch({type: SESSION_FROM_TOKEN_SUCCESS, payload: currentUser})
+  }
+}
+
+export function sessionFromTokenFailure(error) {
+  return async (dispatch) => {
+    dispatch({type: SESSION_FROM_TOKEN_FAILURE, payload: error})
+  }
 }

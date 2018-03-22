@@ -5,13 +5,13 @@ import PropTypes from 'prop-types';
 export default function (ComposedComponent) {
   class NoSession extends Component {
     componentWillMount() {
-      if (this.props.authenticated) {
+      if (this.props.user) {
         this.props.history.push('/dashboard');
       }
     }
 
     componentWillUpdate(nextProps) {
-      if (nextProps.authenticated) {
+      if (nextProps.user) {
         this.props.history.push('/dashboard');
       }
     }
@@ -25,8 +25,8 @@ export default function (ComposedComponent) {
     }
   }
 
-  function mapStateToProps({session: { authenticated }}) {
-    return { authenticated };
+  function mapStateToProps({session: { user }}) {
+    return { user };
   }
 
   return connect(mapStateToProps)(NoSession);

@@ -6,12 +6,8 @@ import { Field, reduxForm } from 'redux-form';
 import { destroySession } from '../actions';
 
 class NavBar extends Component {
-  logoutOnClick() {
-    this.props.destroySession(this.props.history);
-  }
-
   renderNavLinks() {
-    if (this.props.authenticated) {
+    if (this.props.user) {
       return (
         <div>
           <h3>Welcome {this.props.user.firstname},</h3>
@@ -26,7 +22,7 @@ class NavBar extends Component {
     }
   }
   render() {
-    if (!this.props.authenticated) {
+    if (!this.props.user) {
       return ""
     }
     return (
@@ -54,8 +50,8 @@ class NavBar extends Component {
           <li className="nav-item">
             <a
               className='nav-link'
-              href="#"
-              onClick={this.logoutOnClick.bind(this)}>
+              href="/sessions/new"
+              onClick={this.props.destroySession}>
               🔜 Logout
             </a>
           </li>
@@ -98,8 +94,8 @@ class NavBar extends Component {
   }
 }
 
-function mapStateToProps({session: { authenticated, user }}) {
-  return { authenticated, user }
+function mapStateToProps({session: { user }}) {
+  return { user }
 }
 
 export default connect(mapStateToProps, { destroySession })(NavBar);

@@ -7,7 +7,7 @@ describe UsersV2API do
 
     def create_user(params={})
       post "/v2/users", {
-        email: 'stephane@hackerhouse.paris', password: "blabla1234",
+        email: 'stephane@hackerhouse.paris',
         firstname: 'Stephane',
         lastname: 'Bounmy',
         bio_title: 'Software Engineer',
@@ -63,6 +63,17 @@ describe UsersV2API do
         expect(json_response.keys).to eq ["id", "firstname", "lastname", "avatar_url", "bio_title", "bio_url", "check_in", "check_out", "active", "admin", "house_slug_id"]
       end
 
+      it 'generates a password by default' do
+        create_user email: "stephanebnmy@gmail.com"
+        user = User.last
+        expect(user.authenticate('stephanebnmy42')).to eq user
+      end
+
+      it 'can force a password' do
+        create_user password: "naruto42"
+        user = User.last
+        expect(user.authenticate('naruto42')).to eq user
+      end
     end
 
     context 'with invalid params' do
