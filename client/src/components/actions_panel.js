@@ -65,13 +65,13 @@ class ActionsPanel extends Component {
          <div className="card mb-4 d-lg-block">
           <div className="card-body">
             <h6 className="mb-3">Séjour 😴</h6>
-            <div class='apply-popup'>
+            <div className='apply-popup'>
               <ReactTypeformEmbed
                 url={'https://hackerhouseparis.typeform.com/to/qmztfk'}
                 hideHeader={true}
                 popup={true}
                 mode="drawer_right"
-                autoOpen={this.neverApplied}
+                autoOpen={this.neverApplied()}
                 ref={(tf => this.typeformEmbed = tf)}/>
             </div>
             <div data-grid="images" data-target-height="150">

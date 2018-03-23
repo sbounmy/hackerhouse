@@ -9,7 +9,7 @@ class SessionsProvider extends Component {
     const { history } = this.props;
 
     if (this.props.user) {
-      this.props.history.push('/dashboard');
+      history.push('/dashboard');
     }
     else {
       const { code } = qs.parse(this.props.location.search);

@@ -10,6 +10,10 @@ export default function (ComposedComponent) {
     async loadUserFromToken() {
       let token = localStorage.getItem('token');
 
+      // if user exist we dont need to load token
+      if (!_.isNil(this.props.user)) {
+        return true;
+      }
       if(_.isEmpty(token)) {//if there is no token, dont bother
         return this.props.destroySession();
       }
