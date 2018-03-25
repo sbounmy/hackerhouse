@@ -6,4 +6,5 @@ export const SESSION_FROM_TOKEN = 'session_from_token';
 export const SESSION_FROM_TOKEN_SUCCESS = 'session_from_token_success';
 export const SESSION_FROM_TOKEN_FAILURE = 'session_from_token_failure';
 export const USER_CREATED = 'user_created';
+export const USER_CREATED_FAILURE = 'user_created_failure';
 export const BALANCE_FETCHED = 'balance_fetched';

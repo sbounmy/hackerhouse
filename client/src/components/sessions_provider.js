@@ -17,14 +17,17 @@ class SessionsProvider extends Component {
         const session = await this.props.createLinkedInSession({code, redirect_uri: LINKEDIN_REDIRECT_URI})
         history.push('/dashboard');
         // do something with response
-      } catch(error) {
-        alert('error', error);
+      } catch(e) {
       }
     }
   }
 
   render() {
     const { code } = qs.parse(this.props.location.search)
+    if (this.props.error) {
+      alert("💥 Oups ! Quelquechose ne va pas... Ton LinkedIn a bien une photo ?")
+    }
+
     return (
       <div className='text-center'>
         <h3>Loading....</h3>
@@ -34,8 +37,8 @@ class SessionsProvider extends Component {
   }
 }
 
-function mapStateToProps({ session: { user } }) {
-  return { user };
+function mapStateToProps(state) {
+  return { user: state.session.user, error: state.user.error };
 }
 
 export default connect(mapStateToProps, { createLinkedInSession })(SessionsProvider);

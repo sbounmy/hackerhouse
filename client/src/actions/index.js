@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { BALANCE_FETCHED, HOUSE_FETCHED,
   SESSION_CREATED, SESSION_FAILED, SESSION_DESTROYED,
   SESSION_FROM_TOKEN, SESSION_FROM_TOKEN_SUCCESS, SESSION_FROM_TOKEN_FAILURE,
-  USER_CREATED } from './types';
+  USER_CREATED, USER_CREATED_FAILURE} from './types';
 
 const ROOT_URL = `${process.env.REACT_APP_API}/v1`;
 
@@ -37,9 +37,14 @@ export function destroySession() {
 export function createUser(data) {
   const url = `${process.env.REACT_APP_API}/v2/users`;
   return async (dispatch) => {
-    const response = await axios.post(url, data)
-    dispatch({ type: USER_CREATED, payload: response.data });
-    return response;
+    try {
+      const response = await axios.post(url, data)
+      dispatch({ type: USER_CREATED, payload: response.data });
+      return response;
+    } catch (error) {
+      dispatch({ type: USER_CREATED_FAILURE, payload: error.response.data });
+      return error
+    }
   };
 }
 
@@ -47,12 +52,15 @@ export function createLinkedInSession({code, redirect_uri}) {
   const url = `${ROOT_URL}/tokens/linkedin`;
 
   return async (dispatch) => {
-    // try {
     var response = await axios.get(url, { params: { code, redirect_uri } })
     response.data.linkedin_access_token = response.data.token
-    await dispatch(createUser(response.data))
-    const res = await dispatch(createSession({ email: response.data.email, password: null, linkedin_access_token: response.data.token }));
-    return res;
+    try {
+      const user = await dispatch(createUser(response.data))
+      const res = await dispatch(createSession({ email: response.data.email, password: null, linkedin_access_token: response.data.token }));
+      return user;
+    } catch(e) {
+      // throw error
+    }
   };
 }
 
@@ -91,22 +99,16 @@ export function sessionFromToken(tokenFromStorage) {
   const url = `${ROOT_URL}/sessions?token=${tokenFromStorage}`
   //check if the token is still valid, if so, get me from the server
   return async (dispatch) => {
-    const response = await axios.get(url,
-    { headers: { 'Authorization': `Bearer ${tokenFromStorage}` } });
-
-    dispatch({type: SESSION_FROM_TOKEN, payload: response})
-    return response
-  }
-}
-
-export function sessionFromTokenSuccess(currentUser) {
-  return async (dispatch) => {
-    dispatch({type: SESSION_FROM_TOKEN_SUCCESS, payload: currentUser})
-  }
-}
-
-export function sessionFromTokenFailure(error) {
-  return async (dispatch) => {
-    dispatch({type: SESSION_FROM_TOKEN_FAILURE, payload: error})
+    try {
+      dispatch({type: SESSION_FROM_TOKEN, payload: response})
+      const response = await axios.get(url,
+      { headers: { 'Authorization': `Bearer ${tokenFromStorage}` } });
+      dispatch({type: SESSION_FROM_TOKEN_SUCCESS, payload: response.data})
+      return response
+    }
+    catch(error) {
+      dispatch({type: SESSION_FROM_TOKEN_FAILURE, payload: error.response.data})
+      return error.response.data
+    }
   }
 }
