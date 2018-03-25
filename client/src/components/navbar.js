@@ -47,14 +47,6 @@ class NavBar extends Component {
           <li className="nav-item">
             <a className="nav-link" data-toggle="modal" href="#msgModal">Messages</a>
           </li>
-          <li className="nav-item">
-            <a
-              className='nav-link'
-              href="/sessions/new"
-              onClick={this.props.destroySession}>
-              🔜 Logout
-            </a>
-          </li>
 
           <li className="nav-item d-md-none">
             <a className="nav-link" href="notifications/index.html">Notifications</a>
@@ -78,9 +70,13 @@ class NavBar extends Component {
             </a>
           </li>
           <li className="nav-item ml-2">
-            <button className="btn btn-default navbar-btn navbar-btn-avatar" data-toggle="popover" data-original-title="" title="">
-              <img className="rounded-circle" src={this.props.user.avatar_url}/>
-            </button>
+            <a
+              title= "@+ sous le Bus!"
+              className='nav-link'
+              href="/sessions/new"
+              onClick={this.props.destroySession}>
+              <span class="icon icon-log-out"></span>
+            </a>
           </li>
         </ul>
 
