@@ -103,7 +103,7 @@ export function sessionFromToken(tokenFromStorage) {
       dispatch({type: SESSION_FROM_TOKEN, payload: response})
       const response = await axios.get(url,
       { headers: { 'Authorization': `Bearer ${tokenFromStorage}` } });
-      dispatch({type: SESSION_FROM_TOKEN_SUCCESS, payload: response.data})
+      dispatch({type: SESSION_FROM_TOKEN_SUCCESS, payload: response.data.user})
       return response
     }
     catch(error) {
