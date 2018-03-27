@@ -247,5 +247,27 @@ describe UsersAPI do
       expect(json_response[0]['lastname']).to eq 'Amicel'
     end
 
+    it 'can filter upcoming' do
+      user.update_attributes check_in: 2.months.from_now, check_out: 5.month.from_now
+      get "/v1/users", q: { upcoming: 1 }
+      expect(response.status).to eq 200
+
+      expect(json_response).to have(1).items
+      expect(json_response[0]['firstname']).to eq 'Paul'
+      expect(json_response[0]['lastname']).to eq 'Amicel'
+    end
+
+    it 'can filter active_or_upcoming' do
+      user.update_attributes check_in: 2.months.from_now, check_out: 5.month.from_now
+      ghost = create(:user, firstname: 'Brian', lastname: 'Ghost',  check_in: Date.yesterday, check_out: 2.months.from_now)
+      get "/v1/users", q: { active_or_upcoming: 1 }
+
+      expect(response.status).to eq 200
+      expect(json_response).to have(2).items
+      expect(json_response[0]['firstname']).to eq 'Paul'
+      expect(json_response[0]['lastname']).to eq 'Amicel'
+      expect(json_response[1]['firstname']).to eq 'Brian'
+      expect(json_response[1]['lastname']).to eq 'Ghost'
+    end
   end
 end

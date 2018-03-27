@@ -40,9 +40,17 @@ class User
     value.to_s == 'true' ? where(:check_out.gt => Date.today) : where(:check_out.lt => Date.today)
   }
   # hack val=1 to preserve client behavior. it sends a param by default
+  scope :upcoming, -> (value=true) {
+    value.to_s == 'true' ? where(:check_in.gte => Date.today) : all
+  }
+
+  scope :active_or_upcoming, -> {
+    today = Date.today
+    any_of({ :check_in.gte => today }, { :check_out.gte => today })
+  }
 
   def self.queryable_scopes
-    [:active]
+    [:active, :upcoming, :active_or_upcoming]
   end
 
   # Validations
