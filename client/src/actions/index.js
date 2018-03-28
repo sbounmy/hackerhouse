@@ -103,7 +103,7 @@ export function fetchActiveOrUpcomingUsers(house_id) {
       .then(({data}) => {
         const users = _.sortBy(data, user => {
           const active = new Date(user.check_in) < _.now()
-          user.action = active ? 'Départ ✈️' : 'Arrivée ✅';
+          user.action = `check_${active ? 'out' : 'in'}`
           user.action_date = active ? user.check_out : user.check_in
           return new Date(user.action_date);
         });

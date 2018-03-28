@@ -12,17 +12,25 @@ class BookingsPanel extends Component {
     }
   }
 
+  badge(action) {
+    if (action == 'check_out') {
+      return <span className='badge badge-warning text-right'>Départ ✈️</span>
+    } else {
+      return <span className='badge badge-success text-right'>Arrivée ✅</span>
+    }
+  }
+
   renderUsers() {
     return _.map(this.props.active_or_upcoming_users, (user) => {
       return (
         <li className='border rounded my-3 px-3 py-2' key={user.action_date}>
-          <div className='d-flex flex-row justify-content-between'>
+          <div className='d-flex flex-row justify-content-between align-items-start'>
             <h5 className="d-block mt-0 mb-1">
             <Moment locale="fr" format='dddd D MMMM'>
                   {user.action_date}
             </Moment>
             </h5>
-            <span class='text-right'>{user.action}</span>
+            {this.badge(user.action)}
           </div>
           <div className='d-flex flex-row justify-content-between'>
             <div className='text-truncate'>
