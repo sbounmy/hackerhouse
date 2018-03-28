@@ -25,7 +25,7 @@ class BookingsPanel extends Component {
             <span class='text-right'>{user.action}</span>
           </div>
           <div className='d-flex flex-row justify-content-between'>
-            <div>
+            <div className='text-truncate'>
               <strong>{user.firstname} {user.lastname}</strong><br/>
               <i>{user.bio_title}</i>
             </div>
