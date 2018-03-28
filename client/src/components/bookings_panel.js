@@ -25,11 +25,10 @@ class BookingsPanel extends Component {
             <span class='text-right'>{user.action}</span>
           </div>
           <div className='d-flex flex-row justify-content-between'>
-            <div>            <p>
+            <div>
               <strong>{user.firstname} {user.lastname}</strong><br/>
-              <i>{user.bio_title}</i><br/>
-            </p>
-</div>
+              <i>{user.bio_title}</i>
+            </div>
             <div><img className="ml-2 rounded-circle" src={user.avatar_url} style={{'max-width': '45px'}}/></div>
           </div>
         </li>
