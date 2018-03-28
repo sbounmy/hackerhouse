@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { BALANCE_FETCHED, HOUSE_FETCHED,
   SESSION_CREATED, SESSION_FAILED, SESSION_DESTROYED,
   SESSION_FROM_TOKEN, SESSION_FROM_TOKEN_SUCCESS, SESSION_FROM_TOKEN_FAILURE,
-  USER_CREATED, USER_CREATED_FAILURE} from './types';
+  USER_CREATED, USER_CREATED_FAILURE, ACTIVE_OR_UPCOMING_USERS_FETCHED} from './types';
 
 const ROOT_URL = `${process.env.REACT_APP_API}/v1`;
 
@@ -95,6 +95,23 @@ export function fetchBalance(house_id, user_id) {
   };
 }
 
+export function fetchActiveOrUpcomingUsers(house_id) {
+  const url = `${ROOT_URL}/users?q[active_or_upcoming]=1&q[house_id]=${house_id}`;
+  console.log(url);
+  return async (dispatch) => {
+      const res = await axios.get(url, { headers: { 'Authorization': localStorage.getItem('token') } })
+      .then(({data}) => {
+        const users = _.sortBy(data, user => {
+          const active = new Date(user.check_in) < _.now()
+          user.action = active ? 'Départ ✈️' : 'Arrivée ✅';
+          user.action_date = active ? user.check_out : user.check_in
+          return new Date(user.action_date);
+        });
+
+        dispatch({type: ACTIVE_OR_UPCOMING_USERS_FETCHED, payload: users})
+      });
+  };
+}
 export function sessionFromToken(tokenFromStorage) {
   const url = `${ROOT_URL}/sessions?token=${tokenFromStorage}`
   //check if the token is still valid, if so, get me from the server

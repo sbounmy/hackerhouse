@@ -4,6 +4,7 @@ import { IntercomAPI } from 'react-intercom';
 import TrelloBoard from './trello_board';
 import TypeForm from './typeform';
 import { fetchBalance } from '../actions';
+import BookingsPanel from './bookings_panel';
 import { ReactTypeformEmbed } from 'react-typeform-embed';
 
 import _ from 'lodash';
@@ -52,9 +53,10 @@ class ActionsPanel extends Component {
             </div>
             <p>{`Tu continues l'aventure jusqu'au ${this.props.user.check_out}`}</p>
             <p>Ma contribution solidaire du mois : {this.props.balance}€</p>
-            {this.renderAction([{ name: 'Départ anticipé', message: 'Hello la HackerHouse ✈️\nJe souhaite partir le :' },
-                                { name: 'Prolonger mon séjour', message: 'Hello la HackerHouse 🤘\nJe souhaite prolonger mon séjour jusqu\'au ' }
-                               ])}
+            <p>{this.renderAction([{ name: 'Départ anticipé', message: 'Hello la HackerHouse ✈️\nJe souhaite partir le :' },
+                                            { name: 'Prolonger mon séjour', message: 'Hello la HackerHouse 🤘\nJe souhaite prolonger mon séjour jusqu\'au ' }
+                                           ])}</p>
+           <BookingsPanel house_id={this.props.user.house_id} />
           </div>
         </div>
       )
