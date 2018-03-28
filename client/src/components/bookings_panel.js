@@ -44,22 +44,28 @@ class BookingsPanel extends Component {
   }
 
   render() {
-    if (!this.props.user) {
+    const staying = (this.props.user && this.props.user.house_slug_id && this.props.user.check_out)
+
+    if (staying) {
+      return (
+         <div className="card mb-4 d-lg-block">
+          <div className="card-body">
+            <div className="d-flex flex-row justify-content-between align-items-start">
+              <h6 className="mb-3">Mes colocs</h6>
+              <a className=""
+                 href="https://drive.google.com/drive/folders/1CLU7iON-CSUNud5i_b1nI1LBbnF83_gl?usp=sharing"
+                 target="_blank">Trouver un nouveau 🤙</a>
+            </div>
+            <ul className='list-unstyled'>
+              {this.renderUsers()}
+              <li><p className="text-center">Aucun autre arrivée / départ</p></li>
+            </ul>
+          </div>
+        </div>
+      )
+    } else {
       return ''
     }
-    return (
-      <div>
-        <div className="d-flex flex-row justify-content-between align-items-start">
-          <h6 className="mb-3">Réservations</h6>
-          <a className=""
-             href="https://drive.google.com/drive/folders/1CLU7iON-CSUNud5i_b1nI1LBbnF83_gl?usp=sharing"
-             target="_blank">Trouver un nouveau coloc 🤙</a>
-        </div>
-        <ul className='list-unstyled'>{this.renderUsers()}
-        <li><p className="text-center">Aucun autre arrivée / départ</p></li>
-        </ul>
-      </div>
-    );
   }
 }
 

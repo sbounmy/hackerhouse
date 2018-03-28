@@ -7,6 +7,7 @@ import HouseProfile from './house_profile';
 import ActionsPanel from './actions_panel';
 import LinksPanel from './links_panel';
 import PantryPanel from './pantry_panel';
+import BookingsPanel from './bookings_panel';
 import Intercom, { IntercomAPI } from 'react-intercom';
 import _ from 'lodash';
 
@@ -30,6 +31,7 @@ class Dashboard extends Component {
         </div>
         <div className="col-lg-6">
           <ActionsPanel />
+          <BookingsPanel house_id={this.props.user.house_id} />
         </div>
         <div className="col-lg-3">
           <LinksPanel />

@@ -4,7 +4,6 @@ import { IntercomAPI } from 'react-intercom';
 import TrelloBoard from './trello_board';
 import TypeForm from './typeform';
 import { fetchBalance } from '../actions';
-import BookingsPanel from './bookings_panel';
 import { ReactTypeformEmbed } from 'react-typeform-embed';
 
 import _ from 'lodash';
@@ -53,10 +52,16 @@ class ActionsPanel extends Component {
             </div>
             <p>{`Tu continues l'aventure jusqu'au ${this.props.user.check_out}`}</p>
             <p>Ma contribution solidaire du mois : {this.props.balance}€</p>
-            <p>{this.renderAction([{ name: 'Départ anticipé', message: 'Hello la HackerHouse ✈️\nJe souhaite partir le :' },
-                                            { name: 'Prolonger mon séjour', message: 'Hello la HackerHouse 🤘\nJe souhaite prolonger mon séjour jusqu\'au ' }
-                                           ])}</p>
-           <BookingsPanel house_id={this.props.user.house_id} />
+            <p className='text-right'>
+              <button type='button'
+              className="btn btn-link"
+              onClick={() => IntercomAPI('showNewMessage', 'Hello la HackerHouse ✈️\nJe souhaite partir le :')}>
+              Départ anticipé</button>
+              <button type='button'
+              className="btn btn-outline-primary"
+              onClick={() => IntercomAPI('showNewMessage', 'Hello la HackerHouse 🤘\nJe souhaite prolonger mon séjour jusqu\'au ')}>
+              Prolonger mon séjour</button>
+            </p>
           </div>
         </div>
       )
@@ -84,24 +89,6 @@ class ActionsPanel extends Component {
         </div>
       );
     }
-  }
-
-  renderFoodActions() {
-     return (
-      <div className="card mb-4 d-lg-block">
-        <div className="card-body">
-          <h6 className="mb-3">Docteur Bread 🍞</h6>
-          <div data-grid="images" data-target-height="150">
-            {/*<img className="media-object" data-width="640" data-height="640" data-action="zoom" src="assets/img/instagram_2.jpg" styles="width: 180px; height: 169px; margin-bottom: 10px; margin-right: 0px; display: inline-block; vertical-align: bottom;"/>*/}
-          </div>
-          <p>5 diners / semaine pour 30€</p>
-          {this.renderAction([{ name: 'Annuler mon abonnement', message: 'Hello la HackerHouse\nJe ne souhaite pas manger la semaine du ' },
-                                                { name: 'Reprendre mon abonnement', message: 'Hello la HackerHouse\nJe souhaite manger docteur bread la semaine du ' }
-                                                ])}
-          <TrelloBoard id='BTT7m0B4'/>
-        </div>
-      </div>
-    );
   }
 
   renderEventActions() {
