@@ -15,19 +15,23 @@ class BookingsPanel extends Component {
   renderUsers() {
     return _.map(this.props.active_or_upcoming_users, (user) => {
       return (
-        <li className='media border rounded my-3 p-3' key={user.action_date}>
-          <div className='media-body'>
+        <li className='border rounded my-3 px-3 py-2' key={user.action_date}>
+          <div className='d-flex flex-row justify-content-between'>
             <h5 className="d-block mt-0 mb-1">
             <Moment locale="fr" format='dddd D MMMM'>
                   {user.action_date}
-            </Moment></h5>
-            <p>
+            </Moment>
+            </h5>
+            <span class='text-right'>{user.action}</span>
+          </div>
+          <div className='d-flex flex-row justify-content-between'>
+            <div>            <p>
               <strong>{user.firstname} {user.lastname}</strong><br/>
               <i>{user.bio_title}</i><br/>
-              <small>{user.action}</small>
             </p>
+</div>
+            <div><img className="ml-2 rounded-circle" src={user.avatar_url} style={{'max-width': '45px'}}/></div>
           </div>
-          <img className="ml-2 rounded-circle" src={user.avatar_url} style={{width: '75px'}}/>
         </li>
       )
     });
