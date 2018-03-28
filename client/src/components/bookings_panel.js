@@ -49,7 +49,12 @@ class BookingsPanel extends Component {
     }
     return (
       <div>
-        <h6 className="mb-3">Réservations</h6>
+        <div className="d-flex flex-row justify-content-between align-items-start">
+          <h6 className="mb-3">Réservations</h6>
+          <a className=""
+             href="https://drive.google.com/drive/folders/1CLU7iON-CSUNud5i_b1nI1LBbnF83_gl?usp=sharing"
+             target="_blank">Trouver un nouveau coloc 🤙</a>
+        </div>
         <ul className='list-unstyled'>{this.renderUsers()}
         <li><p className="text-center">Aucun autre arrivée / départ</p></li>
         </ul>
