@@ -26,10 +26,9 @@ class BookingsPanel extends Component {
           </div>
           <div className='d-flex flex-row justify-content-between'>
             <div className='text-truncate'>
-              <strong>{user.firstname} {user.lastname}</strong><br/>
-              <i>{user.bio_title}</i>
+              <strong>{user.firstname} {user.lastname}</strong><i>, {user.bio_title}</i>
             </div>
-            <div><img className="ml-2 rounded-circle" src={user.avatar_url} style={{'max-width': '45px'}}/></div>
+            <div><img className="ml-2 rounded-circle" src={user.avatar_url} style={{'max-height': '20px'}}/></div>
           </div>
         </li>
       )
