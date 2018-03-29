@@ -1,4 +1,4 @@
-class BookingPolicy < ApplicationPolicy
+class MessagePolicy < ApplicationPolicy
   def show?
     user.admin? || user.house_id == record.house.id
   end

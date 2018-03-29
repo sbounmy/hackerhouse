@@ -1,11 +1,11 @@
-class BookingsAPI < Grape::API
+class MessagesAPI < Grape::API
 
-  resource :bookings do
+  resource :messages do
 
     route_param :id do
-      desc "Get a Booking"
+      desc "Get a Message"
       get do
-        Booking.find(params[:id])
+        Message.find(params[:id])
       end
     end
 
@@ -14,13 +14,13 @@ class BookingsAPI < Grape::API
       requires :check_out,              type: Date,   desc: 'Check out date'
 
       requires :house_id,               type: String, desc: 'House id'
-      requires :message,                type: String, desc: "Description"
+      requires :body,                   type: String, desc: "Description"
     end
     post do
       declared_params[:user_id] = current_user.id
-      Booking.new(declared_params).tap do |booking|
-        authorize booking, :create?
-        booking.save!
+      Message.new(declared_params).tap do |message|
+        authorize message, :create?
+        message.save!
       end
     end
   end

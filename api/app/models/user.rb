@@ -29,7 +29,7 @@ class User
 
   # Associations
   belongs_to :house, index: true, optional: true
-  has_many   :bookings
+  has_many   :messages
 
   # Bcrypt
   has_secure_password

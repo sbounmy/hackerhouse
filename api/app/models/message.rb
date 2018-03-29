@@ -1,13 +1,12 @@
-class Booking
+class Message
   include Mongoid::Document
   include Mongoid::Timestamps
 
   # Fields
   field :check_in, type: Date
   field :check_out, type: Date
-  field :message, type: String
+  field :body, type: String
   field :status,  type: String, default: 'pending'
-  field :stripe_id, type: String #Subscription ID
 
   # Associations
   belongs_to :user
