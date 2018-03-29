@@ -280,5 +280,21 @@ describe UsersAPI do
       expect(json_response[0]['firstname']).to eq 'Paul'
       expect(json_response[0]['lastname']).to eq 'Amicel'
     end
+
+    it 'shows email when admin' do
+      user
+      admin = create(:user, admin: true)
+      get_as admin, "/v1/users"
+      expect(json_response).to have(2).items
+      expect(json_response[0]['email']).to match /.+\@.+\..+/
+    end
+
+    it 'it only show current user email' do
+      user
+      simple_user = create(:user)
+      get_as simple_user, "/v1/users"
+      expect(json_response).to have(2).items
+      expect(json_response.map {|u| u['email'] }.compact).to eq [simple_user.email]
+    end
   end
 end
