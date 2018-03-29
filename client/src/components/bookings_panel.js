@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { fetchActiveOrUpcomingUsers } from '../actions';
 import Moment from 'react-moment';
 import 'moment/locale/fr';
+import FriendlyName from './friendly_name';
 import _ from 'lodash';
 
 class BookingsPanel extends Component {
@@ -60,7 +61,7 @@ class BookingsPanel extends Component {
           </div>
           <div className='d-flex flex-row justify-content-between'>
             <div className='text-truncate'>
-              <strong>{user.firstname} {user.lastname}</strong><i>, {user.bio_title}</i>
+              <strong><FriendlyName firstname={user.firstname} lastname={user.lastname} /></strong><i>, {user.bio_title}</i>
             </div>
             <div><img className="ml-2 rounded-circle" src={user.avatar_url} style={{'max-height': '20px'}}/></div>
           </div>
