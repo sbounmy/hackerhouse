@@ -9,3 +9,4 @@ export const USER_CREATED = 'user_created';
 export const USER_CREATED_FAILURE = 'user_created_failure';
 export const BALANCE_FETCHED = 'balance_fetched';
 export const ACTIVE_OR_UPCOMING_USERS_FETCHED = 'active_or_upcoming_users_fetched';
+export const HOUSE_MESSAGES_FETCHED = 'house_messages_fetched';

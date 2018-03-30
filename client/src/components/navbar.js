@@ -75,7 +75,7 @@ class NavBar extends Component {
               className='nav-link'
               href="/sessions/new"
               onClick={this.props.destroySession}>
-              <span class="icon icon-log-out"></span>
+              <span className="icon icon-log-out"></span>
             </a>
           </li>
         </ul>
