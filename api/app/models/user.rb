@@ -5,18 +5,19 @@ class User
   include Concerns::MongoidQuery
 
   # Fields
-  field :admin, type: Boolean, default: false
-  field :avatar_url, type: String
-  field :firstname, type: String
-  field :lastname, type: String
-  field :email, type: String
-  field :check_in, type: Date
-  field :check_out, type: Date
+  field :admin,           type: Boolean, default: false
+  field :avatar_url,      type: String
+  field :bio_title,       type: String
+  field :bio_url,         type: String
+  field :check_in,        type: Date
+  field :check_out,       type: Date
+  field :email,           type: String
+  field :firstname,       type: String
+  field :lastname,        type: String
+  field :stripe_id,       type: String
+  field :token,           type: String
   field :password_digest, type: String
-  field :stripe_id, type: String
-  field :token, type: String
-  field :bio_title, type: String
-  field :bio_url,   type: String
+  field :phone_number,    type: String
 
   # Stripe id
   field :stripe_id, type: String

@@ -14,6 +14,11 @@ class ActionsPanel extends Component {
     this.openForm = this.openForm.bind(this);
   }
 
+  onSubmit(v) {
+    console.log(v);
+    return 'lol';
+  }
+
   // return false when already applied
   // return true otherwise
   // should have a boolean flag on API
@@ -40,7 +45,8 @@ class ActionsPanel extends Component {
   }
 
   renderStayActions() {
-    const staying = (this.props.user && this.props.user.house_slug_id && this.props.user.check_out)
+    const { user } = this.props;
+    const staying = (user && user.house_slug_id && user.check_out)
 
     if (staying) {
       return (
@@ -50,7 +56,7 @@ class ActionsPanel extends Component {
             <div data-grid="images" data-target-height="150">
               {/*<img className="media-object" data-width="640" data-height="640" data-action="zoom" src="assets/img/instagram_2.jpg" styles="width: 180px; height: 169px; margin-bottom: 10px; margin-right: 0px; display: inline-block; vertical-align: bottom;"/>*/}
             </div>
-            <p>{`Tu continues l'aventure jusqu'au ${this.props.user.check_out}`}</p>
+            <p>{`Tu continues l'aventure jusqu'au ${user.check_out}`}</p>
             <p>Ma contribution solidaire du mois : {this.props.balance}€</p>
             <p className='text-right'>
               <button type='button'
@@ -62,6 +68,14 @@ class ActionsPanel extends Component {
               onClick={() => IntercomAPI('showNewMessage', 'Hello la HackerHouse 🤘\nJe souhaite prolonger mon séjour jusqu\'au ')}>
               Prolonger mon séjour</button>
             </p>
+{/*              <ReactTypeformEmbed
+                url={`https://hackerhouseparis.typeform.com/to/qmztfk?firstname=${user.firstname}&lastname=${user.lastname}&email=${user.email}`}
+                hideHeader={true}
+                popup={true}
+                mode="drawer_right"
+                autoOpen={this.neverApplied()}
+                onSubmit={this.onSubmit}
+                ref={(tf => this.typeformEmbed = tf)}/>*/}
           </div>
         </div>
       )
@@ -74,11 +88,12 @@ class ActionsPanel extends Component {
             <h6 className="mb-3">Séjour 😴</h6>
             <div className='apply-popup'>
               <ReactTypeformEmbed
-                url={'https://hackerhouseparis.typeform.com/to/qmztfk'}
+                url={`https://hackerhouseparis.typeform.com/to/qmztfk?firstname=${user.firstname}&lastname=${user.lastname}&email=${user.email}`}
                 hideHeader={true}
                 popup={true}
                 mode="drawer_right"
                 autoOpen={this.neverApplied()}
+                onSubmit={this.onSubmit}
                 ref={(tf => this.typeformEmbed = tf)}/>
             </div>
             <div data-grid="images" data-target-height="150">

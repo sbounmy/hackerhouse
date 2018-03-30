@@ -23,6 +23,14 @@ class MessagesAPI < Grape::API
         message.save!
       end
     end
+
+    desc "List Messages"
+    params do
+      optional :q, type: Hash
+    end
+    get do
+      Message.search(declared_params[:q])
+    end
   end
 
 end

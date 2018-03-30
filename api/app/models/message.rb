@@ -1,6 +1,7 @@
 class Message
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Concerns::MongoidQuery
 
   # Fields
   field :check_in, type: Date
@@ -14,4 +15,8 @@ class Message
 
   has_and_belongs_to_many :plus_ones, class_name: "User"
   has_and_belongs_to_many :minus_ones, class_name: "User"
+
+  def self.queryable_scopes
+    []
+  end
 end
