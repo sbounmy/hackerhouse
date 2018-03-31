@@ -91,7 +91,7 @@ class MessagesPanel extends Component {
   }
 
   toggleText() {
-    return this.state.showAll ? 'Aucun autre arrivée / départ' : 'Voir tous les prochains départs / arrivées'
+    return this.state.showAll ? 'Aucun autre message' : 'Voir tous les messages'
   }
 
   isHidden(index) {

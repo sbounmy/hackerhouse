@@ -99,7 +99,7 @@ export function fetchBalance(house_id, user_id) {
 
 export function fetchActiveOrUpcomingUsers(house_id) {
   const url = `${ROOT_URL}/users?q[active_or_upcoming]=1&q[house_id]=${house_id}`;
-  console.log(url);
+
   return async (dispatch) => {
       const res = await axios.get(url, { headers: { 'Authorization': localStorage.getItem('token') } })
       .then(({data}) => {
@@ -117,7 +117,7 @@ export function fetchActiveOrUpcomingUsers(house_id) {
 
 export function fetchMessages(house_id) {
   const url = `${ROOT_URL}/messages?&q[house_id]=${house_id}`;
-  console.log(url);
+
   return async (dispatch) => {
       const res = await axios.get(url, { headers: { 'Authorization': localStorage.getItem('token') } })
       .then(({data}) => {
