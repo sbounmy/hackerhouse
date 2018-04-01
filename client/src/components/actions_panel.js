@@ -88,7 +88,7 @@ class ActionsPanel extends Component {
             <h6 className="mb-3">Séjour 😴</h6>
             <div className='apply-popup'>
               <ReactTypeformEmbed
-                url={`https://hackerhouseparis.typeform.com/to/qmztfk?firstname=${user.firstname}&lastname=${user.lastname}&email=${user.email}`}
+                url={`https://hackerhouseparis.typeform.com/to/qmztfk?firstname=${user.firstname}&lastname=${user.lastname}&email=${user.email}&user_id=${user.id}`}
                 hideHeader={true}
                 popup={true}
                 mode="drawer_right"
