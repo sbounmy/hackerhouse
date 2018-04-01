@@ -55,6 +55,7 @@ class UsersAPI < Grape::API
       optional :check_out,              type: Date,   desc: "Check out Date"
       optional :firstname,              type: String, desc: "Firstname"
       optional :lastname,               type: String, desc: "Lastname"
+      optional :phone_number,           type: String, desc: "Phone Number"
     end
     put ':id' do
       User.find(params[:id]).tap do |user|

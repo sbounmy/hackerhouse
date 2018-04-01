@@ -8,6 +8,7 @@ FactoryGirl.define do
     check_in '2016-12-20'
     check_out '2017-02-20'
     avatar_url 'http://avatar.slack.com/paul.jpg'
+    phone_number '0612345678'
     house
 
     transient do

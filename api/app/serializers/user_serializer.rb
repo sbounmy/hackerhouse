@@ -3,6 +3,7 @@ class UserSerializer < ActiveModel::Serializer
               :check_in, :check_out, :active, :admin, :house_slug_id, :house_id
 
   attribute :email, if: :current_user_or_admin?
+  attribute :phone_number, if: :current_user_or_admin?
 
   def current_user_or_admin?
     (scope.current_user.id == object.id) || scope.current_user.admin?
