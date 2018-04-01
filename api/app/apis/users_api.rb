@@ -52,7 +52,7 @@ class UsersAPI < Grape::API
       optional :avatar_url,             type: String, desc: "Avatar url"
       optional :bio_title,              type: String, desc: "Bio Title"
       optional :bio_url,                type: String, desc: "Linkedin URL"
-      optional :check_out,              type: Date, desc: "Check out Date"
+      optional :check_out,              type: Date,   desc: "Check out Date"
       optional :firstname,              type: String, desc: "Firstname"
       optional :lastname,               type: String, desc: "Lastname"
     end

@@ -12,13 +12,14 @@ describe MessagesAPI do
   let(:hq) { create(:house, slug_id: 'hq', rent_monthly: 10_000) } # 10 000 euros / month
   let(:stripe) { StripeMock.create_test_helper }
   let(:admin) { create(:user, admin: true) }
-  let(:user) { create(:user) }
+  let(:padawan) { create(:user) }
 
   def create_message(user, params={})
     post_as user, '/v1/messages',
       check_in: 1.month.from_now,
       check_out: 3.month.from_now,
       house_id: hq.id,
+      user_id: padawan.id,
       body: 'Salut, je suis Benoit, étudiant en entrepreneuriat qui vient faire un stage sur Paris en startup (Legalife) à partir du 2 Avril pour 6 mois. Je compte lancer par la suite (septembre ou janvier) ma start-up en biotech.'
   end
 
@@ -36,8 +37,8 @@ describe MessagesAPI do
 
     it 'creates correct info on existing user' do
       expect {
-        create_message user
-      }.to change { user.messages.count }.by(1)
+        create_message padawan
+      }.to change { padawan.messages.count }.by(1)
 
       expect(json_response['check_in']).to eq '2018-04-29'
       expect(json_response['check_out']).to eq '2018-06-29'
