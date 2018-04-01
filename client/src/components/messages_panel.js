@@ -43,7 +43,7 @@ class Message extends Component {
         </div>
         <div className='d-flex flex-row justify-content-between'>
           <div className={this.bodyClassName()}>
-            <strong><FriendlyName firstname={user.firstname} lastname={user.lastname} /></strong><i>, {user.bio_title}</i>
+            <strong><FriendlyName firstname={user.firstname} lastname={user.lastname} /></strong><i>, <a href={user.bio_url} target="_blank">{user.bio_title}</a></i>
             <p>
               <a href="#" onClick={this.toggleBody}>{message.body}</a>
             </p>
@@ -91,7 +91,7 @@ class MessagesPanel extends Component {
   }
 
   toggleText() {
-    return this.state.showAll ? 'Aucun autre arrivée / départ' : 'Voir tous les prochains départs / arrivées'
+    return this.state.showAll ? 'Aucun autre message' : 'Voir tous les messages'
   }
 
   isHidden(index) {

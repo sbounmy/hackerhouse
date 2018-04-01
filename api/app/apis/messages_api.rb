@@ -13,11 +13,11 @@ class MessagesAPI < Grape::API
       requires :check_in,               type: Date,   desc: 'Check in date'
       requires :check_out,              type: Date,   desc: 'Check out date'
 
+      requires :user_id,                type: String,   desc: 'User initiator id'
       requires :house_id,               type: String, desc: 'House id'
       requires :body,                   type: String, desc: "Description"
     end
     post do
-      declared_params[:user_id] = current_user.id
       Message.new(declared_params).tap do |message|
         authorize message, :create?
         message.save!
