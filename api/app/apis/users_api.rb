@@ -61,7 +61,7 @@ class UsersAPI < Grape::API
       User.find(params[:id]).tap do |user|
         authorize user, :update?
         user.update_attributes! declared_params
-        user.push!
+        user.push! if user.stripe_id
       end
     end
 
