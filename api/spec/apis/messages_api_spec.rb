@@ -14,6 +14,14 @@ describe MessagesAPI do
   let(:admin) { create(:user, admin: true) }
   let(:padawan) { create(:user) }
 
+  before do
+    Timecop.travel('2018-03-29')
+  end
+
+  after do
+    Timecop.return
+  end
+
   def create_message(user, params={})
     post_as user, '/v1/messages',
       check_in: 1.month.from_now,
@@ -26,7 +34,7 @@ describe MessagesAPI do
   describe "POST /v1/messages" do
 
     it 'responds succesfully' do
-      create_message user
+      create_message padawan
       expect(response.status).to eq 201
     end
 
@@ -45,6 +53,13 @@ describe MessagesAPI do
       expect(json_response['body']).to match /Salut/
       expect(json_response['status']).to eq 'pending'
     end
+
+    it 'can post using admin token' do
+      expect {
+        create_message admin
+      }.to change { padawan.messages.count }.by(1)
+    end
+
   end
 
 end

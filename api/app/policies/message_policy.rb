@@ -4,6 +4,6 @@ class MessagePolicy < ApplicationPolicy
   end
 
   def create?
-    user.id && user.id == record.user_id
+    user.admin? || (user.id && user.id == record.user_id)
   end
 end
