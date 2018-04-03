@@ -54,14 +54,14 @@ export function createLinkedInSession({code, redirect_uri}) {
   const url = `${ROOT_URL}/tokens/linkedin`;
 
   return async (dispatch) => {
-    var response = await axios.get(url, { params: { code, redirect_uri } })
-    response.data.linkedin_access_token = response.data.token
     try {
+      var response = await axios.get(url, { params: { code, redirect_uri } })
+      response.data.linkedin_access_token = response.data.token
       const user = await dispatch(createUser(response.data))
       const res = await dispatch(createSession({ email: response.data.email, password: null, linkedin_access_token: response.data.token }));
       return user;
     } catch(e) {
-      // throw error
+      throw e
     }
   };
 }

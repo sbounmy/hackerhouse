@@ -28,6 +28,17 @@ services:
     depends_on:
       - selenium
       - mongo
+      - test_app
+  test_app:
+    environment:
+      - REACT_APP_LINKEDIN_REDIRECT_URI=http://test_app:3001/sessions/linkedin
+      - REACT_APP_API=http://172.18.0.5:3000
+    build: ./client
+    command: npm start
+    volumes:
+      - ./client:/app
+    ports:
+      - 3001:3001
   app:
     build: ./client
     command: npm start

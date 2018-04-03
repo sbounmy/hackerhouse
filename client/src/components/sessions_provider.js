@@ -18,6 +18,8 @@ class SessionsProvider extends Component {
         history.push('/dashboard');
         // do something with response
       } catch(e) {
+        alert(e)
+        throw e
       }
     }
   }
