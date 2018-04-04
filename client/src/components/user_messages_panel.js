@@ -54,9 +54,6 @@ class MessagesPanel extends Component {
           <div className="card-body">
             <div className="d-flex flex-row justify-content-between align-items-start">
               <h6 className="mb-3">Mes messages</h6>
-              <a className=""
-                 href="https://drive.google.com/drive/folders/1CLU7iON-CSUNud5i_b1nI1LBbnF83_gl?usp=sharing"
-                 target="_blank">Trouver un nouveau 🤙</a>
             </div>
             <ul className='list-unstyled'>
               {this.renderMessages()}

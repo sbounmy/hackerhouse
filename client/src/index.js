@@ -12,6 +12,7 @@ import SessionsProvider from './components/sessions_provider';
 import requireSession from './components/hoc/require_session';
 import noSession from './components/hoc/no_session';
 import Dashboard from './components/dashboard';
+import DashboardHouse from './components/dashboard_house';
 import NavBar from './components/navbar';
 
 import reducers from './reducers';
@@ -38,6 +39,7 @@ ReactDOM.render(
         <Switch>
           <Route path="/sessions/new" component={SessionsNew} />
           <Route path="/sessions/:provider" component={SessionsProvider} />
+          <Route path="/dashboard/house" component={requireSession(DashboardHouse)} />
           <Route path="/dashboard" component={requireSession(Dashboard)} />
           <Route path="/" component={noSession(Home)} />
         </Switch>

@@ -10,18 +10,31 @@ feature 'checkout' do
     Capybara.app_host = "http://test_app:3001"
   end
 
-  # after { StripeMock.stop }
-  scenario 'it logins through linkedin' do
+  def login_as email, password
     visit "/"
     expect(page).to have_content 'ideas'
     click_on "Let me"
 
-    fill_in "session_key", with: "julie@hackerhouse.paris"
-    fill_in "session_password", with: "qwertyqwerty"
+    fill_in "session_key", with: email
+    fill_in "session_password", with: password
     page.execute_script("$('.btn-signin').click();")
 
     click_on "Allow" if page.has_text?("HackerHouse would like to:")
-    expect(page).to have_content("Julie")
+    expect(page).to have_content("Home")
+  end
+
+  # after { StripeMock.stop }
+  scenario 'it logins through linkedin' do
+    login_as 'julie@hackerhouse.paris', 'qwertyqwerty'
+  end
+
+  scenario 'it can check out' do
+    login_as 'julie@hackerhouse.paris', 'qwertyqwerty'
+    julie = User.find_by(email: 'julie@hackerhouse.paris')
+    house = create(:house)
+    create(:message, user: julie, house: house)
+    visit "/"
+    expect(page).to have_content "Salut"
   end
 
 end

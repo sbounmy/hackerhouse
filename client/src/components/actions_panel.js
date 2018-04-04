@@ -5,13 +5,20 @@ import TrelloBoard from './trello_board';
 import TypeForm from './typeform';
 import { fetchBalance } from '../actions';
 import { ReactTypeformEmbed } from 'react-typeform-embed';
-
+import Moment from 'react-moment';
+import 'moment/locale/fr';
 import _ from 'lodash';
 
 class ActionsPanel extends Component {
   constructor(props) {
     super(props);
     this.openForm = this.openForm.bind(this);
+  }
+
+  componentDidMount() {
+    if (this.props.user) {
+      this.props.fetchUserMessages(this.props.user.id);
+    }
   }
 
   onSubmit(v) {
@@ -23,7 +30,7 @@ class ActionsPanel extends Component {
   // return true otherwise
   // should have a boolean flag on API
   neverApplied() {
-    return true;
+    return _.isEmpty(this.props.userMessages);
   }
 
   openForm() {
@@ -56,7 +63,7 @@ class ActionsPanel extends Component {
             <div data-grid="images" data-target-height="150">
               {/*<img className="media-object" data-width="640" data-height="640" data-action="zoom" src="assets/img/instagram_2.jpg" styles="width: 180px; height: 169px; margin-bottom: 10px; margin-right: 0px; display: inline-block; vertical-align: bottom;"/>*/}
             </div>
-            <p>{`Tu continues l'aventure jusqu'au ${user.check_out}`}</p>
+            <p>Tu continues l'aventure jusqu'au <strong><Moment format='DD MMMM YYYY'>{user.check_out}</Moment></strong></p>
             <p>Ma contribution solidaire du mois : {this.props.balance}€</p>
             <p className='text-right'>
               <button type='button'
@@ -133,7 +140,7 @@ class ActionsPanel extends Component {
 }
 
 function mapStateToProps(state) {
-  return { user: state.session.user, balance: state.balance.amount }
+  return { user: state.session.user, balance: state.balance.amount, userMessages: state.user.messages }
 }
 
 export default connect(mapStateToProps, { fetchBalance })(ActionsPanel);

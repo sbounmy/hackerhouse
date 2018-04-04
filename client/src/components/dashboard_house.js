@@ -12,7 +12,7 @@ import MessagesPanel from './messages_panel';
 import Intercom, { IntercomAPI } from 'react-intercom';
 import _ from 'lodash';
 
-class Dashboard extends Component {
+class DashboardHouse extends Component {
   render() {
     if (_.isNil(this.props.user)) {
       return ''
@@ -27,19 +27,17 @@ class Dashboard extends Component {
       <div className='row'>
         <Intercom appID="fhj2ew9z" { ...user } />
         <div className="col-lg-3">
-          <Profile user={this.props.user}/>
           <HouseProfile id={this.props.user.house_slug_id} />
         </div>
         <div className="col-lg-6">
-          <ActionsPanel />
+          <MessagesPanel house_id={this.props.user.house_id} />
+          <BookingsPanel house_id={this.props.user.house_id} />
         </div>
         <div className="col-lg-3">
-          <LinksPanel />
-          <PantryPanel />
         </div>
       </div>
     );
   }
 }
 
-export default connect(null, { destroySession })(Dashboard);
+export default connect(null, { destroySession })(DashboardHouse);

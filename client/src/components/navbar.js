@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createSession } from '../actions';
-import { Link } from 'react-router-dom';
+import { NavLink, Link, withRouter } from 'react-router-dom';
 import { Field, reduxForm } from 'redux-form';
 import { destroySession } from '../actions';
+import _ from 'lodash';
 
 class NavBar extends Component {
   renderNavLinks() {
@@ -26,7 +27,7 @@ class NavBar extends Component {
       return ""
     }
     return (
-      <nav className="navbar navbar-expand-md fixed-top navbar-dark bg-primary app-navbar">
+      <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark app-navbar">
 
       <a className="navbar-brand" href="index.html">
         <img src="/logo-hh.png" width="45" alt="brand"/>
@@ -41,13 +42,13 @@ class NavBar extends Component {
           <li className="nav-item active">
             <a className="nav-link" href="index.html">Home <span className="sr-only">(current)</span></a>
           </li>
-          <li className="nav-item">
+{/*          <li className="nav-item">
             <a className="nav-link" href="profile/index.html">Profile</a>
-          </li>
-          <li className="nav-item">
+          </li>*/}
+{/*          <li className="nav-item">
             <a className="nav-link" data-toggle="modal" href="#msgModal">Messages</a>
           </li>
-
+*/}
           <li className="nav-item d-md-none">
             <a className="nav-link" href="notifications/index.html">Notifications</a>
           </li>
@@ -59,16 +60,21 @@ class NavBar extends Component {
 
         </ul>
 
-        <form className="form-inline float-right d-none d-md-flex">
+        <div class="dashboard-toggle btn-group btn-group-toggle mr-auto" data-toggle="buttons">
+          <NavLink className="btn btn-light border mr-0" exact to="/dashboard" style={{width: '160px'}}><strong>🤖 Moi</strong></NavLink>
+          <NavLink className="btn btn-light border" exact to="/dashboard/house" style={{width: '160px'}}><strong>🏡 Ma HackerHouse</strong></NavLink>
+        </div>
+
+{/*        <form className="form-inline float-right d-none d-md-flex">
           <input className="form-control" type="text" data-action="grow" placeholder="Search"/>
         </form>
-
+*/}
         <ul id="#js-popoverContent" className="nav navbar-nav float-right mr-0 d-none d-md-flex">
-          <li className="nav-item">
+{/*          <li className="nav-item">
             <a className="app-notifications nav-link" href="notifications/index.html">
               <span className="icon icon-bell"></span>
             </a>
-          </li>
+          </li>*/}
           <li className="nav-item ml-2">
             <a
               title= "@+ sous le Bus!"
@@ -93,5 +99,5 @@ class NavBar extends Component {
 function mapStateToProps({session: { user }}) {
   return { user }
 }
-
-export default connect(mapStateToProps, { destroySession })(NavBar);
+// https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/blocked-updates.md
+export default withRouter(connect(mapStateToProps, { destroySession })(NavBar));

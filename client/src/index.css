@@ -14,5 +14,11 @@ body {
 
 /* so popup dont overflow (absolute) */
 .apply-popup {
-  position: relative; 
+  position: relative;
+}
+
+.dashboard-toggle .btn:not([disabled]):not(.disabled).active {
+  background-color: #FFCE00;
+  box-shadow: none;
+  cursor: initial;
 }
