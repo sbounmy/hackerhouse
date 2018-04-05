@@ -13,7 +13,10 @@ class UsersAPI < Grape::API
 
     post do
       house = House.find_by(slug_id: declared_params.delete(:slug_id))
-      house.users.build(declared_params).tap do |u|
+      user = User.where(email: declared_params[:email]).first || house.users.build
+      user.tap do |u|
+        u.house = house
+        u.attributes = declared_params
         house.stripe do
           @c = Stripe::Customer.create(
             source: declared_params[:token], # obtained from Stripe.js

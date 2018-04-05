@@ -75,6 +75,10 @@ class User
     self.check_in, self.check_out = dates
   end
 
+  def check
+    [check_in, check_out]
+  end
+
   def push!(params={})
     App.stripe do
       Stripe::Customer.retrieve(stripe_id).tap do |c|

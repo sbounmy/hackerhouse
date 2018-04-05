@@ -86,7 +86,7 @@ feature 'checkout' do
       alert.accept
     }.to change { User.count }.by(1)
     user = User.last
-    expect([user.check_in, user.check_out]).to eq [2.months.from_now.beginning_of_month.to_date, 4.months.from_now.end_of_month.to_date]
+    expect(user.check).to eq [2.months.from_now.beginning_of_month.to_date, 4.months.from_now.end_of_month.to_date]
     # no prorate flag on subscription
     # App.stripe do
     #   expect(Stripe::Subscription.retrieve(User.last.stripe_subscription_ids[0]).prorate).to eq false
@@ -120,7 +120,7 @@ feature 'checkout' do
     end
   end
 
-  scenario 'when paying v2 in the past' do
+  scenario 'when paying v2 today' do
     pending 'not supported'
     create(:house, name: "HackerHouse VH", slug_id: 'vh', stripe_id: 'acct_1B1FYLBnBiKe4QYN')
     visit "/gp/vh"
@@ -142,5 +142,38 @@ feature 'checkout' do
     # App.stripe do
     #   expect(Stripe::Subscription.retrieve(User.last.stripe_subscription_ids[0]).prorate).to eq false
     # end
+  end
+
+  it 'updates existing user' do
+    user = create(:user, email: 'paul@student.42.fr')
+    house = create(:house, name: "HackerHouse VH", slug_id: 'vh', stripe: true)
+    visit "/gp/vh"
+    expect(page).to have_content('VH')
+    next_mid_month = Date.new(3.month.from_now.year, 3.month.from_now.month, 15)
+    select_date(next_mid_month, from: '#check_in')
+    select_date(4.months.from_now.end_of_month, from: '#check_out')
+
+    check 'terms'
+    click_on "customButton"
+
+    expect {
+      fill_credit_card
+      expect(page).to have_no_css('.stripe_checkout_app')
+      sleep 15
+      alert = page.driver.browser.switch_to.alert
+      expect(alert.text).to match /42 x Merci/
+      alert.accept
+    }.to_not change { User.count }
+
+    expect(user.reload.token).to_not be_nil
+    expect(user.stripe_id).to_not be_nil
+    expect(user.house).to eq house
+    expect(user.check).to eq [ next_mid_month, 4.months.from_now.end_of_month.to_date]
+    # no prorate flag on subscription
+    App.stripe do
+      subs = Stripe::Subscription.list(customer: User.last.stripe_id).data
+      expect(subs[1].metadata[:once]).to eq "true"
+      expect(subs[0].metadata[:once]).to eq nil
+    end
   end
 end
