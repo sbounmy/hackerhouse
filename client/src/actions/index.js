@@ -2,7 +2,7 @@ import axios from 'axios';
 import cookie from 'react-cookie';
 import _ from 'lodash';
 
-import { BALANCE_FETCHED, HOUSE_FETCHED,
+import { BALANCE_FETCHED, HOUSE_FETCHED, HOUSES_FETCHED,
   SESSION_CREATED, SESSION_FAILED, SESSION_DESTROYED,
   SESSION_FROM_TOKEN, SESSION_FROM_TOKEN_SUCCESS, SESSION_FROM_TOKEN_FAILURE,
   USER_CREATED, USER_CREATED_FAILURE, ACTIVE_OR_UPCOMING_USERS_FETCHED,
@@ -73,6 +73,17 @@ export function fetchHouse(id) {
       const res = await axios.get(url, { headers: { 'Authorization': localStorage.getItem('token') } })
       .then(({data}) => {
         dispatch({type: HOUSE_FETCHED, payload: data})
+      });
+  };
+}
+
+export function fetchHouses() {
+  const url = `${ROOT_URL}/houses`;
+
+  return async (dispatch) => {
+      const res = await axios.get(url, { headers: { 'Authorization': localStorage.getItem('token') } })
+      .then(({data}) => {
+        dispatch({type: HOUSES_FETCHED, payload: data})
       });
   };
 }

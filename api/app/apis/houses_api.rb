@@ -3,7 +3,6 @@ class HousesAPI < Grape::API
   resource :houses do
 
     route_param :slug_id do
-
       desc "Get a house"
       get do
         House.find_by(slug_id: params[:slug_id])
@@ -22,6 +21,14 @@ class HousesAPI < Grape::API
     end
     post do
       House.create! declared_params
+    end
+
+    desc "List Houses"
+    params do
+      optional :q, type: Hash
+    end
+    get do
+      House.search(declared_params[:q])
     end
   end
 

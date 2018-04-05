@@ -1,10 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchMessages } from '../actions';
+import { fetchUserMessages, fetchHouses } from '../actions';
 import Message from './message';
+import MessageTitle from './message_title';
 import _ from 'lodash';
+import Moment from 'react-moment';
 
-class MessagesPanel extends Component {
+function HouseTitle(props) {
+  const { house } = props
+  if (_.isEmpty(house)) {
+    return ''
+  }
+
+  const name = house.name
+
+  return (
+    <div>
+      <strong>{name}</strong><i>, <a href='#' target="_blank">{house.zip_code}, {house.city}</a></i>
+    </div>
+  )
+
+}
+class UserMessagesPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -15,7 +32,8 @@ class MessagesPanel extends Component {
 
   componentDidMount() {
     if (this.props.user) {
-      this.props.fetchMessages(this.props.user.house_id);
+      this.props.fetchUserMessages(this.props.user.id);
+      this.props.fetchHouses()
     }
   }
 
@@ -39,8 +57,13 @@ class MessagesPanel extends Component {
 
   renderMessages() {
     return _.map(this.props.messages, (message, index) => {
+      const house = this.props.houses[message.house_id]
       return (
-        <Message message={message} hidden={this.isHidden(index)}/>
+        <Message message={message}
+                 created_at_prefix="Envoyé le"
+                 title={<MessageTitle message={message}/>}
+                 to={<HouseTitle house={house}/>}
+                 hidden={this.isHidden(index)} />
       )
     });
   }
@@ -73,7 +96,7 @@ class MessagesPanel extends Component {
 }
 
 function mapStateToProps(state) {
-  return { user: state.session.user, messages: state.houses.messages}
+  return { messages: state.user.messages, houses: state.houses }
 }
 
-export default connect(mapStateToProps, { fetchMessages })(MessagesPanel);
+export default connect(mapStateToProps, { fetchUserMessages, fetchHouses })(UserMessagesPanel);

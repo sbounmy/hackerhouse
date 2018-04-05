@@ -59,6 +59,33 @@ describe HousesAPI do
     end
   end
 
+  describe "GET /v1/houses/" do
+    context 'with valid params' do
+      let!(:hq) { create(:house) }
+
+      def get_houses(q={})
+        get "/v1/houses", q: q
+      end
+
+      it "is success" do
+        get_houses
+        expect(response.status).to be 200
+      end
+
+      it "returns a json response" do
+        get_houses
+        expect(json_response).to have(1).items
+        hq = json_response[0]
+        expect(hq['name']).to eq "Canal Street"
+        expect(hq['slug_id']).to match /hq-\d/
+        expect(hq['slack_id']).to match /#hq-\d/
+        expect(hq).to_not have_key 'stripe_access_token'
+        expect(hq['stripe_publishable_key']).to eq "pk_public-token"
+        expect(hq['stripe_id']).to match /stripe-acc-\d/
+      end
+    end
+  end
+
   describe "POST /v1/houses" do
 
      def create_house(params={})

@@ -22,3 +22,7 @@ body {
   box-shadow: none;
   cursor: initial;
 }
+
+.clickable {
+  cursor: pointer;
+}

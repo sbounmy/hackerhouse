@@ -2,6 +2,7 @@
 class House
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Concerns::MongoidQuery
 
   # Scopes
   scope :v2, -> { where(v2: true) }
@@ -67,6 +68,10 @@ class House
   validates :slug_id, uniqueness: true, presence: true
   validates :stripe_id, uniqueness: true, presence: true
   validates :stripe_access_token, presence: true
+
+  def self.queryable_scopes
+    []
+  end
 
   def slack_id
     "##{slug_id}"

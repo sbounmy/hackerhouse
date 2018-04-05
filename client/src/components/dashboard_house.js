@@ -14,10 +14,11 @@ import _ from 'lodash';
 
 class DashboardHouse extends Component {
   render() {
-    if (_.isNil(this.props.user)) {
+    const isStaying = (this.props.user && this.props.user.house_slug_id && this.props.user.check_out)
+
+    if (!isStaying) {
       return ''
     }
-
     const user = {
       user_id: this.props.user.id,
       email: this.props.user.email,

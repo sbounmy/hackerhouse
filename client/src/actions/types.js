@@ -1,4 +1,5 @@
-export const HOUSE_FETCHED = 'user_fetched';
+export const HOUSE_FETCHED = 'house_fetched';
+export const HOUSES_FETCHED = 'houses_fetched';
 export const SESSION_CREATED = 'session_created';
 export const SESSION_DESTROYED = 'session_destroyed';
 export const SESSION_FAILED = 'session_failed';
