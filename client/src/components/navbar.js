@@ -7,21 +7,18 @@ import { destroySession } from '../actions';
 import _ from 'lodash';
 
 class NavBar extends Component {
-  renderNavLinks() {
-    if (this.props.user) {
-      return (
-        <div>
-          <h3>Welcome {this.props.user.firstname},</h3>
-        </div>
-      );
-    } else {
-      return (
-        <Link to="/sessions/new">
-          Se connecter
-        </Link>
-      );
+  renderToggle() {
+    if (this.props.user && !this.props.user.house_slug_id) {
+      return ''
     }
+    return (
+      <div class="dashboard-toggle btn-group btn-group-toggle mr-auto" data-toggle="buttons">
+        <NavLink className="btn btn-light border mr-0" exact to="/dashboard" style={{width: '160px'}}><strong>🤖 Moi</strong></NavLink>
+        <NavLink className="btn btn-light border" exact to="/dashboard/house" style={{width: '160px'}}><strong>🏡 Ma HackerHouse</strong></NavLink>
+      </div>
+    )
   }
+
   render() {
     if (!this.props.user) {
       return ""
@@ -60,10 +57,7 @@ class NavBar extends Component {
 
         </ul>
 
-        <div class="dashboard-toggle btn-group btn-group-toggle mr-auto" data-toggle="buttons">
-          <NavLink className="btn btn-light border mr-0" exact to="/dashboard" style={{width: '160px'}}><strong>🤖 Moi</strong></NavLink>
-          <NavLink className="btn btn-light border" exact to="/dashboard/house" style={{width: '160px'}}><strong>🏡 Ma HackerHouse</strong></NavLink>
-        </div>
+        {this.renderToggle()}
 
 {/*        <form className="form-inline float-right d-none d-md-flex">
           <input className="form-control" type="text" data-action="grow" placeholder="Search"/>

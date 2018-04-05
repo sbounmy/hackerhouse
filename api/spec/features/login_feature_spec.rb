@@ -37,4 +37,9 @@ feature 'checkout' do
     expect(page).to have_content "Salut"
   end
 
+  scenario 'user without house should not see dashboard toggle' do
+    login_as 'julie@hackerhouse.paris', 'qwertyqwerty'
+    close_typeform
+    expect(page).to have_no_content("Ma HackerHouse")
+  end
 end

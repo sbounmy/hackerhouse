@@ -68,7 +68,6 @@ RSpec.configure do |config|
     if /remote_firefox/.match Capybara.current_driver.to_s
       ip = `/sbin/ip route|awk '/scope/ { print $9 }'`
       ip = ip.gsub "\n", ""
-      puts "$$$$$$$IP :#{ip.inspect}"
       Capybara.server_port = "3000"
       Capybara.server_host = ip
       Capybara.app_host = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}"
