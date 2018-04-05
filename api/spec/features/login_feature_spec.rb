@@ -8,6 +8,7 @@ feature 'checkout' do
     # stripe.create_plan(id: 'basic_monthly', amount: 52000)
     I18n.locale = :fr #for date picker
     Capybara.app_host = "http://test_app:3001"
+    Capybara.run_server = false
   end
 
   def login_as email, password
@@ -18,7 +19,6 @@ feature 'checkout' do
     fill_in "session_key", with: email
     fill_in "session_password", with: password
     page.execute_script("$('.btn-signin').click();")
-
     click_on "Allow" if page.has_text?("HackerHouse would like to:")
     expect(page).to have_content("Home")
   end

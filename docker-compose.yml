@@ -12,8 +12,6 @@ services:
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
       - ./api/:/usr/src/app/
-    ports:
-      - 3000:3000
     depends_on:
       - mongo
     env_file:
@@ -29,16 +27,26 @@ services:
       - selenium
       - mongo
       - test_app
+      - test_api
+  test_api:
+    build: ./api
+    command: bash -c "rm -f tmp/pids/test_server.pid && RAILS_ENV=test bundle exec rails s -p 3002 -b '0.0.0.0' -P tmp/pids/test_server.pid"
+    ports: ['3002:3002']
+    volumes:
+      - ./api/:/usr/src/app/
+    depends_on:
+      - mongo
+
   test_app:
     environment:
       - REACT_APP_LINKEDIN_REDIRECT_URI=http://test_app:3001/sessions/linkedin
-      - REACT_APP_API=http://172.18.0.5:3000
+      - REACT_APP_API=http://test_api:3002
     build: ./client
     command: npm start
     volumes:
       - ./client:/app
     ports:
-      - 3001:3001
+      - 3001
   app:
     build: ./client
     command: npm start
