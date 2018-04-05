@@ -21,7 +21,7 @@ feature 'checkout' do
     select_date(2.months.from_now, from: '#check_in')
     select_date(4.months.from_now, from: '#check_out')
 
-    check 'terms'
+    # check 'terms'
     click_on "customButton"
     expect {
       fill_credit_card
@@ -86,7 +86,7 @@ feature 'checkout' do
       alert.accept
     }.to change { User.count }.by(1)
     user = User.last
-    expect([user.check_in, user.check_out]).to eq [2.months.from_now.beginning_of_month, 4.months.from_now.end_of_month]
+    expect([user.check_in, user.check_out]).to eq [2.months.from_now.beginning_of_month.to_date, 4.months.from_now.end_of_month.to_date]
     # no prorate flag on subscription
     # App.stripe do
     #   expect(Stripe::Subscription.retrieve(User.last.stripe_subscription_ids[0]).prorate).to eq false
