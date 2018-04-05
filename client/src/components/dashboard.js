@@ -26,7 +26,7 @@ class Dashboard extends Component {
     };
     return (
       <div className='row'>
-        <Intercom appID="fhj2ew9z" { ...user } />
+        <Intercom appID={process.env.REACT_APP_INTERCOM_APP_ID} { ...user } />
         <div className="col-lg-3">
           <Profile user={this.props.user}/>
           <HouseProfile id={this.props.user.house_slug_id} />
