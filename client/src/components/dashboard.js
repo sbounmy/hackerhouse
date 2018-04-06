@@ -29,7 +29,7 @@ class Dashboard extends Component {
         <Intercom appID={process.env.REACT_APP_INTERCOM_APP_ID} { ...user } />
         <div className="col-lg-3">
           <Profile user={this.props.user}/>
-          <HouseProfile id={this.props.user.house_slug_id} />
+          <HouseProfile id={this.props.user.house_id} />
         </div>
         <div className="col-lg-6">
           <ActionsPanel />

@@ -13,7 +13,7 @@ class HouseProfile extends Component {
   render() {
     const { house } = this.props;
     if (!house) {
-      return '<p>No house</p>'
+      return ''
     }
     return (
       <div className="card d-md-block d-lg-block mb-4">
@@ -34,8 +34,8 @@ class HouseProfile extends Component {
 }
 
 
-function mapStateToProps(state) {
-  return { user: state.session.user, house: state.houses[state.session.user.house_slug_id] };
+function mapStateToProps(state, nextProps) {
+  return { user: state.session.user, house: state.houses[nextProps.id] };
 }
 
 export default connect(mapStateToProps, { fetchHouse })(HouseProfile);
