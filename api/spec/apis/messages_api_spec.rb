@@ -62,4 +62,56 @@ describe MessagesAPI do
 
   end
 
+  describe "PUT /v1/messages/:id/like" do
+    let(:resident) { create(:user, house: hq, check: [2.months.from_now, 6.months.from_now]) }
+    let(:message) { create(:message, house: hq, user: padawan) }
+
+    it 'responds succesfully' do
+      put_as resident, "/v1/messages/#{message.id}/like", { like_id: resident.id }
+      expect(response.status).to eq 200
+      expect(message.reload.likes).to eq [resident]
+    end
+
+    it 'is error on guest' do
+      put_as :guest, "/v1/messages/#{message.id}/like", { like_id: resident.id }
+      expect(response.status).to eq 403
+      expect(message.reload.likes).to be_empty
+    end
+
+    it 'is success on admin' do
+      put_as admin, "/v1/messages/#{message.id}/like", { like_id: resident.id }
+      expect(response.status).to eq 200
+      expect(message.reload.likes).to eq [resident]
+    end
+
+    it 'is idempotent' do
+      2.times do
+        put_as resident, "/v1/messages/#{message.id}/like", { like_id: resident.id }
+      end
+      expect(response.status).to eq 200
+      expect(message.reload.likes).to eq [resident]
+    end
+
+    it 'is 404 on not found message' do
+      put_as resident, "/v1/messages/do-not-exist/like", { like_id: resident.id }
+      expect(response.status).to eq 404
+    end
+
+    it 'is 403 on invalid like_id' do
+      put_as resident, "/v1/messages/#{message.id}/like", { like_id: 'blabla' }
+      expect(response.status).to eq 403
+    end
+
+    it 'is resident can not like as other' do
+      put_as resident, "/v1/messages/#{message.id}/like", { like_id: create(:user, house: hq, check: [2.months.from_now, 6.months.from_now]).id }
+      expect(response.status).to eq 403
+    end
+
+    it 'can post using admin token' do
+      expect {
+        create_message admin
+      }.to change { padawan.messages.count }.by(1)
+    end
+
+  end
 end

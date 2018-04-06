@@ -7,6 +7,19 @@ class MessagesAPI < Grape::API
       get do
         Message.find(params[:id])
       end
+
+      desc 'Adds a thumb to message'
+      params do
+        requires :like_id,    type: String, desc: "Liked by User id"
+      end
+      put 'like' do
+        Message.find(params[:id]).tap do |message|
+          user_id = declared_params[:like_id]
+          authorize message, :like?
+          raise Pundit::NotAuthorizedError if !current_user.admin? && current_user.id.to_s != user_id
+          message.add_to_set like_ids: user_id
+        end
+      end
     end
 
     params do

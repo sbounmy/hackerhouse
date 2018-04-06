@@ -42,4 +42,8 @@ feature 'checkout' do
     close_typeform
     expect(page).to have_no_content("Ma HackerHouse")
   end
+
+  scenario 'user with house can +1 user message' do
+
+  end
 end

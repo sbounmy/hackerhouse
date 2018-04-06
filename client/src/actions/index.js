@@ -1,12 +1,13 @@
 import axios from 'axios';
 import cookie from 'react-cookie';
 import _ from 'lodash';
+import qs from 'query-string';
 
 import { BALANCE_FETCHED, HOUSE_FETCHED, HOUSES_FETCHED,
   SESSION_CREATED, SESSION_FAILED, SESSION_DESTROYED,
   SESSION_FROM_TOKEN, SESSION_FROM_TOKEN_SUCCESS, SESSION_FROM_TOKEN_FAILURE,
   USER_CREATED, USER_CREATED_FAILURE, ACTIVE_OR_UPCOMING_USERS_FETCHED,
-  HOUSE_MESSAGES_FETCHED, USER_MESSAGES_FETCHED
+  HOUSE_MESSAGES_FETCHED, USER_MESSAGES_FETCHED, USERS_FETCHED
 } from './types';
 
 const ROOT_URL = `${process.env.REACT_APP_API}/v1`;
@@ -123,6 +124,19 @@ export function fetchActiveOrUpcomingUsers(house_id) {
 
         dispatch({type: ACTIVE_OR_UPCOMING_USERS_FETCHED, payload: users})
       });
+  };
+}
+
+export function fetchUsers(params) {
+  const query = qs.stringify(params, {arrayFormat: 'bracket'});
+  const url = `${ROOT_URL}/users?${query}`;
+
+  return async (dispatch) => {
+      const res = await axios.get(url, {
+        headers: { 'Authorization': localStorage.getItem('token') } })
+
+      dispatch({type: USERS_FETCHED, payload: res.data})
+      return res.data;
   };
 }
 

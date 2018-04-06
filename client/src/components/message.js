@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Moment from 'react-moment';
 import 'moment/locale/fr';
+import UserAvatars from './user_avatars';
 import _ from 'lodash';
 
 export default class Message extends Component {
@@ -42,6 +43,9 @@ export default class Message extends Component {
             </p>
           </div>
           <div><img className="ml-2 rounded-circle" src={user.avatar_url} style={{'max-height': '20px'}}/></div>
+        </div>
+        <div>
+          <button type="button" class="d-inline btn btn-outline-secondary btn-sm">👍 {message.like_ids.length}</button><UserAvatars ids={message.like_ids} />
         </div>
 {/*        <div className='d-flex flex-row justify-content-end'>
           <button className='btn btn-outline-primary'>Call</button>
