@@ -19,14 +19,8 @@ class DashboardHouse extends Component {
     if (!isStaying) {
       return ''
     }
-    const user = {
-      user_id: this.props.user.id,
-      email: this.props.user.email,
-      name: `${this.props.user.firstname} ${this.props.user.lastname}`
-    };
     return (
       <div className='row'>
-        <Intercom appID="fhj2ew9z" { ...user } />
         <div className="col-lg-3">
           <HouseProfile id={this.props.user.house_slug_id} />
         </div>

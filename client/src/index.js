@@ -14,6 +14,7 @@ import noSession from './components/hoc/no_session';
 import Dashboard from './components/dashboard';
 import DashboardHouse from './components/dashboard_house';
 import NavBar from './components/navbar';
+import Widgets from './containers/widgets';
 
 import reducers from './reducers';
 
@@ -36,6 +37,7 @@ ReactDOM.render(
     <BrowserRouter>
      <div>
         <NavBar />
+        <Widgets />
         <Switch>
           <Route path="/sessions/new" component={SessionsNew} />
           <Route path="/sessions/:provider" component={SessionsProvider} />
