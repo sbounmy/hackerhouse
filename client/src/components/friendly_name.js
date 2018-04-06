@@ -1,3 +1,5 @@
-export default function({firstname, lastname}) {
-  return `${firstname} ${lastname[0]}.`
+export default ({firstname, lastname}) => {
+  return (
+    `${firstname} ${lastname[0]}.`
+  )
 }

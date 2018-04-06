@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Avatar from './avatar';
 
 class Profile extends Component {
   cardHeaderStyle() {
@@ -18,7 +19,7 @@ class Profile extends Component {
       <div className="mb-4 card card-profile">
         <div className="card-header" style={this.cardHeaderStyle()}></div>
         <div className="card-body text-xs-center">
-          <img className="card-profile-img" src={user.avatar_url}/>
+          <Avatar className='card-profile-img' user={user} />
           <h5 className="card-title">{user.firstname}</h5>
           <p className="mb-4">{user.bio_title}</p>
 {/*          <button className="btn btn-outline-primary btn-sm">

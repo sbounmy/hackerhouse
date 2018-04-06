@@ -26,3 +26,7 @@ body {
 .clickable {
   cursor: pointer;
 }
+
+img.xs {
+  max-height: 20px;
+}

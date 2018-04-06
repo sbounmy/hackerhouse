@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchUsers } from '../actions';
+import Avatar from './avatar';
 import _ from 'lodash';
 import qs from 'query-string';
 
@@ -15,7 +16,7 @@ class UserAvatars extends Component {
       return ''
     }
     else {
-      return <span><img title={user.firstname} className="rounded-circle" src={user.avatar_url} style={{'max-height': '20px'}}/></span>
+      return <span><Avatar user={user} xs rounded/></span>
     }
   }
 
