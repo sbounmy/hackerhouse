@@ -43,7 +43,7 @@ class CardStay extends Component {
         <p>Ma contribution solidaire du mois : {this.props.balance}€</p>
         <p className='text-right'>
           <Button type='link'
-                  message='Hello la HackerHouse ✈️\nJe souhaite partir le : '>
+                  message={'Hello la HackerHouse ✈️\nJe souhaite partir le : '}>
           Départ anticipé</Button>
           <Button type='outline-primary'
                   message={'Hello la HackerHouse 🤘\nJe souhaite prolonger mon séjour jusqu\'au '}>
