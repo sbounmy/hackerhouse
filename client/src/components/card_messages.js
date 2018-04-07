@@ -18,7 +18,7 @@ class CardMessages extends Component {
             action={<a className=""
                href="https://drive.google.com/drive/folders/1CLU7iON-CSUNud5i_b1nI1LBbnF83_gl?usp=sharing"
                target="_blank">Trouver un nouveau 🤙</a>}>
-         <Expandable show={1} items={this.props.messages}>
+         <Expandable show={3} items={this.props.messages}>
             { (message, hide) =>
               <Message message={message}
                 created_at_prefix="Reçu le"

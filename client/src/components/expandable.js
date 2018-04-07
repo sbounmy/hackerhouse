@@ -21,7 +21,7 @@ export default class Expandable extends Component {
   }
 
   isHidden(index) {
-    if (index + 1 > 1 && !this.state.showAll) {
+    if (index + 1 > this.props.show && !this.state.showAll) {
       return true
     }
   }
