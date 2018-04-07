@@ -3,7 +3,7 @@ import Profile from './profile';
 import HouseProfile from './house_profile';
 import CardStay from '../containers/card_stay';
 import CardApply from '../containers/card_apply';
-import LinksPanel from './links_panel';
+import CardLinks from './card_links';
 import PantryPanel from './pantry_panel';
 import UserMessagesPanel from './user_messages_panel';
 import { Col, Row } from './bs';
@@ -28,7 +28,7 @@ export default props => {
         <UserMessagesPanel user={user} />
       </Col>
       <Col lg="3">
-        <LinksPanel />
+        <CardLinks />
         <PantryPanel />
       </Col>
     </Row>
