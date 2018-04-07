@@ -17,7 +17,7 @@ export default function(state = {}, action) {
     case USER_MESSAGES_FETCHED:
       return { ...state, messages: action.payload };
     case USERS_FETCHED:
-      return _.mapKeys(action.payload, 'id');
+      return { ...state, ..._.mapKeys(action.payload, 'id') }
   }
   return state;
 }

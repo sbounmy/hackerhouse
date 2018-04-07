@@ -1,7 +1,6 @@
 import React from 'react';
 import Moment from 'react-moment';
 
-
 export default function MessageTitle(props) {
   const { message } = props;
 

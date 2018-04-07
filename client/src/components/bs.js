@@ -27,7 +27,10 @@ export const Card = props => {
   return (
     <div className={className}>
       <div className="card-body">
-        <h6 className="mb-3">{props.title}</h6>
+        <div className="d-flex flex-row justify-content-between align-items-start">
+          <h6 className="mb-3">{props.title}</h6>
+          {props.action}
+        </div>
         {props.children}
       </div>
     </div>

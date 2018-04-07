@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import HouseProfile from './house_profile';
 import BookingsPanel from './bookings_panel';
-import MessagesPanel from './messages_panel';
+import CardMessages from './card_messages';
 import {Row, Col} from './bs';
 import Intercom, { IntercomAPI } from 'react-intercom';
 import _ from 'lodash';
@@ -18,7 +18,7 @@ export default props => {
         <HouseProfile id={props.user.house_slug_id} />
       </Col>
       <Col lg="6">
-        <MessagesPanel house_id={props.user.house_id} />
+        <CardMessages house_id={props.user.house_id} />
         <BookingsPanel house_id={props.user.house_id} />
       </Col>
       <Col lg="3">

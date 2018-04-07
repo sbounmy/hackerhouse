@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import Profile from './profile';
 import HouseProfile from './house_profile';
+import CardUserMessages from './card_user_messages';
 import CardStay from '../containers/card_stay';
 import CardApply from '../containers/card_apply';
 import CardLinks from './card_links';
 import PantryPanel from './pantry_panel';
-import UserMessagesPanel from './user_messages_panel';
+
 import { Col, Row } from './bs';
 import _ from 'lodash';
 
@@ -25,7 +26,7 @@ export default props => {
       </Col>
       <Col lg="6">
         {isStaying ? <CardStay /> : <CardApply/>}
-        <UserMessagesPanel user={user} />
+        <CardUserMessages user={user} />
       </Col>
       <Col lg="3">
         <CardLinks />
