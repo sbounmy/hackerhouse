@@ -27,7 +27,6 @@ import './toolkit.min.css';
 
 const createStoreWithMiddleware = applyMiddleware(ReduxPromise, ReduxThunk)(createStore);
 const store = createStoreWithMiddleware(reducers);
-const token = localStorage.getItem('token');
 
 // https://github.com/facebook/create-react-app/issues/1910
 unregister() ;
