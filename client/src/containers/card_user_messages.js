@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchUserMessages, fetchHouses } from '../actions';
-import Message from './message';
-import MessageTitle from './message_title';
-import HouseTitle from './house_title';
-import { Card } from './bs';
-import Expandable from './expandable';
+import Message from '../components/message';
+import MessageTitle from '../components/message_title';
+import HouseTitle from '../components/house_title';
+import { Card } from '../components/bs';
+import Expandable from '../components/expandable';
 import _ from 'lodash';
 import Moment from 'react-moment';
 

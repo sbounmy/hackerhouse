@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchMessages } from '../actions';
-import { Card } from './bs';
-import FriendlyName from './friendly_name';
-import Message from './message';
-import MessageTitle from './message_title';
-import Expandable from './expandable';
+import { Card } from '../components/bs';
+import FriendlyName from '../components/friendly_name';
+import Message from '../components/message';
+import MessageTitle from '../components/message_title';
+import Expandable from '../components/expandable';
 
 class CardMessages extends Component {
   componentDidMount() {

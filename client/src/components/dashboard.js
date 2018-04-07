@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Profile from './profile';
-import HouseProfile from './house_profile';
-import CardUserMessages from './card_user_messages';
+import CardHouse from '../containers/card_house';
+import CardUserMessages from '../containers/card_user_messages';
 import CardStay from '../containers/card_stay';
 import CardApply from '../containers/card_apply';
 import CardLinks from './card_links';
@@ -22,7 +22,7 @@ export default props => {
     <Row>
       <Col lg="3">
         <Profile user={user}/>
-        <HouseProfile id={user.house_id} />
+        <CardHouse id={user.house_id} />
       </Col>
       <Col lg="6">
         {isStaying ? <CardStay /> : <CardApply/>}
