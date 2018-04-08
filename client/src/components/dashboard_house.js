@@ -17,11 +17,9 @@ export default props => {
       <Col lg="3">
         <CardHouse id={props.user.house_slug_id} />
       </Col>
-      <Col lg="6">
+      <Col lg="9">
         <CardMessages house_id={props.user.house_id} />
         <BookingsPanel house_id={props.user.house_id} />
-      </Col>
-      <Col lg="3">
       </Col>
     </Row>
   );

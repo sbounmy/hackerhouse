@@ -23,14 +23,12 @@ export default props => {
       <Col lg="3">
         <Profile user={user}/>
         <CardHouse id={user.house_id} />
-      </Col>
-      <Col lg="6">
-        {isStaying ? <CardStay /> : <CardApply/>}
-        <CardUserMessages user={user} />
-      </Col>
-      <Col lg="3">
         <CardLinks />
         <PantryPanel />
+      </Col>
+      <Col lg="9">
+        {isStaying ? <CardStay /> : <CardApply/>}
+        <CardUserMessages user={user} />
       </Col>
     </Row>
   );
