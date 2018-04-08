@@ -4,26 +4,9 @@ import 'moment/locale/fr';
 import UserAvatars from './user_avatars';
 import Avatar from './avatar';
 import _ from 'lodash';
+import Text from './text';
 
 export default class Message extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      truncate: true
-    }
-    this.toggleBody = this.toggleBody.bind(this);
-  }
-
-  toggleBody(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    this.setState({ truncate: !this.state.truncate });
-  }
-
-  bodyClassName() {
-    return this.state.truncate ? 'clickable text-truncate' : 'clickable'
-  }
-
   render() {
     const { message } = this.props;
     const { user } = message;
@@ -37,11 +20,11 @@ export default class Message extends Component {
           <span>{this.props.created_at_prefix} <Moment format='DD/MM'>{message.created_at}</Moment></span>
         </div>
         <div className='d-flex flex-row justify-content-between'>
-          <div className={this.bodyClassName()}>
+          <div style={{'min-width': 0}}>
             {this.props.to}
-            <p className={`my-2 px-2 py-1 bg-light border rounded ${this.bodyClassName()}`} onClick={this.toggleBody}>
+            <Text className="my-2 py-1">
               {message.body}
-            </p>
+            </Text>
           </div>
           <div><Avatar className='ml-2' user={user} xs circle/></div>
         </div>

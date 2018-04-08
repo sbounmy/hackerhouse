@@ -23,7 +23,7 @@ class CardMessages extends Component {
               <Message message={message}
                 created_at_prefix="Reçu le"
                 title={<MessageTitle message={message} />}
-                to={<div><strong><FriendlyName firstname={message.user.firstname} lastname={message.user.lastname} /></strong>
+                to={<div className='text-truncate'><strong><FriendlyName firstname={message.user.firstname} lastname={message.user.lastname} /></strong>
                     <i>, <a href={message.user.bio_url} target="_blank">{message.user.bio_title}</a></i></div>}
                  hidden={hide}/>
             }
