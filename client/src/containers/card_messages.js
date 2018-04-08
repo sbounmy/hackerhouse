@@ -15,6 +15,7 @@ class CardMessages extends Component {
   render() {
     return (
       <Card title="Mes messages"
+            className="mb-4 d-lg-block"
             action={<a className=""
                href="https://drive.google.com/drive/folders/1CLU7iON-CSUNud5i_b1nI1LBbnF83_gl?usp=sharing"
                target="_blank">Trouver un nouveau 🤙</a>}>
