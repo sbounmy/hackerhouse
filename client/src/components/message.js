@@ -13,6 +13,7 @@ import Action from '../actions'
 class Message extends Component {
   render() {
     const { message, user } = this.props;
+    const { author } = message;
     const isLikeByUser = _.includes(message.like_ids, user.id);
 
     return(
@@ -30,17 +31,15 @@ class Message extends Component {
               {message.body}
             </Text>
           </div>
-          <div><Avatar className='ml-2' user={user} xs circle/></div>
+          <div><Avatar className='ml-2' user={author} xs circle/></div>
         </div>
         <div>
           <Button type='outline-secondary'
                   className="d-inline"
-                  action={isLikeByUser ?
-                    this.props.unlikeMessage :
-                    this.props.likeMessage
-                  }
+                  action={this.props.likeMessage}
                   actionProps={{id: message.id, user_id: user.id}}
                   active={isLikeByUser}
+                  disabled={isLikeByUser}
                   sm>👍 {message.like_ids.length}</Button>
           <UserAvatars ids={message.like_ids} />
         </div>
@@ -56,4 +55,4 @@ class Message extends Component {
 const mapStateToProps = (state) => {
   return { user: state.session.user }
 }
-export default connect(mapStateToProps, { likeMessage, unlikeMessage })(Message);
+export default connect(mapStateToProps, { likeMessage })(Message);
