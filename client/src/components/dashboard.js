@@ -1,47 +1,35 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { destroySession } from '../actions';
 import Profile from './profile';
-import HouseProfile from './house_profile';
-import ActionsPanel from './actions_panel';
-import LinksPanel from './links_panel';
+import CardHouse from '../containers/card_house';
+import CardUserMessages from '../containers/card_user_messages';
+import CardStay from '../containers/card_stay';
+import CardApply from '../containers/card_apply';
+import CardLinks from './card_links';
 import PantryPanel from './pantry_panel';
-import BookingsPanel from './bookings_panel';
-import MessagesPanel from './messages_panel';
-import UserMessagesPanel from './user_messages_panel';
-import Intercom, { IntercomAPI } from 'react-intercom';
+
+import { Col, Row } from './bs';
 import _ from 'lodash';
 
-class Dashboard extends Component {
-  render() {
-    if (_.isNil(this.props.user)) {
-      return ''
-    }
-
-    const user = {
-      user_id: this.props.user.id,
-      email: this.props.user.email,
-      name: `${this.props.user.firstname} ${this.props.user.lastname}`
-    };
-    return (
-      <div className='row'>
-        <Intercom appID={process.env.REACT_APP_INTERCOM_APP_ID} { ...user } />
-        <div className="col-lg-3">
-          <Profile user={this.props.user}/>
-          <HouseProfile id={this.props.user.house_id} />
-        </div>
-        <div className="col-lg-6">
-          <ActionsPanel />
-          <UserMessagesPanel user={this.props.user} />
-        </div>
-        <div className="col-lg-3">
-          <LinksPanel />
-          <PantryPanel />
-        </div>
-      </div>
-    );
+export default props => {
+  if (_.isNil(props.user)) {
+    return ''
   }
-}
 
-export default connect(null, { destroySession })(Dashboard);
+  const { user } = props;
+  const isStaying = !!(user && user.house_slug_id && user.check_out);
+
+  return (
+    <Row>
+      <Col lg="3">
+        <Profile user={user}/>
+        <CardHouse id={user.house_id} />
+        <CardLinks />
+        <PantryPanel />
+      </Col>
+      <Col lg="9">
+        {isStaying ? <CardStay /> : <CardApply/>}
+        <CardUserMessages user={user} />
+      </Col>
+    </Row>
+  );
+}

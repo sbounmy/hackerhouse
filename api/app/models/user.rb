@@ -104,4 +104,7 @@ class User
     linkedin_access_token == tk
   end
 
+  def active_on?(house)
+    (house_id == house.id) && check_out.future?
+  end
 end

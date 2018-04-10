@@ -13,8 +13,7 @@ class Message
   belongs_to :user
   belongs_to :house
 
-  has_and_belongs_to_many :plus_ones, class_name: "User"
-  has_and_belongs_to_many :minus_ones, class_name: "User"
+  has_and_belongs_to_many :likes, class_name: "User"
 
   def self.queryable_scopes
     []

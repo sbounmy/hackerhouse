@@ -25,7 +25,6 @@ class NavBar extends Component {
     }
     return (
       <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark app-navbar">
-
       <a className="navbar-brand" href="index.html">
         <img src="/logo-hh.png" width="45" alt="brand"/>
       </a>

@@ -10,7 +10,7 @@ module ControllerHelper
   def user_object(role_or_record)
     case role_or_record
     when :admin then double("User", admin?: true, id: '123')
-    when :guest then double("Guest", admin?: false, id: nil)
+    when :guest then Guest.new
     else
       role_or_record
     end

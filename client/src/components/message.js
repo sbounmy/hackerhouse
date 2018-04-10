@@ -1,30 +1,19 @@
-import React, { Component } from 'react';
-import Moment from 'react-moment';
-import 'moment/locale/fr';
-import _ from 'lodash';
+import React, { Component } from 'react'
+import Moment from 'react-moment'
+import 'moment/locale/fr'
+import UserAvatars from './user_avatars'
+import Avatar from './avatar'
+import _ from 'lodash'
+import Text from './text'
+import { Button } from './bs'
+import { connect } from 'react-redux'
+import { likeMessage, unlikeMessage } from '../actions'
+import Action from '../actions'
 
-export default class Message extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      truncate: true
-    }
-    this.toggleBody = this.toggleBody.bind(this);
-  }
-
-  toggleBody(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    this.setState({ truncate: !this.state.truncate });
-  }
-
-  bodyClassName() {
-    return this.state.truncate ? 'clickable text-truncate' : 'clickable'
-  }
-
+class Message extends Component {
   render() {
-    const { message } = this.props;
-    const { user } = message;
+    const { message, user } = this.props;
+    const isLikeByUser = _.includes(message.like_ids, user.id);
 
     return(
       <li className={`border rounded my-3 px-3 py-2 ${this.props.hidden ? 'd-none' : ''}`} key={message.id}>
@@ -35,13 +24,25 @@ export default class Message extends Component {
           <span>{this.props.created_at_prefix} <Moment format='DD/MM'>{message.created_at}</Moment></span>
         </div>
         <div className='d-flex flex-row justify-content-between'>
-          <div className={this.bodyClassName()}>
+          <div style={{'min-width': 0}}>
             {this.props.to}
-            <p className={`my-2 px-2 py-1 bg-light border rounded ${this.bodyClassName()}`} onClick={this.toggleBody}>
+            <Text className="my-2 py-1">
               {message.body}
-            </p>
+            </Text>
           </div>
-          <div><img className="ml-2 rounded-circle" src={user.avatar_url} style={{'max-height': '20px'}}/></div>
+          <div><Avatar className='ml-2' user={user} xs circle/></div>
+        </div>
+        <div>
+          <Button type='outline-secondary'
+                  className="d-inline"
+                  action={isLikeByUser ?
+                    this.props.unlikeMessage :
+                    this.props.likeMessage
+                  }
+                  actionProps={{id: message.id, user_id: user.id}}
+                  active={isLikeByUser}
+                  sm>👍 {message.like_ids.length}</Button>
+          <UserAvatars ids={message.like_ids} />
         </div>
 {/*        <div className='d-flex flex-row justify-content-end'>
           <button className='btn btn-outline-primary'>Call</button>
@@ -51,3 +52,8 @@ export default class Message extends Component {
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  return { user: state.session.user }
+}
+export default connect(mapStateToProps, { likeMessage, unlikeMessage })(Message);

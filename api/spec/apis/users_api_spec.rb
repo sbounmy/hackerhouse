@@ -290,13 +290,22 @@ describe UsersAPI do
       expect(json_response[0]['phone_number']).to eq '0612345678'
     end
 
-    it 'it only show current user email' do
+    it 'only show current user email' do
       user
       simple_user = create(:user)
       get_as simple_user, "/v1/users"
       expect(json_response).to have(2).items
       expect(json_response.map {|u| u['email'] }.compact).to eq [simple_user.email]
       expect(json_response.map {|u| u['phone_number'] }.compact).to eq ['0612345678']
+    end
+
+    it 'fetches multiple ids' do
+      user
+      user2 = create(:user)
+      user3 = create(:user)
+      get_as user, "/v1/users", q: { "id.in" => [user.id, user2.id]}
+      expect(json_response).to have(2).items
+      expect(json_response.map {|u| u['id'] }).to contain_exactly user.id.to_s, user2.id.to_s
     end
   end
 end
