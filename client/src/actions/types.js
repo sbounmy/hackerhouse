@@ -1,4 +1,5 @@
 export const HOUSE_FETCHED = 'house_fetched';
+export const MESSAGE_LIKED = 'message_liked';
 export const HOUSES_FETCHED = 'houses_fetched';
 export const SESSION_CREATED = 'session_created';
 export const SESSION_DESTROYED = 'session_destroyed';
@@ -10,6 +11,5 @@ export const USER_CREATED = 'user_created';
 export const USER_CREATED_FAILURE = 'user_created_failure';
 export const BALANCE_FETCHED = 'balance_fetched';
 export const ACTIVE_OR_UPCOMING_USERS_FETCHED = 'active_or_upcoming_users_fetched';
-export const HOUSE_MESSAGES_FETCHED = 'house_messages_fetched';
-export const USER_MESSAGES_FETCHED = 'user_messages_fetched';
+export const MESSAGES_FETCHED = 'messages_fetched';
 export const USERS_FETCHED = 'users_fetched';

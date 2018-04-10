@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 
 export default class Expandable extends Component {
   constructor(props) {
@@ -30,7 +31,7 @@ export default class Expandable extends Component {
     const items = this.props.items || [];
     let displays = [];
 
-    items.forEach((item, index) => {
+    _.forEach(items, (item, id, index) => {
       displays.push(this.props.children(item, this.isHidden(index)))
     });
     return (

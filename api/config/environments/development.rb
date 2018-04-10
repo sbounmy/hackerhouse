@@ -44,7 +44,7 @@ Rails.application.configure do
   config.middleware.insert_before 0, Rack::Cors do
     allow do
       origins 'http://localhost:8080', 'http://localhost:3001' # allow react js
-      resource '*', headers: :any, methods: [:get, :post, :options]
+      resource '*', headers: :any, methods: [:get, :post, :put, :delete, :options]
     end
   end
 

@@ -1,15 +1,19 @@
-import React, { Component } from 'react';
-import Moment from 'react-moment';
-import 'moment/locale/fr';
-import UserAvatars from './user_avatars';
-import Avatar from './avatar';
-import _ from 'lodash';
-import Text from './text';
+import React, { Component } from 'react'
+import Moment from 'react-moment'
+import 'moment/locale/fr'
+import UserAvatars from './user_avatars'
+import Avatar from './avatar'
+import _ from 'lodash'
+import Text from './text'
+import { Button } from './bs'
+import { connect } from 'react-redux'
+import { likeMessage, unlikeMessage } from '../actions'
+import Action from '../actions'
 
-export default class Message extends Component {
+class Message extends Component {
   render() {
-    const { message } = this.props;
-    const { user } = message;
+    const { message, user } = this.props;
+    const isLikeByUser = _.includes(message.like_ids, user.id);
 
     return(
       <li className={`border rounded my-3 px-3 py-2 ${this.props.hidden ? 'd-none' : ''}`} key={message.id}>
@@ -29,7 +33,16 @@ export default class Message extends Component {
           <div><Avatar className='ml-2' user={user} xs circle/></div>
         </div>
         <div>
-          <button type="button" class="d-inline btn btn-outline-secondary btn-sm">👍 {message.like_ids.length}</button><UserAvatars ids={message.like_ids} />
+          <Button type='outline-secondary'
+                  className="d-inline"
+                  action={isLikeByUser ?
+                    this.props.unlikeMessage :
+                    this.props.likeMessage
+                  }
+                  actionProps={{id: message.id, user_id: user.id}}
+                  active={isLikeByUser}
+                  sm>👍 {message.like_ids.length}</Button>
+          <UserAvatars ids={message.like_ids} />
         </div>
 {/*        <div className='d-flex flex-row justify-content-end'>
           <button className='btn btn-outline-primary'>Call</button>
@@ -39,3 +52,8 @@ export default class Message extends Component {
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  return { user: state.session.user }
+}
+export default connect(mapStateToProps, { likeMessage, unlikeMessage })(Message);

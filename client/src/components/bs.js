@@ -39,11 +39,20 @@ export const Card = props => {
 
 export const Button = props => {
   const className = classNames('btn',
-                                props.type && `btn-${props.type}`)
-  let onClick = (props.message && (() => { IntercomAPI('showNewMessage', props.message)}))
-                || props.onClick
+                                props.active && 'active',
+                                props.type && `btn-${props.type}`,
+                                props.xs && `btn-xs`,
+                                props.sm && `btn-sm`,
+                                props.md && `btn-md`,
+                                props.lg && `btn-lg`)
+  const onClick = (event) => {
+    (props.message && IntercomAPI('showNewMessage', props.message))
+    || (props.action && props.action(props.actionProps))
+    || (props.onClick && props.onClick(event))
+  }
+
   return (
-    <button type='button' className={className} onClick={onClick}>
+    <button type='button' className={className} onClick={onClick} disabled={props.disabled}>
       {props.children}
     </button>
   )

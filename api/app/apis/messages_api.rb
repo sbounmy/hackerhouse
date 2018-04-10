@@ -20,6 +20,19 @@ class MessagesAPI < Grape::API
           message.add_to_set like_ids: user_id
         end
       end
+
+      desc 'Removes a thumb to message'
+      params do
+        requires :like_id,    type: String, desc: "Unliked by User id"
+      end
+      delete 'like' do
+        Message.find(params[:id]).tap do |message|
+          user_id = declared_params[:like_id]
+          authorize message, :like?
+          raise Pundit::NotAuthorizedError if !current_user.admin? && current_user.id.to_s != user_id
+          message.pull like_ids: user_id
+        end
+      end
     end
 
     params do

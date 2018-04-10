@@ -7,7 +7,8 @@ import { BALANCE_FETCHED, HOUSE_FETCHED, HOUSES_FETCHED,
   SESSION_CREATED, SESSION_FAILED, SESSION_DESTROYED,
   SESSION_FROM_TOKEN, SESSION_FROM_TOKEN_SUCCESS, SESSION_FROM_TOKEN_FAILURE,
   USER_CREATED, USER_CREATED_FAILURE, ACTIVE_OR_UPCOMING_USERS_FETCHED,
-  HOUSE_MESSAGES_FETCHED, USER_MESSAGES_FETCHED, USERS_FETCHED
+  MESSAGES_FETCHED, USERS_FETCHED,
+  MESSAGE_LIKED
 } from './types';
 
 const ROOT_URL = `${process.env.REACT_APP_API}/v1`;
@@ -140,8 +141,9 @@ export function fetchUsers(params) {
   };
 }
 
-export function fetchMessages(house_id) {
-  const url = `${ROOT_URL}/messages?&q[house_id]=${house_id}`;
+export function fetchMessages(params) {
+  const query = qs.stringify(params, {arrayFormat: 'bracket'});
+  const url = `${ROOT_URL}/messages?${query}`;
 
   return async (dispatch) => {
       const res = await axios.get(url, { headers: { 'Authorization': localStorage.getItem('token') } })
@@ -150,22 +152,7 @@ export function fetchMessages(house_id) {
           return new Date(message.created_at);
         });
 
-        dispatch({type: HOUSE_MESSAGES_FETCHED, payload: messages})
-      });
-  };
-}
-
-export function fetchUserMessages(user_id) {
-  const url = `${ROOT_URL}/messages?&q[user_id]=${user_id}`;
-
-  return async (dispatch) => {
-      const res = await axios.get(url, { headers: { 'Authorization': localStorage.getItem('token') } })
-      .then(({data}) => {
-        const messages = _.sortBy(data, message => {
-          return new Date(message.created_at);
-        });
-
-        dispatch({type: USER_MESSAGES_FETCHED, payload: messages})
+        dispatch({type: MESSAGES_FETCHED, payload: messages})
       });
   };
 }
@@ -186,4 +173,23 @@ export function sessionFromToken(tokenFromStorage) {
       return error.response.data
     }
   }
+}
+
+export function likeMessage({id, user_id}) {
+  const url = `${ROOT_URL}/messages/${id}/like`;
+
+  return async (dispatch) => {
+    const res = await axios.put(url, {like_id: user_id}, { headers: { 'Authorization': localStorage.getItem('token') } })
+    dispatch({type: MESSAGE_LIKED, payload: res.data})
+  };
+}
+
+export function unlikeMessage({id, user_id}) {
+  const url = `${ROOT_URL}/messages/${id}/like`;
+
+  return async (dispatch) => {
+    const res = await axios.delete(url, { data: { like_id: user_id },
+                                          headers: { 'Authorization': localStorage.getItem('token') } })
+    dispatch({type: MESSAGE_LIKED, payload: res.data})
+  };
 }

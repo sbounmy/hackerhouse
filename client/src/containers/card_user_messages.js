@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchUserMessages, fetchHouses } from '../actions';
+import { fetchMessages, fetchHouses } from '../actions';
 import Message from '../components/message';
 import MessageTitle from '../components/message_title';
 import HouseTitle from '../components/house_title';
@@ -13,7 +13,7 @@ class CardUserMessages extends Component {
 
   componentDidMount() {
     if (this.props.user) {
-      this.props.fetchUserMessages(this.props.user.id);
+      this.props.fetchMessages({'q[user_id]': this.props.user.id});
       this.props.fetchHouses()
     }
   }
@@ -27,8 +27,8 @@ class CardUserMessages extends Component {
                  created_at_prefix="Envoyé le"
                  title={<MessageTitle message={message}/>}
                  to={<HouseTitle house={this.props.houses[message.house_id]}/>}
-                 hidden={hide} />
-
+                 hidden={hide}
+                 like />
             }
          </Expandable>
       </Card>
@@ -36,8 +36,10 @@ class CardUserMessages extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return { messages: state.user.messages, houses: state.houses }
+const mapStateToProps = (state, props) => {
+  const messages = _.pickBy(state.messages.byId,
+                            message => { return message.user.id == props.user.id })
+  return { messages: messages, houses: state.houses }
 }
 
-export default connect(mapStateToProps, { fetchUserMessages, fetchHouses })(CardUserMessages);
+export default connect(mapStateToProps, { fetchMessages, fetchHouses })(CardUserMessages);

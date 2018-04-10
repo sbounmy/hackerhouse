@@ -6,10 +6,11 @@ import FriendlyName from '../components/friendly_name';
 import Message from '../components/message';
 import MessageTitle from '../components/message_title';
 import Expandable from '../components/expandable';
+import _ from 'lodash';
 
 class CardMessages extends Component {
   componentDidMount() {
-    this.props.fetchMessages(this.props.house_id);
+    if (this.props.house_id) this.props.fetchMessages({'q[house_id]': this.props.house_id})
   }
 
   render() {
@@ -26,7 +27,7 @@ class CardMessages extends Component {
                 title={<MessageTitle message={message} />}
                 to={<div className='text-truncate'><strong><FriendlyName firstname={message.user.firstname} lastname={message.user.lastname} /></strong>
                     <i>, <a href={message.user.bio_url} target="_blank">{message.user.bio_title}</a></i></div>}
-                 hidden={hide}/>
+                 hidden={hide} />
             }
          </Expandable>
       </Card>
@@ -34,8 +35,9 @@ class CardMessages extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return { messages: state.houses.messages }
+const mapStateToProps = (state, props) => {
+  const messages = _.pickBy(state.messages.byId, message => { return message.user.id != props.user.id })
+  return { messages: messages }
 }
 
 export default connect(mapStateToProps, { fetchMessages })(CardMessages);

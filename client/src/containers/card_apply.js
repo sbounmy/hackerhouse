@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Card, Button } from '../components/bs';
-import { fetchUserMessages } from '../actions';
+import { fetchMessages } from '../actions';
 import { ReactTypeformEmbed } from 'react-typeform-embed';
 import Moment from 'react-moment';
 import 'moment/locale/fr';
@@ -15,7 +15,7 @@ class CardApply extends Component {
 
   componentDidMount() {
     if (this.props.user) {
-      this.props.fetchUserMessages(this.props.user.id);
+      this.props.fetchMessages(this.props.user.id);
     }
   }
 
@@ -60,4 +60,4 @@ function mapStateToProps(state) {
   return { user: state.session.user, userMessages: state.user.messages }
 }
 
-export default connect(mapStateToProps, { fetchUserMessages })(CardApply);
+export default connect(mapStateToProps, { fetchMessages })(CardApply);
