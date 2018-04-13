@@ -3,7 +3,7 @@ class ApplicationAPI < Grape::API
   format :json
   formatter :json, Grape::Formatter::ActiveModelSerializers
   insert_after Grape::Middleware::Formatter, Grape::Middleware::Logger, {
-    logger: Logger.new(STDERR),
+    logger: Rails.logger,
     filter: Class.new { def filter(opts) opts.reject { |k, _| k.to_s == 'password' } end }.new,
     headers: %w(version cache-control)
   }

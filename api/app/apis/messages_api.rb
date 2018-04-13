@@ -18,6 +18,11 @@ class MessagesAPI < Grape::API
           authorize message, :like?
           raise Pundit::NotAuthorizedError if !current_user.admin? && current_user.id.to_s != user_id
           message.add_to_set like_ids: user_id
+          # does not refresh field like_ids
+          # message.likes.push(User.find(user_id)) neither
+          # and since we dont expose likes but like_ids to api
+          # we do this little hack :
+          message.reload
         end
       end
 

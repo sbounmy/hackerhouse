@@ -69,6 +69,7 @@ describe MessagesAPI do
     it 'responds succesfully' do
       put_as resident, "/v1/messages/#{message.id}/like", { like_id: resident.id }
       expect(response.status).to eq 200
+      expect(json_response['like_ids']).to eq [resident.id.to_s]
       expect(message.reload.likes).to eq [resident]
     end
 
@@ -81,6 +82,7 @@ describe MessagesAPI do
     it 'is success on admin' do
       put_as admin, "/v1/messages/#{message.id}/like", { like_id: resident.id }
       expect(response.status).to eq 200
+      expect(json_response['like_ids']).to eq [resident.id.to_s]
       expect(message.reload.likes).to eq [resident]
     end
 
@@ -89,6 +91,7 @@ describe MessagesAPI do
         put_as resident, "/v1/messages/#{message.id}/like", { like_id: resident.id }
       end
       expect(response.status).to eq 200
+      expect(json_response['like_ids']).to eq [resident.id.to_s]
       expect(message.reload.likes).to eq [resident]
     end
 
@@ -106,12 +109,5 @@ describe MessagesAPI do
       put_as resident, "/v1/messages/#{message.id}/like", { like_id: create(:user, house: hq, check: [2.months.from_now, 6.months.from_now]).id }
       expect(response.status).to eq 403
     end
-
-    it 'can post using admin token' do
-      expect {
-        create_message admin
-      }.to change { padawan.messages.count }.by(1)
-    end
-
   end
 end

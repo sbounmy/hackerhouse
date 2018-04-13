@@ -56,6 +56,9 @@ RSpec.configure do |config|
 
   config.include ControllerHelper
   config.include StripeHelper, type: :feature
+  config.include ReactHelper,  type: :feature
+  config.include FeatureHelper,  type: :feature
+  config.include AppHelper,  :rails
 
   # Wipe database to have a clean test environment
   config.after(:each) do
@@ -64,20 +67,11 @@ RSpec.configure do |config|
 
   config.before(type: :feature) do
     Rails.application.config.action_dispatch.show_exceptions = true
-    Capybara.reset_sessions!
-    if /remote_firefox/.match Capybara.current_driver.to_s
-      ip = `/sbin/ip route|awk '/scope/ { print $9 }'`
-      ip = ip.gsub "\n", ""
-      Capybara.server_port = "3000"
-      Capybara.server_host = ip
-      Capybara.app_host = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}"
-    end
   end
 
   config.after(type: :feature) do
     Rails.application.config.action_dispatch.show_exceptions = false
     Capybara.use_default_driver
-    Capybara.app_host = nil
   end
 
   # let spec/apis/* access to request helpers : get, post, put ...

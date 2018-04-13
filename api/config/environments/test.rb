@@ -39,7 +39,8 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
-  config.logger = Logger.new(STDOUT)
+  # config.logger = Logger.new(STDOUT) #uncomment this to output log in console
+
   config.middleware.insert_before 0, Rack::Cors do
     allow do
       origins 'http://test_app:3001' # allow react js

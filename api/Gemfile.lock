@@ -7,6 +7,13 @@ GIT
       multi_json (~> 1.0)
       stripe (>= 2.0.3)
 
+GIT
+  remote: git://github.com/romanbsd/mongoid_colored_logger.git
+  revision: 8b3a88fb442b2d6d3335fcaeb6543b2f94b083d3
+  specs:
+    mongoid_colored_logger (0.2.4)
+      mongoid
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -284,6 +291,7 @@ DEPENDENCIES
   launchy
   listen (~> 3.0.5)
   mongoid (= 6.0.2)
+  mongoid_colored_logger!
   mongoid_rails_migrations
   oauth2
   postmark-rails

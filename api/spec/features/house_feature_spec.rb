@@ -1,15 +1,11 @@
 require 'rails_helper'
 
-feature 'checkout' do
-  # let(:stripe) { StripeMock.create_test_helper }
+feature 'house', :rails do
 
   before do
-    # StripeMock.start
-    # stripe.create_plan(id: 'basic_monthly', amount: 52000)
     I18n.locale = :fr #for date picker
   end
 
-  # after { StripeMock.stop }
   scenario 'when creating new house' do
     skip 'new to figure out redirect_uri issue'
     visit '/houses/new'

@@ -1,14 +1,6 @@
 require 'rails_helper'
 
-feature 'iban' do
-  # let(:stripe) { StripeMock.create_test_helper }
-
-  before do
-    # StripeMock.start
-    # stripe.create_plan(id: 'basic_monthly', amount: 52000)
-    I18n.locale = :fr #for date picker
-  end
-
+feature 'iban', :rails do
   it 'can add iban' do
     admin = create(:user, admin: true)
     user = create(:user, stripe: true)

@@ -7,6 +7,11 @@ import { destroySession } from '../actions';
 import _ from 'lodash';
 
 class NavBar extends Component {
+  logout = async () => {
+     await this.props.destroySession()
+     this.props.history.push('/sessions/new')
+  }
+
   renderToggle() {
     if (this.props.user && !this.props.user.house_slug_id) {
       return ''
@@ -69,13 +74,12 @@ class NavBar extends Component {
             </a>
           </li>*/}
           <li className="nav-item ml-2">
-            <a
-              title= "@+ sous le Bus!"
-              className='nav-link'
-              href="/sessions/new"
-              onClick={this.props.destroySession}>
-              <span className="icon icon-log-out"></span>
-            </a>
+            <Link to="/sessions/new"
+                  title= "@+ sous le Bus!"
+                  className='nav-link logout'
+                  onClick={this.logout}>
+                  <span className="icon icon-log-out"></span>
+            </Link>
           </li>
         </ul>
 

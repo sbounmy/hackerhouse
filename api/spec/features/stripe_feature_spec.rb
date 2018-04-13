@@ -1,15 +1,6 @@
 require 'rails_helper'
 
-feature 'checkout' do
-  # let(:stripe) { StripeMock.create_test_helper }
-
-  before do
-    # StripeMock.start
-    # stripe.create_plan(id: 'basic_monthly', amount: 52000)
-    I18n.locale = :fr #for date picker
-  end
-
-  # after { StripeMock.stop }
+feature 'checkout', :rails do
   scenario 'paying with correct card' do
     pk = "pk_test_TZNvputhVSjs6WFIZy4b4hH9"
     sk = "sk_test_4h4o1ck9feZX9VzinYNX4Vwm"
@@ -59,7 +50,7 @@ feature 'checkout' do
       end
       fill_credit_card
       expect(page).to have_no_css('.stripe_checkout_app')
-      sleep 5
+      sleep 4
 
       alert = page.driver.browser.switch_to.alert
       expect(alert.text).to match /42 x Merci/
@@ -80,7 +71,7 @@ feature 'checkout' do
     expect {
       fill_credit_card
       expect(page).to have_no_css('.stripe_checkout_app')
-      sleep 10
+      sleep 15
       alert = page.driver.browser.switch_to.alert
       expect(alert.text).to match /42 x Merci/
       alert.accept

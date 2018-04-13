@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Balance' do
+feature 'Balance', :rails do
 
   context 'with an existing house max users 4' do
     let(:hq) { create(:house, slug_id: 'hq', rent_monthly: 10_000) }

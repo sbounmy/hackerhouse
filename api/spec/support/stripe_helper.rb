@@ -14,11 +14,10 @@ module StripeHelper
   def select_date(datetime, from:)
     I18n.locale = :fr
       date = I18n.l datetime.to_date # must be d/m/y format
-    I18n.locale = :en  
-    puts "$('#{from}')[0]._flatpickr.setDate('#{date}');"
+    I18n.locale = :en
 
     page.execute_script("$('#{from}')[0]._flatpickr.setDate('#{date}');")
-    
+
     return true
   end
 
