@@ -13,7 +13,7 @@ import Action from '../actions'
 class Message extends Component {
   render() {
     const { message, user } = this.props;
-    const { author } = message;
+    const author = message.user;
     const isLikeByUser = _.includes(message.like_ids, user.id);
 
     return(
