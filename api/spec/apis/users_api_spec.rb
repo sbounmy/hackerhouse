@@ -207,7 +207,7 @@ describe UsersAPI do
       user
       hq = create(:house)
       didix = create(:user, firstname: "Edmond Xavier", lastname: "Collot", house: hq)
-      get "/v1/users", q: { house_id: hq.id }
+      get "/v1/users", params: { q: { house_id: hq.id } }
       expect(response.status).to eq 200
       expect(json_response).to have(1).items
       expect(json_response[0]['firstname']).to eq "Edmond Xavier"
@@ -217,7 +217,7 @@ describe UsersAPI do
     it 'can filter by inactive' do
       user
       ghost = create(:user, firstname: 'Brian', lastname: 'Ghost', check_out: 2.months.ago)
-      get "/v1/users", q: { active: false }
+      get "/v1/users", params: { q: { active: false } }
       expect(response.status).to eq 200
 
       expect(json_response).to have(2).items
@@ -228,7 +228,7 @@ describe UsersAPI do
     it 'can filter by active' do
       user.update_attributes check_out: 2.months.from_now
       ghost = create(:user, firstname: 'Brian', lastname: 'Ghost',  check_out: 2.months.ago)
-      get "/v1/users", q: { active: true }
+      get "/v1/users", params: { q: { active: true } }
       expect(response.status).to eq 200
 
       expect(json_response).to have(1).items
@@ -239,7 +239,7 @@ describe UsersAPI do
     it 'can filter by active with integer 1' do
       user.update_attributes check_out: 2.months.from_now
       ghost = create(:user, firstname: 'Brian', lastname: 'Ghost',  check_out: 2.months.ago)
-      get "/v1/users", q: { active: 1 }
+      get "/v1/users", params: { q: { active: 1 } }
       expect(response.status).to eq 200
 
       expect(json_response).to have(1).items
@@ -249,7 +249,7 @@ describe UsersAPI do
 
     it 'can filter upcoming' do
       user.update_attributes check_in: 2.months.from_now, check_out: 5.month.from_now
-      get "/v1/users", q: { upcoming: 1 }
+      get "/v1/users", params: { q: { upcoming: 1 } }
       expect(response.status).to eq 200
 
       expect(json_response).to have(1).items
@@ -260,7 +260,7 @@ describe UsersAPI do
     it 'can filter active_or_upcoming' do
       user.update_attributes check_in: 2.months.from_now, check_out: 5.month.from_now
       ghost = create(:user, firstname: 'Brian', lastname: 'Ghost',  check_in: Date.yesterday, check_out: 2.months.from_now)
-      get "/v1/users", q: { active_or_upcoming: 1 }
+      get "/v1/users", params: { q: { active_or_upcoming: 1 } }
 
       expect(response.status).to eq 200
       expect(json_response).to have(2).items
@@ -273,7 +273,7 @@ describe UsersAPI do
     it 'can filter active_or_upcoming and by house' do
       user.update_attributes check_in: 2.months.from_now, check_out: 5.month.from_now
       ghost = create(:user, firstname: 'Brian', lastname: 'Ghost',  check_in: Date.yesterday, check_out: 2.months.from_now)
-      get "/v1/users", q: { active_or_upcoming: 1, house_id: user.house_id }
+      get "/v1/users", params: { q: { active_or_upcoming: 1, house_id: user.house_id } }
 
       expect(response.status).to eq 200
       expect(json_response).to have(1).items
@@ -303,7 +303,7 @@ describe UsersAPI do
       user
       user2 = create(:user)
       user3 = create(:user)
-      get_as user, "/v1/users", q: { "id.in" => [user.id, user2.id]}
+      get_as user, "/v1/users", params: { q: { "id.in" => [user.id, user2.id]} }
       expect(json_response).to have(2).items
       expect(json_response.map {|u| u['id'] }).to contain_exactly user.id.to_s, user2.id.to_s
     end

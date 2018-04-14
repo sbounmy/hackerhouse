@@ -16,7 +16,7 @@ class CardApply extends Component {
   componentDidMount = async () => {
     if (this.props.user) {
       const res = await this.props.fetchMessages({'q[user_id]': this.props.user.id});
-      if (_.isEmpty(res)) this.typeformEmbed.typeform.open()
+      if (_.isEmpty(res)) this.openForm()
     }
   }
 
