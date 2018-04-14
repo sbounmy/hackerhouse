@@ -47,11 +47,11 @@ jobs:
           command: ls -la
       # build our Docker images
       - restore_cache:
-          key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "Dockerfile" }}
+          key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "./client/package.json" }}-{{ checksum "./api/Gemfile.lock" }}
       - run:
           command: docker-compose up -d --build test_api test_app
       - save_cache:
-          key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "Dockerfile" }}
+          key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "./client/package.json" }}-{{ checksum "./api/Gemfile.lock" }}
           paths:
             - ./docker-build
       - run:
