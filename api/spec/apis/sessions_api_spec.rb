@@ -9,7 +9,7 @@ describe SessionsAPI do
   describe "POST /v1/sessions" do
 
     def new_session(params={})
-      post '/v1/sessions', { email: 'john.snow@gmail.com', password: 'got1234' }.merge(params)
+      post '/v1/sessions', params: { email: 'john.snow@gmail.com', password: 'got1234' }.merge(params)
     end
 
     context 'with valid params' do

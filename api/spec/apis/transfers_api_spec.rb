@@ -51,7 +51,7 @@ describe TransfersAPI do
 
     it 'can be a manual net amount' do
       expect {
-        post_as :admin, '/v1/transfers/hq', amount: 3_400.75
+        post_as :admin, '/v1/transfers/hq', params: { amount: 3_400.75 }
       }.to change { transfers.to_a.size }.by(1)
       expect(transfers.map &:amount).to contain_exactly(3_400_75)
       expect(transfers.map &:transfer_group).to contain_exactly(transfer_name)
@@ -59,7 +59,7 @@ describe TransfersAPI do
 
     it 'can be a manual net amount cant be higher than house#amount' do
       expect {
-        post_as :admin, '/v1/transfers/hq', amount: 11_000
+        post_as :admin, '/v1/transfers/hq', params: { amount: 11_000 }
       }.to_not change { transfers.to_a.size }
       expect(response.status).to eq 500
       expect(json_response['error']).to match /Amount is too high/

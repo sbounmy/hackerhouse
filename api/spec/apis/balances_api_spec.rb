@@ -36,7 +36,7 @@ describe BalancesAPI do
     end
 
     it 'is error on invalid token' do
-      get '/v1/balances/hq', token: 'blabla'
+      get '/v1/balances/hq', params: { token: 'blabla' }
       expect(response.status).to eq 403
     end
   end
@@ -109,7 +109,7 @@ describe BalancesAPI do
 
     it 'does not notify if false' do
       expect {
-        post_as :admin, '/v1/balances/hq', notify: false
+        post_as :admin, '/v1/balances/hq', params: { notify: false }
       }.to_not change { ActionMailer::Base.deliveries.count }
     end
 

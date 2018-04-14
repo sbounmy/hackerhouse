@@ -23,7 +23,7 @@ describe UsersAPI do
     after { StripeMock.stop }
 
     def create_user(params={})
-      post "/v1/users", default_params.merge(params)
+      post "/v1/users", params: default_params.merge(params)
     end
 
     context 'with valid token' do
@@ -65,7 +65,7 @@ describe UsersAPI do
 
       it 'accepts date as %d\/%m\/%Y' do
         expect {
-          create_user check_in: tomorrow.strftime("%d/%m/%Y")  
+          create_user check_in: tomorrow.strftime("%d/%m/%Y")
         }.to change { hq.users.count }.by(1)
 
         customer = Stripe::Customer.retrieve('test_cus_3')
@@ -155,27 +155,27 @@ describe UsersAPI do
 
     it 'is forbidden to guest' do
       expect {
-        put "/v1/users/#{user.id}", { avatar_url: avatar }
+        put "/v1/users/#{user.id}", params: { avatar_url: avatar }
       }.to_not change { user.reload.avatar_url }.from(nil)
       expect(response.status).to eq 403
     end
 
     it 'updates its own avatar url' do
       expect {
-        put "/v1/users/#{user.id}", { avatar_url: avatar }, { 'Authorization' => token(user) }
+        put "/v1/users/#{user.id}", params: { avatar_url: avatar }, headers: { 'Authorization' => token(user) }
       }.to change { user.reload.avatar_url }.from(nil).to(avatar)
     end
 
     it 'updates its own avatar url using token parameter' do
       expect {
-        put "/v1/users/#{user.id}", { avatar_url: avatar, token: token(user) }
+        put "/v1/users/#{user.id}", params: { avatar_url: avatar, token: token(user) }
       }.to change { user.reload.avatar_url }.from(nil).to(avatar)
     end
 
     it 'is forbidden to update someone else avatar url' do
       user2 = create(:user, avatar_url: nil)
       expect {
-        put "/v1/users/#{user2.id}", { avatar_url: avatar }, { 'Authorization' => token(user) }
+        put "/v1/users/#{user2.id}", params: { avatar_url: avatar }, headers: { 'Authorization' => token(user) }
       }.to_not change { user2.reload.avatar_url }.from(nil)
       expect(response.status).to eq 403
     end
@@ -184,7 +184,7 @@ describe UsersAPI do
       user2 = create(:user, avatar_url: nil, stripe: true)
       user.set admin: true
       expect {
-        put "/v1/users/#{user2.id}", { avatar_url: avatar }, { 'Authorization' => token(user) }
+        put "/v1/users/#{user2.id}", params: { avatar_url: avatar }, headers: { 'Authorization' => token(user) }
       }.to change { user2.reload.avatar_url }.from(nil).to(avatar)
       expect(response.status).to eq 200
     end

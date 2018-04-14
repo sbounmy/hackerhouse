@@ -16,23 +16,23 @@ module ControllerHelper
     end
   end
 
-  def get_as role_or_record, params={}, headers={}
+  def get_as role_or_record, url, opts={params: {}, headers: {}}
     allow_any_instance_of(AuthorizeApiRequest).to receive(:user).and_return user_object(role_or_record)
-    get params, headers
+    get url, opts
   end
 
-  def delete_as role_or_record, params={}, headers={}
+  def delete_as role_or_record, url, opts={params: {}, headers: {}}
     allow_any_instance_of(AuthorizeApiRequest).to receive(:user).and_return user_object(role_or_record)
-    delete params, headers
+    delete url, opts
   end
 
-  def post_as role_or_record, params={}, headers={}
+  def post_as role_or_record, url, opts={params: {}, headers: {}}
     allow_any_instance_of(AuthorizeApiRequest).to receive(:user).and_return user_object(role_or_record)
-    post params, headers
+    post url, opts
   end
 
-  def put_as role_or_record, params={}, headers={}
+  def put_as role_or_record, url, opts={params: {}, headers: {}}
     allow_any_instance_of(AuthorizeApiRequest).to receive(:user).and_return user_object(role_or_record)
-    put params, headers
+    put url, opts
   end
 end

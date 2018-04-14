@@ -10,4 +10,8 @@ class Guest
   def active_on?(house)
     false
   end
+
+  def house_id
+    nil
+  end
 end

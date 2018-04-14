@@ -6,7 +6,7 @@ describe UsersV2API do
   describe "POST /v2/users" do
 
     def create_user(params={})
-      post "/v2/users", {
+      post "/v2/users", params: {
         email: 'stephane@hackerhouse.paris',
         firstname: 'Stephane',
         lastname: 'Bounmy',
@@ -60,7 +60,7 @@ describe UsersV2API do
 
       it 'doesnt display sensible information' do
         create_user
-        expect(json_response.keys).to eq ["id", "firstname", "lastname", "avatar_url", "bio_title", "bio_url", "check_in", "check_out", "active", "admin", "house_slug_id"]
+        expect(json_response.keys).to eq ["id", "firstname", "lastname", "avatar_url", "bio_title", "bio_url", "check_in", "check_out", "active", "admin", "house_slug_id", "house_id"]
       end
 
       it 'generates a password by default' do

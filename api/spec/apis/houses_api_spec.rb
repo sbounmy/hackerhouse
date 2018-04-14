@@ -64,7 +64,7 @@ describe HousesAPI do
       let!(:hq) { create(:house) }
 
       def get_houses(q={})
-        get "/v1/houses", q: q
+        get "/v1/houses", params: { q: q }
       end
 
       it "is success" do
@@ -89,7 +89,7 @@ describe HousesAPI do
   describe "POST /v1/houses" do
 
      def create_house(params={})
-      post "/v1/houses", build(:house).attributes.merge(params)
+      post "/v1/houses", params: build(:house).attributes.merge(params)
     end
 
     context 'with valid params' do
