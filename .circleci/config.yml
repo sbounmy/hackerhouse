@@ -50,8 +50,6 @@ jobs:
           key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "Dockerfile" }}
       - run:
           command: docker-compose up -d --build test_api test_app
-      - run:
-          command: docker-compose run test_app npm -v
       - save_cache:
           key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "Dockerfile" }}
           paths:
