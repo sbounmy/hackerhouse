@@ -49,7 +49,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "Dockerfile" }}
       - run:
-          command: docker-compose build test test_app test_api
+          command: docker-compose build
       - save_cache:
           key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "Dockerfile" }}
           paths:
