@@ -20,9 +20,4 @@ module StripeHelper
 
     return true
   end
-
-  def close_typeform
-    expect(page).to have_css('[alt=close-typeform]')
-    page.execute_script("document.querySelectorAll('[alt=close-typeform]')[0].click()")
-  end
 end

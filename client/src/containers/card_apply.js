@@ -13,17 +13,11 @@ class CardApply extends Component {
     this.openForm = this.openForm.bind(this);
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     if (this.props.user) {
-      this.props.fetchMessages(this.props.user.id);
+      const res = await this.props.fetchMessages({'q[user_id]': this.props.user.id});
+      if (_.isEmpty(res)) this.typeformEmbed.typeform.open()
     }
-  }
-
-  // return false when already applied
-  // return true otherwise
-  // should have a boolean flag on API
-  neverApplied() {
-    return _.isEmpty(this.props.userMessages);
   }
 
   openForm() {
@@ -42,7 +36,6 @@ class CardApply extends Component {
             hideHeader={true}
             popup={true}
             mode="drawer_right"
-            autoOpen={this.neverApplied()}
             ref={(tf => this.typeformEmbed = tf)}/>
         </div>
         <p>Viens vivre avec nous !</p>
@@ -56,8 +49,8 @@ class CardApply extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return { user: state.session.user, userMessages: state.user.messages }
+const mapStateToProps = (state) => {
+  return { user: state.session.user }
 }
 
 export default connect(mapStateToProps, { fetchMessages })(CardApply);

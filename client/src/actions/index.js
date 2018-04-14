@@ -147,13 +147,12 @@ export function fetchMessages(params) {
 
   return async (dispatch) => {
       const res = await axios.get(url, { headers: { 'Authorization': localStorage.getItem('token') } })
-      .then(({data}) => {
-        const messages = _.sortBy(data, message => {
-          return new Date(message.created_at);
-        });
-
-        dispatch({type: MESSAGES_FETCHED, payload: messages})
+      const messages = _.sortBy(res.data, message => {
+        return new Date(message.created_at);
       });
+
+      dispatch({type: MESSAGES_FETCHED, payload: messages})
+      return messages;
   };
 }
 
