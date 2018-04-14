@@ -46,6 +46,7 @@ services:
     command: npm start
     volumes:
       - ./client:/app
+      - ./client/node_modules:/app/node_modules
     ports: ['3001']
   app:
     build: ./client
