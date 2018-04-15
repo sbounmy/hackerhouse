@@ -62,6 +62,26 @@ describe MessagesAPI do
       }.to change { padawan.messages.count }.by(1)
     end
 
+    it 'emails house active users' do
+      alumni = create(:user, house: hq, check_in: 4.month.ago, check_out: 2.month.ago)
+      joe = create(:user, house: hq, check_in: 4.month.ago, check_out: 2.month.from_now)
+      expect {
+        create_message padawan
+      }.to change { deliveries.count }.by(1)
+      expect(last_delivery.to).to eq [joe.email]
+      expect(last_delivery.subject).to match /Nouveau message pour Canal Street/
+      expect(last_delivery.body).to match 'Salut, je suis'
+    end
+
+    it 'emails house active users even without' do
+      alumni = create(:user, house: hq, check_in: 4.month.ago, check_out: 2.month.ago)
+      expect {
+        create_message padawan
+      }.to change { deliveries.count }.by(1)
+      expect(last_delivery.to).to eq []
+      expect(last_delivery.subject).to match /Nouveau message pour Canal Street/
+      expect(last_delivery.body).to match 'Salut, je suis'
+    end
   end
 
   describe "PUT /v1/messages/:id/like" do

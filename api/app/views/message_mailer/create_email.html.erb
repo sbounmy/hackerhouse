@@ -1,0 +1,83 @@
+<h2><%= @user.firstname %> vient de postuler</h2>
+
+<table border="0" cellpadding="0" cellspacing="0" class="img-responsive">
+  <tbody>
+    <tr>
+      <td align="left">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr>
+              <td style='width: 50px;padding-right: 10px;'> <img class='avatar' src="<%= @user.avatar_url -%>"/>
+              <td>
+                <strong><%= @user.firstname -%></strong><br/>
+                <%= @user.bio_title -%>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table border="0" cellpadding="0" cellspacing="0">
+  <tbody>
+    <tr>
+      <td align="left">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr>
+              <td class="content-block">
+                <p>
+                  <blockquote><%= @message.body %></blockquote>
+                </p>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
+  <tbody>
+    <tr>
+      <td align="center">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr>
+              <td> <a href="https://app.hackerhouse.paris/dashboard/house" target="_blank">Répondre 👍</a> </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<hr/>
+<table border="0" cellpadding="0" cellspacing="0" class="">
+  <tbody>
+    <tr>
+      <td align="left">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr>
+              <td><%= l @message.check_in, format: :long -%></td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+      <td align="right">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr>
+              <td><%= l @message.check_out, format: :long -%></td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<hr/>
+<p>Good luck! Hope it works.</p>
+<p>À ta dispo,</p>

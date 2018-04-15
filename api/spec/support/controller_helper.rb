@@ -35,4 +35,12 @@ module ControllerHelper
     allow_any_instance_of(AuthorizeApiRequest).to receive(:user).and_return user_object(role_or_record)
     put url, opts
   end
+
+  def deliveries
+    ActionMailer::Base.deliveries
+  end
+
+  def last_delivery
+    deliveries.last
+  end
 end
