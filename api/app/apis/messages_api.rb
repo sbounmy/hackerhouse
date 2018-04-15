@@ -51,8 +51,8 @@ class MessagesAPI < Grape::API
     post do
       Message.new(declared_params).tap do |message|
         authorize message, :create?
-        MessageMailer.create_email(message).deliver_now
         message.save!
+        MessageMailer.create_email(message).deliver_now
       end
     end
 
