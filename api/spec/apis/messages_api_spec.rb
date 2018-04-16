@@ -70,7 +70,7 @@ describe MessagesAPI do
       }.to change { deliveries.count }.by(1)
       expect(last_delivery.to).to eq [joe.email]
       expect(last_delivery.subject).to match /Nouveau message pour Canal Street/
-      expect(last_delivery.body).to match 'Salut, je suis'
+      expect(last_delivery.body.encoded).to match 'Salut, je suis'
     end
 
     it 'emails house active users even without' do
@@ -80,7 +80,7 @@ describe MessagesAPI do
       }.to change { deliveries.count }.by(1)
       expect(last_delivery.to).to eq []
       expect(last_delivery.subject).to match /Nouveau message pour Canal Street/
-      expect(last_delivery.body).to match 'Salut, je suis'
+      expect(last_delivery.body.encoded).to match 'Salut, je suis'
     end
   end
 
