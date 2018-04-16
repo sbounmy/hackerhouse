@@ -307,7 +307,6 @@ DEPENDENCIES
   mongoid_rails_migrations
   oauth2
   postmark-rails
-  pry
   pry-rails
   puma (~> 3.0)
   pundit
