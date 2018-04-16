@@ -43,6 +43,7 @@ feature 'messages' do
     expect(page).to have_css('[alt=close-typeform]', wait: 10) # wait for typeform to close properly
     within_frame(0) do
       expect(page).to have_content("Hello World Julie")
+      expect(page).to have_content("Hello World Julie-SANDBOX_TYPEFORM")
     end
   end
 end

@@ -4,6 +4,7 @@ import { Card, Button } from '../components/bs';
 import { fetchMessages } from '../actions';
 import { ReactTypeformEmbed } from 'react-typeform-embed';
 import Moment from 'react-moment';
+import qs from 'query-string';
 import 'moment/locale/fr';
 import _ from 'lodash';
 
@@ -24,6 +25,23 @@ class CardApply extends Component {
     this.typeformEmbed.typeform.open();
   }
 
+  applyParams() {
+    const { user } = this.props
+    let params = {
+      firstname: user.firstname,
+      lastname: user.lastname,
+      email: user.email,
+      user_id: user.id
+    }
+
+    // https://www.typeform.com/help/sandbox/
+    if (process.env.NODE_ENV != 'production') {
+      params['__dangerous-disable-submissions'] = 1
+      params.firstname = `${params.firstname}-SANDBOX_TYPEFORM` // need a visual way to know it is sandbox
+    }
+    return qs.stringify(params)
+  }
+
   render() {
     const { user } = this.props;
 
@@ -32,7 +50,7 @@ class CardApply extends Component {
             title="Séjour 😴">
         <div className='apply-popup'>
           <ReactTypeformEmbed
-            url={`https://hackerhouseparis.typeform.com/to/qmztfk?firstname=${user.firstname}&lastname=${user.lastname}&email=${user.email}&user_id=${user.id}`}
+            url={`https://hackerhouseparis.typeform.com/to/qmztfk?${this.applyParams()}`}
             hideHeader={true}
             popup={true}
             mode="drawer_right"
