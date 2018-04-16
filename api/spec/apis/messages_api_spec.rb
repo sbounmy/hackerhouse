@@ -69,6 +69,8 @@ describe MessagesAPI do
         create_message padawan
       }.to change { deliveries.count }.by(1)
       expect(last_delivery.to).to eq [joe.email]
+      expect(last_delivery.from).to eq ['julie@hackerhouse.paris']
+      expect(last_delivery.reply_to).to eq [padawan.email]
       expect(last_delivery.subject).to match /Nouveau message pour Canal Street/
       expect(last_delivery.body.encoded).to match 'Salut, je suis'
     end
@@ -78,10 +80,29 @@ describe MessagesAPI do
       expect {
         create_message padawan
       }.to change { deliveries.count }.by(1)
+      expect(last_delivery.from).to eq ['julie@hackerhouse.paris']
       expect(last_delivery.to).to eq []
+      expect(last_delivery.reply_to).to eq [padawan.email]
       expect(last_delivery.subject).to match /Nouveau message pour Canal Street/
       expect(last_delivery.body.encoded).to match 'Salut, je suis'
     end
+
+    it 'accepts parameters as body json' do
+      expect {
+        # when using body: {...}.to_json it raises unknown body
+        # https://relishapp.com/rspec/rspec-rails/docs/request-specs/request-spec#providing-json-data
+        post_as padawan, '/v1/messages', params: {
+          check_in: 1.month.from_now,
+          check_out: 3.month.from_now,
+          house_id: hq.id.to_s,
+          user_id: padawan.id.to_s,
+          body: 'Salut, je suis Benoit, étudiant en entrepreneuriat & surfer qui vient faire un stage sur Paris en startup (Legalife) à partir du 2 Avril pour 6 mois. Je compte lancer par la suite (septembre ou janvier) ma start-up en biotech.'
+        }.to_json, headers: { 'Content-Type' => 'application/json',
+          'ACCEPT' => 'application/json' }
+      }.to change { padawan.messages.count }.by(1)
+      expect(json_response['body']).to eq 'Salut, je suis Benoit, étudiant en entrepreneuriat & surfer qui vient faire un stage sur Paris en startup (Legalife) à partir du 2 Avril pour 6 mois. Je compte lancer par la suite (septembre ou janvier) ma start-up en biotech.'
+    end
+
   end
 
   describe "PUT /v1/messages/:id/like" do

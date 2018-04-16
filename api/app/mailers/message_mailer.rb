@@ -6,9 +6,13 @@ class MessageMailer < ApplicationMailer
     @user = message.user
     @house = message.house
     @residents = @house.users.active
-    mail( to: @residents.pluck(:email),
-          from: "#{@user.firstname} (HackerHouse) <#{@user.email}>",
-          subject: "Nouveau message pour #{@house.name} du #{I18n.l @message.check_in, format: :long} - #{I18n.l @message.check_out, format: :long}",
-          track_opens: 'true')
+    from = Mail::Address.new 'julie@hackerhouse.paris'
+    from.display_name = "#{@user.firstname} (HackerHouse)"
+
+    mail(to: @residents.pluck(:email),
+         from: from.format,
+         reply_to: @user.email,
+         subject: "Nouveau message pour #{@house.name} du #{I18n.l @message.check_in, format: :long} - #{I18n.l @message.check_out, format: :long}",
+         track_opens: 'true')
   end
 end
