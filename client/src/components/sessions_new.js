@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Field, reduxForm } from 'redux-form';
 
 export const LINKEDIN_REDIRECT_URI = process.env.REACT_APP_LINKEDIN_REDIRECT_URI;
+export const LINKEDIN_CLIENT_ID = process.env.REACT_APP_LINKEDIN_CLIENT_ID;
 
 class SessionsNew extends Component {
   componentDidMount() {
@@ -40,8 +41,7 @@ class SessionsNew extends Component {
 
   render() {
     const { handleSubmit } = this.props;
-    const clientId = '780cbbzyluuf0f';
-    const linkedinOauth = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${LINKEDIN_REDIRECT_URI}&state=kef`
+    const linkedinOauth = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${LINKEDIN_CLIENT_ID}&redirect_uri=${LINKEDIN_REDIRECT_URI}&state=kef`
     return (
       <div className='row align-items-center'>
         <div className='col-lg-6 text-center'>
