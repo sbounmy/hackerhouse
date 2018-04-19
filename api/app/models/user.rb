@@ -113,9 +113,9 @@ class User
 
     if !admin && previous_changes[:check_out] && check_out.future?
       if (_check_out_was > check_out)
-        UserMailer.check_out_earlier_email(self).deliver_now
+        UserMailer.with(user: self).check_out_earlier_email.deliver_now
       elsif (_check_out_was < check_out)
-        UserMailer.check_out_later_email(self).deliver_now
+        UserMailer.with(user: self).check_out_later_email.deliver_now
       end
     end
   end

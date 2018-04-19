@@ -165,4 +165,10 @@ class House
       { plan: id, quantity: plan[:quantity]}
     end
   end
+
+  def amount
+    stripe_plan_ids.sum do |plan_id|
+      amount_for(plan_id)
+    end
+  end
 end

@@ -49,7 +49,11 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "./client/package.json" }}-{{ checksum "./api/Gemfile.lock" }}
       - run:
-          command: docker-compose up -d --build test_api test_app
+          name: "Build app and api image"
+          command: docker-compose build app api
+      - run:
+          name: "Up test_app and test_api container"
+          command: docker-compose up -d test_app test_api
       - save_cache:
           key: dependency-cache-{{ checksum "docker-compose.yml" }}-{{ checksum "./client/package.json" }}-{{ checksum "./api/Gemfile.lock" }}
           paths:
