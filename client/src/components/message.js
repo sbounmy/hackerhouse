@@ -18,35 +18,31 @@ class Message extends Component {
 
     return(
       <li className={`border rounded my-3 px-3 py-2 ${this.props.hidden ? 'd-none' : ''}`} key={message.id}>
-        <div className='d-flex flex-row justify-content-between align-items-start'>
-          <h6 className="d-block mt-0 mb-1">
-            {this.props.title}
-          </h6>
-          <span>{this.props.created_at_prefix} <Moment format='DD/MM'>{message.created_at}</Moment></span>
-        </div>
-        <div className='d-flex flex-row justify-content-between'>
-          <div style={{'min-width': 0}}>
+        <div className='d-flex flex-row align-items-start'>
+          <Avatar className='mx-2' user={author} sm circle/>
+          <div style={{'min-width': '0px'}} className='col-2'>
             {this.props.to}
-            <Text className="my-2 py-1">
+            <Moment format='DD/MM'>{message.created_at}</Moment>
+          </div>
+          <div style={{'min-width': 0}}>
+            <Text className="mb-1">
               {message.body}
             </Text>
-          </div>
-          <div><Avatar className='ml-2' user={author} xs circle/></div>
-        </div>
-        <div>
-          <Button type='outline-secondary'
+            <h6 className="d-block mt-0 mb-1">
+              {this.props.title}
+            </h6>
+            <div>
+              <Button type='outline-secondary'
                   className="d-inline"
                   action={this.props.likeMessage}
                   actionProps={{id: message.id, user_id: user.id}}
                   active={isLikeByUser}
                   disabled={isLikeByUser}
                   sm>👍 {message.like_ids.length}</Button>
-          <UserAvatars ids={message.like_ids} />
+              <UserAvatars ids={message.like_ids} />
+            </div>
+          </div>
         </div>
-{/*        <div className='d-flex flex-row justify-content-end'>
-          <button className='btn btn-outline-primary'>Call</button>
-          <button className='btn btn-primary'>Email</button>
-        </div>*/}
       </li>
     )
   }

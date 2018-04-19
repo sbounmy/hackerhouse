@@ -17,7 +17,7 @@ export default class Text extends Component {
   }
 
   render() {
-    const className = classNames(this.props.classNames,
+    const className = classNames(this.props.className,
                       this.state.truncate ? 'clickable text-truncate' : 'clickable')
     return (
       <p className={className} onClick={this.toggleBody}>

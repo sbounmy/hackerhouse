@@ -23,10 +23,9 @@ class CardMessages extends Component {
          <Expandable show={3} items={this.props.messages}>
             { (message, hide) =>
               <Message message={message}
-                created_at_prefix="Reçu le"
                 title={<MessageTitle message={message} />}
                 to={<div className='text-truncate'><strong><FriendlyName firstname={message.user.firstname} lastname={message.user.lastname} /></strong>
-                    <i>, <a href={message.user.bio_url} target="_blank">{message.user.bio_title}</a></i></div>}
+                    <i> <br/><a href={message.user.bio_url} target="_blank">{message.user.bio_title}</a></i></div>}
                  hidden={hide} />
             }
          </Expandable>
