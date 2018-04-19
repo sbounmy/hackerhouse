@@ -65,6 +65,7 @@ class UsersAPI < Grape::API
         authorize user, :update?
         user.update_attributes! declared_params
         user.push! if user.stripe_id
+        user.deliver_check_out_changes_email
       end
     end
 

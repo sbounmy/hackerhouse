@@ -59,9 +59,6 @@ class User
   validate :should_stay_at_least_1_month
   validates :email, uniqueness: true
 
-  # Callbacks
-  after_update :send_check_out_changes_email
-
   def active
     !!check_out && !check_out.past? && house_id.present?
   end
@@ -110,13 +107,14 @@ class User
     (house_id == house.id) && check_out.future?
   end
 
-  private
+  # https://www.levups.com/en/blog/2017/undocumented-dirty-attributes-activerecord-changes-rails51.html
+  def deliver_check_out_changes_email
+    _check_out_was = previous_changes[:check_out] && previous_changes[:check_out][0]
 
-  def send_check_out_changes_email
-    if !admin && check_out_changed? && check_out.future?
-      if (check_out_was > check_out)
+    if !admin && previous_changes[:check_out] && check_out.future?
+      if (_check_out_was > check_out)
         UserMailer.check_out_earlier_email(self).deliver_now
-      elsif (check_out_was < check_out)
+      elsif (_check_out_was < check_out)
         UserMailer.check_out_later_email(self).deliver_now
       end
     end

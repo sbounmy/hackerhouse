@@ -189,6 +189,55 @@ describe UsersAPI do
       expect(response.status).to eq 200
     end
 
+    context 'on checkout update' do
+      let!(:user) { create(:user, check_out: 3.months.from_now, house: hq) }
+      let!(:sophie) { create(:user, firstname: "Sophie", check_out: 5.months.from_now, house: hq) }
+
+      before { I18n.locale = :fr } # so expectations matches french date formats
+      after { I18n.locale = :en }
+
+      context 'when check_out changes' do
+        it 'does not email when checkout is in the past' do
+          expect {
+            put "/v1/users/#{user.id}", params: { check_out: 2.month.ago, token: token(user) }
+          }.to change { deliveries.count }.by(0)
+        end
+
+        it 'emails active users when checkout earlier' do
+          expect {
+            put "/v1/users/#{user.id}", params: { check_out: 2.month.from_now, token: token(user) }
+          }.to change { deliveries.count }.by(1)
+          expect(last_delivery.to).to eq [sophie.email]
+          expect(last_delivery.reply_to).to eq [user.email]
+          expect(last_delivery.subject).to match /Paul nous quitte plus tôt que prévu/
+          expect(last_delivery.body.encoded).to match /Paul part le #{I18n.l(user.reload.check_out, format: :pretty)}/
+        end
+
+        it 'emails active users when checkout later' do
+          expect {
+            put "/v1/users/#{user.id}", params: { check_out: 5.month.from_now, token: token(user) }
+          }.to change { deliveries.count }.by(1)
+          expect(last_delivery.to).to eq [sophie.email]
+          expect(last_delivery.reply_to).to eq [user.email]
+          expect(last_delivery.subject).to match /Paul reste plus longtemps que prévu ! 👍/
+          expect(last_delivery.body.encoded).to match /Paul continue l'aventure jusqu'au #{I18n.l(user.reload.check_out, format: :pretty)}/
+        end
+
+        it 'does not email when user is admin' do
+          user.update_attributes admin: true
+          expect {
+            put "/v1/users/#{user.id}", params: { check_out: 2.month.from_now, token: token(user) }
+          }.to change { deliveries.count }.by(0)
+        end
+
+        it 'does not email when checkout does not change' do
+          expect {
+            put "/v1/users/#{user.id}", params: { check_out: 3.month.from_now, token: token(user) }
+          }.to_not change { deliveries.count }
+        end
+
+      end
+    end
   end
 
   describe "GET /v1/users" do
