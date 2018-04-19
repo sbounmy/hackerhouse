@@ -7,7 +7,7 @@ class TransfersAPI < Grape::API
     def amount
       return (declared_params[:amount] * 100).to_i if declared_params[:amount]
 
-      (house.amount * ( 1 - House::OWNER_SERVICE_FEE) * 100).ceil
+      (house.amount * ( 1 - House::SERVICE_FEE) * 100).ceil
     end
   end
   resource :transfers do

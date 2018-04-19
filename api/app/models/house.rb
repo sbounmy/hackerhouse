@@ -8,8 +8,7 @@ class House
   scope :v2, -> { where(v2: true) }
 
   # Constants
-  RESIDENT_SERVICE_FEE =  0.2
-  OWNER_SERVICE_FEE = 0.12
+  SERVICE_FEE = 0.12
 
   # Email text
   field :email, type: String
@@ -35,7 +34,7 @@ class House
   field :stripe_application_fee_percent, type: Float, default: 20
 
   # - stripe_plan_ids
-  field :stripe_plan_ids, type: Array, default: ["rent_monthly", "utilities_monthly", "cleaning_monthly", "pantry_monthly", "fee_monthly"]
+  field :stripe_plan_ids, type: Array, default: ["rent_monthly", "utilities_monthly", "cleaning_monthly"]
   field :stripe_coupon_ids, type: Array, default: []
   field :min_stay_in_days, type: Integer, default: 28*2 #2 months default
   field :v2, type: Boolean, default: true
@@ -131,10 +130,6 @@ class House
     amount_for(name) / max_users
   end
 
-  def fee_monthly
-    amount * RESIDENT_SERVICE_FEE
-  end
-
   # Return sum total
   def amount_total_per_user
     subscription_items.inject(0) do |sum, (id, item)|
@@ -169,9 +164,5 @@ class House
     subscription_items.map do |id, plan|
       { plan: id, quantity: plan[:quantity]}
     end
-  end
-
-  def amount
-    rent_monthly + utilities_monthly + cleaning_monthly + pantry_monthly
   end
 end
