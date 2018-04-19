@@ -43,6 +43,7 @@ fr:
       short: "%e %b"
       long: "%e %B %Y"
       month: '%B, %Y'
+      pretty: "%A %e %B"
     month_names:
     -
     - janvier

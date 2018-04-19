@@ -57,8 +57,10 @@ class User
 
   # Validations
   validate :should_stay_at_least_1_month
-
   validates :email, uniqueness: true
+
+  # Callbacks
+  after_update :send_check_out_changes_email
 
   def active
     !!check_out && !check_out.past? && house_id.present?
@@ -106,5 +108,17 @@ class User
 
   def active_on?(house)
     (house_id == house.id) && check_out.future?
+  end
+
+  private
+
+  def send_check_out_changes_email
+    if !admin && check_out_changed? && check_out.future?
+      if (check_out_was > check_out)
+        UserMailer.check_out_earlier_email(self).deliver_now
+      elsif (check_out_was < check_out)
+        UserMailer.check_out_later_email(self).deliver_now
+      end
+    end
   end
 end

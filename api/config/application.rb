@@ -35,6 +35,7 @@ module Hackerhouse
     end
     config.paths.add File.join('app', 'api'), glob: File.join('**', '*.rb')
     config.autoload_paths += Dir[Rails.root.join('app', 'api', '*')]
+    # config.i18n.default_locale = :en # if we change this it will break api date formats
     config.i18n.fallbacks =[:en]
   end
 end

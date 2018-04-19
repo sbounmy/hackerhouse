@@ -121,7 +121,7 @@
         .btn > tbody > tr > td {
           padding-bottom: 15px; }
         .btn table {
-          width: auto; }
+          width: 100%; }
         .btn table td {
           background-color: #ffffff;
           border-radius: 5px;
@@ -139,7 +139,8 @@
           margin: 0;
           padding: 12px 25px;
           text-decoration: none;
-          text-transform: capitalize; }
+          text-transform: capitalize;
+          width: 100%; }
       .btn-primary table td {
         background-color: #3498db; }
       .btn-primary a {
@@ -245,8 +246,9 @@
           PRESERVE THESE STYLES IN THE HEAD
       ------------------------------------- */
       .avatar {
-        width: 50px;
-        height: 50px;
+        width: 55px;
+        height: 55px;
+        border-radius: 100%;
       }
     </style>
   </head>
@@ -258,8 +260,11 @@
         <td class="container">
           <div class="content">
 
-            <!-- START CENTERED WHITE CONTAINER -->
-            <span class="preheader">This is preheader text. Some clients will show this text as a preview.</span>
+            <% if content_for? :preheader %>
+              <!-- START CENTERED WHITE CONTAINER -->
+              <span class="preheader"><%= yield :preheader -%></span>
+            <% end %>
+
             <table class="main">
 
               <!-- START MAIN CONTENT AREA -->
@@ -283,15 +288,19 @@
               <table border="0" cellpadding="0" cellspacing="0">
                 <tr>
                   <td class="content-block">
-                    <span class="apple-link">HACKERHOUSE SASU, 1 rue Alain Raillard, Aubervilliers 93300</span>
-                    <br> Don't like these emails? <a href="http://i.imgur.com/CScmqnj.gif">Unsubscribe</a>.
+                    <span class="apple-link">Envoyé avec ♥ depuis HACKERHOUSE</span>
+<!--                     <br> Don't like these emails? <a href="http://i.imgur.com/CScmqnj.gif">Unsubscribe</a>. -->
                   </td>
                 </tr>
                 <tr>
+                  <td class="content-block"><p>HACKERHOUSE SASU‌, 1 rue Alain Raillard<br/>Aubervilliers 93300 FRANCE</p>
+                  </td>
+                </tr>
+<!--                 <tr>
                   <td class="content-block powered-by">
                     Powered by <a href="http://htmlemail.io">HTMLemail</a>.
                   </td>
-                </tr>
+                </tr> -->
               </table>
             </div>
             <!-- END FOOTER -->
@@ -303,7 +312,4 @@
       </tr>
     </table>
   </body>
-<!--   <body>
-    <%= yield %>
-  </body> -->
 </html>
