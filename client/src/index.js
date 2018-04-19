@@ -15,7 +15,7 @@ import Dashboard from './components/dashboard';
 import DashboardHouse from './components/dashboard_house';
 import NavBar from './components/navbar';
 import Widgets from './containers/widgets';
-
+import { hotjar } from 'react-hotjar';
 import reducers from './reducers';
 
 import registerServiceWorker, { unregister } from './registerServiceWorker';
@@ -30,6 +30,9 @@ const store = createStoreWithMiddleware(reducers);
 
 // https://github.com/facebook/create-react-app/issues/1910
 unregister() ;
+
+// https://www.hotjar.com/
+hotjar.initialize(process.env.REACT_APP_HOTJAR_ID, 6);
 
 ReactDOM.render(
   <Provider store={store}>
