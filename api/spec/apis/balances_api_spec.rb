@@ -56,23 +56,25 @@ describe BalancesAPI do
     it 'delivers email with the amount of the solidary contribution' do
       expect {
         post_as :admin, '/v1/balances/hq'
-      }.to change { ActionMailer::Base.deliveries.count }.by(4)
-      expect(ActionMailer::Base.deliveries.last.body).to include 'hugo', '445 €'
-      expect(ActionMailer::Base.deliveries[0].body).to include 'nadia', '0 €'
-      expect(ActionMailer::Base.deliveries[1].body).to include  'brian', '445 €'
-      expect(ActionMailer::Base.deliveries[2].body).to include  'val', '445 €'
+      }.to change { deliveries.count }.by(4)
+
+      expect(last_delivery.body.encoded).to include 'Hello hugo', 'Ce mois-ci ta contribution solidaire est de : 445'
+      expect(deliveries[0].body.encoded).to include 'Hello nadia', 'Ce mois-ci ta contribution solidaire est de : 0'
+      expect(deliveries[1].body.encoded).to include  'Hello brian', 'Ce mois-ci ta contribution solidaire est de : 445'
+      expect(deliveries[2].body.encoded).to include  'Hello val', 'Ce mois-ci ta contribution solidaire est de : 445'
     end
 
     it 'doesnt freakout if no one have to pay' do
       @nadia.update_attributes check_out: Date.parse("2017-12-03")
+      deliveries.clear # clear update checkout email
       expect {
         post_as :admin, '/v1/balances/hq'
-      }.to change { ActionMailer::Base.deliveries.count }.by(4)
+      }.to change { deliveries.count }.by(4)
 
-      expect(ActionMailer::Base.deliveries.last.body).to include 'hugo', '0 €'
-      expect(ActionMailer::Base.deliveries[0].body).to include 'nadia', '0 €'
-      expect(ActionMailer::Base.deliveries[1].body).to include  'brian', '0 €'
-      expect(ActionMailer::Base.deliveries[2].body).to include  'val', '0 €'
+      expect(last_delivery.body.encoded).to include 'Hello hugo', 'Ce mois-ci ta contribution solidaire est de : 0'
+      expect(deliveries[0].body.encoded).to include 'Hello nadia', 'Ce mois-ci ta contribution solidaire est de : 0'
+      expect(deliveries[1].body.encoded).to include  'Hello brian', 'Ce mois-ci ta contribution solidaire est de : 0'
+      expect(deliveries[2].body.encoded).to include  'Hello val', 'Ce mois-ci ta contribution solidaire est de : 0'
 
         App.stripe do
         [@nadia, @val, @hugo, @brian].each do |u|
@@ -86,8 +88,8 @@ describe BalancesAPI do
     it 'shows next check outs' do
       expect {
         post_as :admin, '/v1/balances/hq'
-      }.to change { ActionMailer::Base.deliveries.count }.by(4)
-      expect(ActionMailer::Base.deliveries.last.body).to include '2017-12-03 : brian', '2017-12-03 : val', '2017-12-03 : hugo'
+      }.to change { deliveries.count }.by(4)
+      expect(last_delivery.body.encoded).to include '2017-12-03 : brian', '2017-12-03 : val', '2017-12-03 : hugo'
     end
 
     it 'charges users who needs to pay through Stripe' do
@@ -110,7 +112,7 @@ describe BalancesAPI do
     it 'does not notify if false' do
       expect {
         post_as :admin, '/v1/balances/hq', params: { notify: false }
-      }.to_not change { ActionMailer::Base.deliveries.count }
+      }.to_not change { deliveries.count }
     end
 
     it 'is idempotent' do
