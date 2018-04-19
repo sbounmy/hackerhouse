@@ -1,3 +1,18 @@
+Intro
+-----
+
+HackerHouse are big community houses run by hackers for hackers.
+
+Every houses are self-managed and solidary meaning that when a roomate leaves, he has to be replaced by its staying roomates.
+
+The doc is not up to date.
+Will need big help to update doc
+
+We use :
+- Ruby On Rails as API (still have a part to migrate to react)
+- React as Frontend
+- Stripe as payment
+
 Installation
 ------------
 
