@@ -9,6 +9,7 @@ services:
       - ./data/db:/data/db
   api:
     build: ./api
+    image: hackerhouse_api:latest
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
       - ./api/:/usr/src/app/
@@ -50,6 +51,7 @@ services:
     ports: ['3001']
   app:
     build: ./client
+    image: hackerhouse_app:latest
     command: npm start
     volumes:
       - ./client:/app
