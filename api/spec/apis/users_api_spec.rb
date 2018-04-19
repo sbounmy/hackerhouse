@@ -207,6 +207,8 @@ describe UsersAPI do
           expect {
             put "/v1/users/#{user.id}", params: { check_out: 2.month.from_now, token: token(user) }
           }.to change { deliveries.count }.by(1)
+          expect(last_delivery.from).to eq ["julie@hackerhouse.paris"]
+          expect(last_delivery.cc).to eq ["julie@hackerhouse.paris"]
           expect(last_delivery.to).to eq [sophie.email]
           expect(last_delivery.reply_to).to eq [user.email]
           expect(last_delivery.subject).to match /Paul nous quitte plus tôt que prévu/
@@ -217,6 +219,7 @@ describe UsersAPI do
           expect {
             put "/v1/users/#{user.id}", params: { check_out: 5.month.from_now, token: token(user) }
           }.to change { deliveries.count }.by(1)
+          expect(last_delivery.from).to eq ["julie@hackerhouse.paris"]
           expect(last_delivery.to).to eq [sophie.email]
           expect(last_delivery.reply_to).to eq [user.email]
           expect(last_delivery.subject).to match /Paul reste plus longtemps que prévu ! 👍/
