@@ -28,9 +28,9 @@ class Message extends Component {
             <Text className="mb-1">
               {message.body}
             </Text>
-            <h6 className="d-block mt-0 mb-1">
-              {this.props.title}
-            </h6>
+            <p>
+              <i>{this.props.title}</i>
+            </p>
             <div>
               <Button type='outline-secondary'
                   className="d-inline"

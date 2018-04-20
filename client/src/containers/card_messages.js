@@ -24,8 +24,8 @@ class CardMessages extends Component {
             { (message, hide) =>
               <Message message={message}
                 title={<MessageTitle message={message} />}
-                to={<div className='text-truncate'><strong><FriendlyName firstname={message.user.firstname} lastname={message.user.lastname} /></strong>
-                    <i> <br/><a href={message.user.bio_url} target="_blank">{message.user.bio_title}</a></i></div>}
+                to={<div className='text-truncate'><p className='mb-1'><strong><FriendlyName firstname={message.user.firstname} lastname={message.user.lastname} /></strong></p>
+                    <i><a href={message.user.bio_url} target="_blank">{message.user.bio_title}</a></i></div>}
                  hidden={hide} />
             }
          </Expandable>
