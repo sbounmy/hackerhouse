@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Intercom, { IntercomAPI } from 'react-intercom';
+import { hotjar } from 'react-hotjar';
 
 class Widgets extends Component {
   render() {
+    // https://www.hotjar.com/
+    if (process.env.NODE_ENV =='production') {
+      hotjar.initialize(process.env.REACT_APP_HOTJAR_ID, 6);
+    }
+
     if (!this.props.user) {
       return ""
     }
