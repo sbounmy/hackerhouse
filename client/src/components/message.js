@@ -22,7 +22,7 @@ class Message extends Component {
           <Avatar className='mx-2' user={author} sm circle/>
           <div style={{'min-width': '0px'}} className='col-2'>
             {this.props.to}
-            <Moment format='DD/MM'>{message.created_at}</Moment>
+            <Moment format='D MMM'>{message.created_at}</Moment>
           </div>
           <div style={{'min-width': 0}}>
             <Text className="mb-1">
