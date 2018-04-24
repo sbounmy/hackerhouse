@@ -10,7 +10,7 @@ FactoryGirl.define do
     avatar_url 'http://avatar.slack.com/paul.jpg'
     phone_number '0612345678'
     house
-
+    bio_url 'https://linkedin.com/in/blabla'
     transient do
       stripe false
     end

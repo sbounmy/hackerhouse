@@ -1,5 +1,5 @@
 class UserMailer < ApplicationMailer
-  default from: -> { from(@user.firstname).format },
+  default from: -> { from.format },
           reply_to: -> { @user.email },
           to: -> { @residents.pluck(:email) },
           cc: 'stephane@hackerhouse.paris',

@@ -1,5 +1,5 @@
 class MessageMailer < ApplicationMailer
-  default from: -> { from(@user.firstname).format },
+  default from: -> { from.format },
           cc: 'stephane@hackerhouse.paris'
 
   def create_email(message)

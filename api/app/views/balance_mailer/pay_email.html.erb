@@ -5,7 +5,7 @@
 <p>Les prochains départs sont :
   <ul>
     <% @users_checkout_soon.each do |u| %>
-      <li><%= u.check_out -%> : <%= u.firstname -%></li>
+      <li><%= "dans #{time_ago_in_words(u.check_out)} (#{l(u.check_out, format: :short)})" %> : <%= u.firstname -%></li>
     <% end %>
   </ul>
 </p>

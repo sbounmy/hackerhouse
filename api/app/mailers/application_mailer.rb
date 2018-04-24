@@ -6,9 +6,9 @@ class ApplicationMailer < ActionMailer::Base
 
   private
 
-  def from(name)
+  def from(name = "HackerHouse - Julie")
     Mail::Address.new('julie@hackerhouse.paris').tap do |f|
-      f.display_name = "#{name} (HackerHouse)"
+      f.display_name = "HackerHouse - #{name}"
     end
   end
 
