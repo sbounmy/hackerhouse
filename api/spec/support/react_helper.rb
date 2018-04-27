@@ -3,14 +3,22 @@ module ReactHelper
 
   included do
     RSpec.configure do |config|
+      # this force to boot rails app
+      config.before(:suite) do
+        puts "botting default server..."
+        ip = `/sbin/ip route|awk '/scope/ { print $9 }'`
+        ip = ip.gsub "\n", ""
+        Capybara.server_port = "3000"
+        Capybara.server_host = ip
+        Capybara.current_session.server.boot
+      end
+
       config.before(:each, type: :feature) do |example|
         I18n.locale = :fr #for date picker
         if example.metadata[:rails]
           ip = `/sbin/ip route|awk '/scope/ { print $9 }'`
           ip = ip.gsub "\n", ""
-          Capybara.server_port = "3000"
-          Capybara.server_host = ip
-          Capybara.app_host = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}"
+          Capybara.app_host = "http://#{ip}:3000"
         else
           Capybara.app_host = "http://test_app:3001"
         end

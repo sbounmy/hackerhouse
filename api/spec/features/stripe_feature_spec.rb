@@ -7,6 +7,7 @@ feature 'checkout', :rails do
     # visit "/stripe.html?pk=#{pk}"
     create(:house, slug_id: 'ivry', stripe_publishable_key: pk, stripe_access_token: sk, v2: false,
       stripe_plan_ids: ['work_monthly', 'sleep_monthly'])
+
     visit "/gp/ivry"
 
     select_date(2.months.from_now, from: '#check_in')
