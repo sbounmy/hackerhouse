@@ -16,9 +16,7 @@ module ReactHelper
       config.before(:each, type: :feature) do |example|
         I18n.locale = :fr #for date picker
         if example.metadata[:rails]
-          ip = `/sbin/ip route|awk '/scope/ { print $9 }'`
-          ip = ip.gsub "\n", ""
-          Capybara.app_host = "http://#{ip}:3000"
+          Capybara.app_host = "http://#{Capybara.server_host}:#{Capybara.server_port}"
         else
           Capybara.app_host = "http://test_app:3001"
         end

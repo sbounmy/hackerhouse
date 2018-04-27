@@ -89,7 +89,7 @@ describe BalancesAPI do
       expect {
         post_as :admin, '/v1/balances/hq'
       }.to change { deliveries.count }.by(4)
-      expect(last_delivery.body.encoded).to include '2017-12-03 : brian', '2017-12-03 : val', '2017-12-03 : hugo'
+      expect(last_delivery.body.encoded).to include 'dans 3 jours (03 d=C3=A9c.) : brian', 'dans 3 jours (03 d=C3=A9c.) : val', 'dans 3 jours (03 d=C3=A9c.) : hugo'
     end
 
     it 'charges users who needs to pay through Stripe' do
