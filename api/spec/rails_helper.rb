@@ -58,7 +58,6 @@ RSpec.configure do |config|
   config.include StripeHelper, type: :feature
   config.include ReactHelper,  type: :feature
   config.include FeatureHelper,  type: :feature
-  config.include AppHelper,  :rails
 
   # Wipe database to have a clean test environment
   config.after(:each) do

@@ -3,15 +3,17 @@ module ReactHelper
 
   included do
     RSpec.configure do |config|
-      config.before(:each, type: :feature) do
+      config.before(:each, type: :feature) do |example|
         I18n.locale = :fr #for date picker
-        Capybara.app_host = "http://test_app:3001"
-        Capybara.run_server = false
-      end
-
-      config.after(:each, type: :feature) do
-        Capybara.current_session.driver.quit
-        Capybara.use_default_driver
+        if example.metadata[:rails]
+          ip = `/sbin/ip route|awk '/scope/ { print $9 }'`
+          ip = ip.gsub "\n", ""
+          Capybara.server_port = "3000"
+          Capybara.server_host = ip
+          Capybara.app_host = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}"
+        else
+          Capybara.app_host = "http://test_app:3001"
+        end
       end
     end
   end
