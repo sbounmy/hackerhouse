@@ -46,7 +46,7 @@ feature 'messages' do
       expect(page).to have_content("Hello World Julie-SANDBOX_TYPEFORM")
     end
 
-    within_intercom :borderless do
+    within_intercom :notifications do
       expect(page).to have_content 'Vraiment désolé Julie'
     end
   end
@@ -55,14 +55,10 @@ feature 'messages' do
     julie = create(:user, firstname: 'Julie', email: 'julie@hackerhouse.paris', house: nil, check_out: 3.month.from_now)
     signed_in_as(julie)
     expect(page).to have_css('[alt=close-typeform]', wait: 10) # wait for typeform to close properly
-    within_intercom :borderless do
-      expect(page).to have_content 'Vraiment désolé Julie'
-    end
 
     within_frame(0) do
       expect(page).to have_content("Hello World Julie-SANDBOX_TYPEFORM")
-      find('#typeform').click
-      find('#typeform').send_keys :return
+      find('.intro.screen .content-wrapper .button').click
       tf_select(/HQ #blockchain #dev/)
       tf_select(/DEV/)
       tf_select(/Ta valise/)
@@ -74,6 +70,10 @@ feature 'messages' do
       find('.submit').click
 
       expect(page).to have_text('Super ! On te contactera sur julie@hackerhouse.paris')
+    end
+
+    within_intercom :notifications do
+      expect(page).to have_content 'C\'est parti ! Je viens de prévenir les colocs de ton inscription !'
     end
   end
 end

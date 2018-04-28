@@ -4,6 +4,7 @@ import { Card, Button } from '../components/bs';
 import { fetchMessages } from '../actions';
 import { ReactTypeformEmbed } from 'react-typeform-embed';
 import Moment from 'react-moment';
+import { IntercomAPI } from 'react-intercom';
 import qs from 'query-string';
 import 'moment/locale/fr';
 import _ from 'lodash';
@@ -42,6 +43,11 @@ class CardApply extends Component {
     return qs.stringify(params)
   }
 
+  intercomUpdate = () => {
+    const { user } = this.props
+    IntercomAPI('update', {applied: true})
+  }
+
   render() {
     const { user } = this.props;
 
@@ -54,7 +60,8 @@ class CardApply extends Component {
             hideHeader={true}
             popup={true}
             mode="drawer_left"
-            ref={(tf => this.typeformEmbed = tf)}/>
+            ref={(tf => this.typeformEmbed = tf)}
+            onSubmit={this.intercomUpdate}/>
         </div>
         <p>Viens vivre avec nous !</p>
         <Button type='primary'
