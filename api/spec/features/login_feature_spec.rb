@@ -6,6 +6,7 @@ feature 'login logout' do
 
   scenario 'it logins through linkedin' do
     visit "/"
+    skip 'ci cant go through linkedin oauth' if page.has_content? 'This login attempt seems suspicious'
     expect(page).to have_content 'ideas'
     click_on "Let me"
     fill_in "session_key", with: 'julie@hackerhouse.paris'

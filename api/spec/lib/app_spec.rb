@@ -3,6 +3,9 @@ require 'rails_helper'
 describe App do
 
   describe '.stripe' do
+    before do
+      Stripe.api_key = nil
+    end
 
     def stripe &block
       App.stripe &block
