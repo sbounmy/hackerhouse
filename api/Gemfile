@@ -28,7 +28,7 @@ gem 'puma', '~> 3.0'
 gem 'oauth2'
 
 # Use Grape as REST API micro-framework
-gem 'grape', '1.0.3'
+gem 'grape'
 
 # User Active Model Serializer as formatter
 gem 'grape-active_model_serializers'

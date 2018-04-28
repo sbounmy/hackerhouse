@@ -303,7 +303,7 @@ DEPENDENCIES
   byebug
   capybara
   factory_girl_rails
-  grape (= 1.0.3)
+  grape
   grape-active_model_serializers
   grape-middleware-logger
   httpclient
