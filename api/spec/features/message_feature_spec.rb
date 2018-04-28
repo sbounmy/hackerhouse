@@ -37,13 +37,43 @@ feature 'messages' do
     expect(page).to have_content "Salut, je suis"
   end
 
-  scenario 'user who never applied should see popup' do
+  scenario 'user who never applied should see popup and welcome message' do
     julie = create(:user, firstname: 'Julie', email: 'julie@hackerhouse.paris', house: nil, check_out: 3.month.from_now)
     signed_in_as(julie)
     expect(page).to have_css('[alt=close-typeform]', wait: 10) # wait for typeform to close properly
     within_frame(0) do
       expect(page).to have_content("Hello World Julie")
       expect(page).to have_content("Hello World Julie-SANDBOX_TYPEFORM")
+    end
+
+    within_intercom :borderless do
+      expect(page).to have_content 'Vraiment désolé Julie'
+    end
+  end
+
+  scenario 'user who fill the form should get onboard' do
+    julie = create(:user, firstname: 'Julie', email: 'julie@hackerhouse.paris', house: nil, check_out: 3.month.from_now)
+    signed_in_as(julie)
+    expect(page).to have_css('[alt=close-typeform]', wait: 10) # wait for typeform to close properly
+    within_intercom :borderless do
+      expect(page).to have_content 'Vraiment désolé Julie'
+    end
+
+    within_frame(0) do
+      expect(page).to have_content("Hello World Julie-SANDBOX_TYPEFORM")
+      find('#typeform').click
+      find('#typeform').send_keys :return
+      tf_select(/HQ #blockchain #dev/)
+      tf_select(/DEV/)
+      tf_select(/Ta valise/)
+      tf_fill_in('phone', with: '0566443322')
+      tf_fill_in(/Date d\'arriv/, with: '11/08/2018')
+      tf_fill_in(/Date de d/, with: '31/10/2020')
+      tf_fill_in(/Pitch ta startup/, with: build(:message).body)
+      sleep 1 #wait scroll unfixed footer
+      find('.submit').click
+
+      expect(page).to have_text('Super ! On te contactera sur julie@hackerhouse.paris')
     end
   end
 end

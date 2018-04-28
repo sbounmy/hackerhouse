@@ -53,7 +53,7 @@ class CardApply extends Component {
             url={`https://hackerhouseparis.typeform.com/to/qmztfk?${this.applyParams()}`}
             hideHeader={true}
             popup={true}
-            mode="drawer_right"
+            mode="drawer_left"
             ref={(tf => this.typeformEmbed = tf)}/>
         </div>
         <p>Viens vivre avec nous !</p>
