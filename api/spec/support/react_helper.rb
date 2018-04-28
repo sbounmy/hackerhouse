@@ -21,6 +21,10 @@ module ReactHelper
           Capybara.app_host = "http://test_app:3001"
         end
       end
+
+      config.after(:each, type: :feature) do
+        page.execute_script("localStorage && localStorage.clear()")
+      end
     end
   end
 

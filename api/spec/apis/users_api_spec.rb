@@ -1,22 +1,23 @@
 require 'rails_helper'
 
 describe UsersAPI do
-  let!(:hq) { create(:house, stripe_plan_ids: ['rent_monthly', 'fee_monthly']) }
+  let!(:hq) { create(:house, stripe_plan_ids: ['rent_monthly', 'cleaning_monthly']) }
   let(:stripe) { StripeMock.create_test_helper }
 
   describe "POST /v1/users" do
 
-    let(:tomorrow) { 1.days.from_now }
+    let(:first_of_month) { 1.month.from_now.beginning_of_month }
+    let(:middle_of_month) { Date.new(1.month.from_now.year, 1.month.from_now.month, 15) }
     let(:default_params) { { slug_id: hq.slug_id,
         token: App.stripe { stripe.generate_card_token }, email: 'paul@42.student.fr',
-        check_in: tomorrow, check_out: 4.months.from_now } }
+        check_in: middle_of_month, check_out: 4.months.from_now } }
 
     before do
       # StripeMock.toggle_live(true)
       StripeMock.start
       # App.stripe do
         stripe.create_plan(id: 'rent_monthly', amount: 1)
-        stripe.create_plan(id: 'fee_monthly', amount: 1)
+        stripe.create_plan(id: 'cleaning_monthly', amount: 1)
       # end
     end
 
@@ -52,7 +53,7 @@ describe UsersAPI do
         expect(user.token).to match /tok_/
         expect(user.stripe_id).to match "cus_"
         u = json_response
-        expect(u['check_in']).to eq tomorrow.strftime("%Y-%m-%d")
+        expect(u['check_in']).to eq middle_of_month.strftime("%Y-%m-%d")
         expect(u['check_out']).to eq 4.months.from_now.strftime("%Y-%m-%d")
       end
 
@@ -60,17 +61,17 @@ describe UsersAPI do
         create_user
         expect(json_response.keys).to eq ["id", "firstname", "lastname",
           "avatar_url", "bio_title", "bio_url", "check_in", "check_out",
-          "active", "admin", "house_slug_id"]
+          "active", "admin", "house_slug_id", "house_id"]
       end
 
       it 'accepts date as %d\/%m\/%Y' do
         expect {
-          create_user check_in: tomorrow.strftime("%d/%m/%Y")
+          create_user check_in: first_of_month.strftime("%d/%m/%Y")
         }.to change { hq.users.count }.by(1)
 
-        customer = Stripe::Customer.retrieve('test_cus_3')
+        customer = Stripe::Customer.retrieve(hq.users.last.stripe_id)
         expect(customer.subscriptions.count).to eq 1
-        expect(customer.subscriptions.first.trial_end).to eq Time.parse(tomorrow.strftime("%d/%m/%Y")).to_i
+        expect(customer.subscriptions.first.trial_end).to eq Time.parse(first_of_month.strftime("%d/%m/%Y")).to_i
       end
 
       it 'accepts localized date %d\/%m\/%Y' do
@@ -80,7 +81,7 @@ describe UsersAPI do
           create_user check_in: date.strftime("%d/%m/%Y"), check_out: (date + 2.months).strftime("%d/%m/%Y")
         }.to change { hq.users.count }.by(1)
 
-        customer = Stripe::Customer.retrieve('test_cus_3')
+        customer = Stripe::Customer.retrieve(hq.users.last.stripe_id)
         expect(customer.subscriptions.count).to eq 1
         expect(customer.subscriptions.first.trial_end).to eq Time.parse("01/02/#{nextyear}").to_i
       end
@@ -88,26 +89,26 @@ describe UsersAPI do
       it 'creates subscriptions with custom application fee on v2 false' do
         hq.update_attributes v2: false, stripe_application_fee_percent: 30
         create_user
-        customer = Stripe::Customer.retrieve('test_cus_3')
+        customer = Stripe::Customer.retrieve(hq.users.last.stripe_id)
         expect(customer.subscriptions.count).to eq 1
         expect(customer.subscriptions.first.application_fee_percent).to eq 30
       end
 
       it 'creates subscriptions without application fee on v2' do
         create_user
-        customer = Stripe::Customer.retrieve('test_cus_3')
-        expect(customer.subscriptions.count).to eq 1
+        customer = Stripe::Customer.retrieve(hq.users.last.stripe_id)
+        expect(customer.subscriptions.count).to eq 2
         expect(customer.subscriptions.first.try(:application_fee_percent)).to eq nil
       end
 
       it 'creates subscriptions in a middle week' do
-        create_user check_in: '2018-02-19'
-        customer = Stripe::Customer.retrieve('test_cus_3')
+        create_user check_in: middle_of_month.strftime("%Y-%m-%d")
+        customer = Stripe::Customer.retrieve(hq.users.last.stripe_id)
         expect(customer.subscriptions.count).to eq 2
-        expect(customer.subscriptions[0].metadata[:once]).to eq true
-        expect(customer.subscriptions[0].current_period_start).to eq '2018-02-19'
-        expect(customer.subscriptions[0].current_period_end).to eq '2018-03-19'
-        expect(customer.subscriptions[1].metadata[:once]).to eq nil
+        expect(customer.subscriptions.data[0].trial_end).to eq middle_of_month.next_month.beginning_of_month.to_time.to_i
+        expect(customer.subscriptions.data[0].metadata[:once]).to eq nil
+        expect(customer.subscriptions.data[1].trial_end).to eq middle_of_month.to_time.to_i
+        expect(customer.subscriptions.data[1].metadata[:once]).to eq true
       end
 
     end
@@ -208,7 +209,7 @@ describe UsersAPI do
             put "/v1/users/#{user.id}", params: { check_out: 2.month.from_now, token: token(user) }
           }.to change { deliveries.count }.by(1)
           expect(last_delivery.from).to eq ["julie@hackerhouse.paris"]
-          expect(last_delivery.cc).to eq ["julie@hackerhouse.paris"]
+          expect(last_delivery.cc).to eq ["stephane@hackerhouse.paris"]
           expect(last_delivery.to).to eq [sophie.email]
           expect(last_delivery.reply_to).to eq [user.email]
           expect(last_delivery.subject).to match /Paul nous quitte plus tôt que prévu/
@@ -223,7 +224,7 @@ describe UsersAPI do
           expect(last_delivery.to).to eq [sophie.email]
           expect(last_delivery.reply_to).to eq [user.email]
           expect(last_delivery.subject).to match /Paul reste plus longtemps que prévu ! 👍/
-          expect(last_delivery.body.encoded).to match /Paul continue l'aventure jusqu'au #{I18n.l(user.reload.check_out, format: :pretty)}/
+          expect(last_delivery.body.encoded).to match /Paul continue l'aventure avec nous jusqu'au #{I18n.l(user.reload.check_out, format: :pretty)}/
         end
 
         it 'does not email when user is admin' do
