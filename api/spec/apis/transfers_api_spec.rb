@@ -23,7 +23,7 @@ describe TransfersAPI do
 
     it 'sends payout to owner minus service fee' do
       expect {
-        post_as :admin, '/v1/transfers/hq'
+        with_funds { post_as :admin, '/v1/transfers/hq' }
       }.to change { transfers.to_a.size }.by(1)
       expect(transfers.map &:amount).to contain_exactly(940721)
       expect(transfers.map &:transfer_group).to contain_exactly(transfer_name)
@@ -31,8 +31,10 @@ describe TransfersAPI do
 
     it 'is idempotent' do
       expect {
-        post_as :admin, '/v1/transfers/hq'
-        post_as :admin, '/v1/transfers/hq'
+        with_funds {
+          post_as :admin, '/v1/transfers/hq'
+          post_as :admin, '/v1/transfers/hq'
+        }
       }.to change { transfers.to_a.size }.by(1)
       expect(transfers.map &:amount).to contain_exactly(940721)
       expect(transfers.map &:transfer_group).to contain_exactly(transfer_name)
@@ -40,10 +42,12 @@ describe TransfersAPI do
 
     it 'works when next month' do
       expect {
-        post_as :admin, '/v1/transfers/hq'
-        Timecop.travel 1.month.from_now do
+        with_funds {
           post_as :admin, '/v1/transfers/hq'
-        end
+          Timecop.travel 1.month.from_now do
+            post_as :admin, '/v1/transfers/hq'
+          end
+        }
       }.to change { transfers.to_a.size }.by(2)
       expect(transfers.map &:amount).to contain_exactly(940721, 940721)
       expect(transfers.map &:transfer_group).to contain_exactly(transfer_name, 1.month.from_now.strftime("Loyer-%Y-%m"))
@@ -51,7 +55,9 @@ describe TransfersAPI do
 
     it 'can be a manual net amount' do
       expect {
-        post_as :admin, '/v1/transfers/hq', params: { amount: 3_400.75 }
+        with_funds {
+          post_as :admin, '/v1/transfers/hq', params: { amount: 3_400.75 }
+        }
       }.to change { transfers.to_a.size }.by(1)
       expect(transfers.map &:amount).to contain_exactly(3_400_75)
       expect(transfers.map &:transfer_group).to contain_exactly(transfer_name)
@@ -59,7 +65,7 @@ describe TransfersAPI do
 
     it 'can be a manual net amount cant be higher than house#amount' do
       expect {
-        post_as :admin, '/v1/transfers/hq', params: { amount: 11_000 }
+        with_funds { post_as :admin, '/v1/transfers/hq', params: { amount: 11_000 } }
       }.to_not change { transfers.to_a.size }
       expect(response.status).to eq 500
       expect(json_response['error']).to match /Amount is too high/

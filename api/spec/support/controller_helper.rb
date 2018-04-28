@@ -43,4 +43,18 @@ module ControllerHelper
   def last_delivery
     deliveries.last
   end
+
+  def with_funds
+    yield
+  rescue Stripe::InvalidRequestError => e
+    puts e.message.inspect
+    raise e unless e.message.include? 'Insufficient funds in Stripe account. In test mode, you can add funds to your available balance'
+    puts '...Reloading account with funds...'
+    App.stripe do
+      Stripe::Charge.create amount: 999_999_00, currency: 'eur',
+      source: { exp_month: '10', exp_year: '23', number: '4000 0000 0000 0077',
+        object: 'card', cvc: '111' }
+    end
+    retry
+  end
 end

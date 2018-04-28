@@ -32,7 +32,6 @@ FactoryGirl.define do
     before(:create) do |user, evaluator|
       if evaluator.stripe
         App.stripe do
-          puts evaluator.email.inspect
           c = Stripe::Account.create(email: evaluator.email,
             type: 'custom', country: 'fr') #custom so we can delete it
           evaluator.stripe_id = c.id

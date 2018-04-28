@@ -6,13 +6,13 @@ feature 'login logout' do
 
   scenario 'it logins through linkedin' do
     visit "/"
-    skip 'ci cant go through linkedin oauth' if page.has_content? 'This login attempt seems suspicious'
     expect(page).to have_content 'ideas'
     click_on "Let me"
     fill_in "session_key", with: 'julie@hackerhouse.paris'
     fill_in "session_password", with: 'qwertyqwerty'
     page.execute_script("$('.btn-signin').click();")
     click_on "Allow" if page.has_text?("HackerHouse would like to:")
+    skip 'ci cant go through linkedin oauth' if page.has_text? 'This login attempt seems suspicious'
     expect(page).to have_content("Home")
     expect(page).to have_content('Julie A.I')
   end
