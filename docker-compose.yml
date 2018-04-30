@@ -60,3 +60,6 @@ services:
   selenium:
     image: selenium/standalone-firefox-debug:latest
     ports: ['4444:4444', '5900:5900']
+    environment:
+      - SCREEN_WIDTH=1440
+      - SCREEN_HEIGHT=900
