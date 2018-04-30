@@ -60,7 +60,7 @@ feature 'messages' do
       expect(page).to have_content("Hello World Julie-SANDBOX_TYPEFORM")
       find('.intro.screen .content-wrapper .button').click
       tf_select(/HQ #blockchain #dev/)
-      tf_select(/DEV/)
+      # tf_select(/DEV/)
       tf_select(/Ta valise/)
       tf_fill_in('phone', with: '0566443322')
       tf_fill_in(/Date d\'arriv/, with: '11/08/2018')

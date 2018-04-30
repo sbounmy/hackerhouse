@@ -22,7 +22,19 @@ module ReactHelper
         end
       end
 
-      config.after(:each, type: :feature) do
+      config.after(:each, type: :feature) do |example|
+        if example.exception
+          meta = example.metadata
+          name = "test-failure-#{File.basename(meta[:file_path])}-#{meta[:line_number]}.png"
+
+          # Save screenshots in CI
+          screenshot_root_path = ENV["CIRCLE_ARTIFACTS"] || Rails.root.join("tmp", "capybara")
+
+          screenshot_path = [screenshot_root_path, name].join("/")
+
+          page.save_screenshot(screenshot_path, full: true)
+          $stdout << "\nScreenshot Taken: #{screenshot_path}\n"
+        end
         page.execute_script("localStorage && localStorage.clear()")
       end
     end
