@@ -39,6 +39,22 @@ describe BalancesAPI do
       get '/v1/balances/hq', params: { token: 'blabla' }
       expect(response.status).to eq 403
     end
+
+    it 'preview current month by default' do
+      @hugo.update_attributes check_out: '2017-12-31'
+      get_as :admin, '/v1/balances/hq'
+      expect(response.status).to eq 200
+      expect(json_response['date']).to eq '2017-11-30'
+      expect(json_response['users'].map(&:last)).to eq [0, 445, 445, 445]
+    end
+
+    it 'can preview next month' do
+      @hugo.update_attributes check_out: '2017-12-31'
+      get_as :admin, '/v1/balances/hq', params: { date: '2017-12-20' }
+      expect(response.status).to eq 200
+      expect(json_response['date']).to eq '2017-12-20'
+      expect(json_response['users'].map(&:last)).to eq [54, 54, 7070]
+    end
   end
 
   describe 'POST /v1/balances/:slug_id' do

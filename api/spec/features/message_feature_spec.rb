@@ -77,4 +77,6 @@ feature 'messages' do
       expect(page).to have_content 'C\'est parti ! Je viens de prévenir les colocs de ton inscription !'
     end
   end
+
+  scenario 'user who check out should not see house data'
 end
