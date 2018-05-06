@@ -25,7 +25,8 @@ export const Row = props => {
 export const Card = props => {
   const className = classNames('card', props.className)
   return (
-    <div className={className}>
+    <div className={className} style={props.style}>
+      {props.header}
       <div className="card-body">
         <div className="d-flex flex-row justify-content-between align-items-start">
           <h6 className="mb-3">{props.title}</h6>

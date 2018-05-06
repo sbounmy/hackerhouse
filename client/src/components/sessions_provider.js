@@ -40,7 +40,7 @@ class SessionsProvider extends Component {
 }
 
 function mapStateToProps(state) {
-  return { user: state.session.user, error: state.user.error };
+  return { user: state.session.user, error: state.users.error };
 }
 
 export default connect(mapStateToProps, { createLinkedInSession })(SessionsProvider);

@@ -12,7 +12,7 @@ const rootReducer = combineReducers({
   form: formReducer,
   balance: balancesReducer,
   messages: messagesReducer,
-  user: usersReducer
+  users: usersReducer
 });
 
 export default rootReducer;

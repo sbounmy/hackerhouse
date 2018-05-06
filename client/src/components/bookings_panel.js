@@ -105,7 +105,7 @@ class BookingsPanel extends Component {
 }
 
 function mapStateToProps(state) {
-  return { user: state.session.user, active_or_upcoming_users: state.user.active_or_upcoming_users}
+  return { user: state.session.user, active_or_upcoming_users: state.users.active_or_upcoming_users}
 }
 
 export default connect(mapStateToProps, { fetchActiveOrUpcomingUsers })(BookingsPanel);

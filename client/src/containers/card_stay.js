@@ -1,26 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Card, Button } from '../components/bs';
-import { fetchBalance } from '../actions';
-import Moment from 'react-moment';
+import CardMonthStay from './card_month_stay';
+import Moment, { moment } from 'react-moment';
 import 'moment/locale/fr';
 import _ from 'lodash';
 
 class CardStay extends Component {
-  componentDidMount() {
-    if (this.props.user && this.props.user.house_slug_id) {
-      this.props.fetchBalance(this.props.user.house_slug_id, this.props.user.id);
-    }
-  }
-
   render() {
-    const { user, balance } = this.props;
+    const { user, amounts } = this.props;
 
     return (
       <Card className='mb-4 d-lg-block'
             title="Séjour 😴">
         <p>Tu continues l'aventure jusqu'au <strong><Moment format='DD MMMM YYYY'>{user.check_out}</Moment></strong></p>
-        <p>Ma contribution solidaire du mois : {balance}€</p>
+        <h5>Contribution solidaire</h5>
+        <div className="card-group">
+          <CardMonthStay fromNow={0} />
+          <CardMonthStay fromNow={1} />
+          <CardMonthStay fromNow={2} />
+        </div>
         <p className='text-right'>
           <Button type='link'
                   message={'Hello la HackerHouse ✈️\nJe souhaite partir le : '}>
@@ -35,7 +34,7 @@ class CardStay extends Component {
 }
 
 function mapStateToProps(state) {
-  return { user: state.session.user, balance: state.balance.amount }
+  return { user: state.session.user }
 }
 
-export default connect(mapStateToProps, { fetchBalance })(CardStay);
+export default connect(mapStateToProps, {})(CardStay);

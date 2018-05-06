@@ -51,8 +51,15 @@ class User
     any_of({ :check_in.gte => today }, { :check_out.gte => today })
   }
 
+  scope :check, -> (dates) {
+    any_of(
+      between(check_in:  dates).selector,
+      between(check_out:  dates).selector
+    )
+  }
+
   def self.queryable_scopes
-    [:active, :upcoming, :active_or_upcoming]
+    [:active, :upcoming, :active_or_upcoming, :check]
   end
 
   # Validations

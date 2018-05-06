@@ -36,7 +36,7 @@ class UserAvatars extends Component {
 }
 
 function mapStateToProps(state) {
-  return { users: state.user };
+  return { users: state.users };
 }
 
 export default connect(mapStateToProps, { fetchUsers })(UserAvatars);

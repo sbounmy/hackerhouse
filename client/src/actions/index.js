@@ -90,26 +90,15 @@ export function fetchHouses() {
   };
 }
 
-export function fetchBalance(house_id, user_id) {
-  const url = `${ROOT_URL}/balances/${house_id}`;
-  console.log(url);
+export function fetchBalance(house_id, user_id, date) {
+  const url = `${ROOT_URL}/balances/${house_id}?${qs.stringify({date: date.toISOString()})}`;
   return async (dispatch) => {
-      const res = await axios.get(url, { headers: { 'Authorization': localStorage.getItem('token') } })
-      .then(({data}) => {
-        // Map balance array to user ids
-        // Transforms
-        // [ [ {_id: "596cbc5af1805b000401e3ea", active: true, admin: false, avatar_url: "https://media.licdn.com/mpr/mprx/0_xrDWFXkqOLidCle…-PE8mdpVUy6r0kqw-Po8mzPSUyw5XZNOHGi8JkVS0uE7yPdDy", bio_title: "Assistant chef de campagne Digital et CRM chez Natixis  ;          ↵Freelance Web-Marketing/Growth", …},
-        // 41], ...
-        // ]
-        // To :
-        // {596cbc5af1805b000401e3ea: {_id: "596cbc5af1805b000401e3ea", active: true, admin: false, avatar_url: "https://media.licdn.com/mpr/mprx/0_xrDWFXkqOLidCle…-PE8mdpVUy6r0kqw-Po8mzPSUyw5XZNOHGi8JkVS0uE7yPdDy", bio_title: "Assistant chef de campagne Digital et CRM chez Natixis  ;          ↵Freelance Web-Marketing/Growth", …},
-        // 41] }
-        const balances = _.mapKeys(data.users, function(value, key){ return value[0]._id });
-        dispatch({type: BALANCE_FETCHED, payload: balances[user_id][1]})
-      });
+    const res = await axios.get(url, { headers: { 'Authorization': localStorage.getItem('token') } })
+    dispatch({type: BALANCE_FETCHED, payload: res.data })
   };
 }
 
+// refactor this : remove and user fetchUsers with reducer
 export function fetchActiveOrUpcomingUsers(house_id) {
   const url = `${ROOT_URL}/users?q[active_or_upcoming]=1&q[house_id]=${house_id}`;
 
