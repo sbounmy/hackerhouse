@@ -51,7 +51,7 @@ class CardStay extends Component {
   }
 
   render() {
-    const { user, users, amounts } = this.props;
+    const { user, check_ins, check_outs, amounts } = this.props;
 
     return (
       <Card className='mb-2 border'
@@ -60,19 +60,37 @@ class CardStay extends Component {
             }>
             <h3>{this.description()}</h3>
             <ul class="list-group list-group-flush">
-              {users.map((user, index) =>
+              {check_outs.map((user, index) =>
                 <li className={`list-group-item`} key={index}>
                   <div className='d-flex flex-row justify-content-between align-items-start'>
                     <div>
-                      <Avatar className='mx-2 d-block' user={user} xs circle/>
+                      <Avatar className='d-block' user={user} xs circle/>
                       <small><FriendlyName firstname={user.firstname} lastname={user.lastname} /></small>
                     </div>
-                    <div>
+                    <div className='text-right'>
                       <h6 className="mt-0 mb-1">
-                        {this.badge(user.action, user.action_date)}
+                        {this.badge('check_out', user.check_out)}
                       </h6>
                       <Moment locale="fr" format='DD/MM'>
-                          {user.action_date}
+                          {user.check_out}
+                      </Moment>
+                    </div>
+                  </div>
+                </li>
+              )}
+              {check_ins.map((user, index) =>
+                <li className={`list-group-item`} key={index}>
+                  <div className='d-flex flex-row justify-content-between align-items-start'>
+                    <div>
+                      <Avatar className='d-block' user={user} xs circle/>
+                      <small><FriendlyName firstname={user.firstname} lastname={user.lastname} /></small>
+                    </div>
+                    <div className='text-right'>
+                      <h6 className="mt-0 mb-1">
+                        {this.badge('check_in', user.check_in)}
+                      </h6>
+                      <Moment locale="fr" format='DD/MM'>
+                          {user.check_in}
                       </Moment>
                     </div>
                   </div>
@@ -89,11 +107,11 @@ function mapStateToProps(state, ownProps) {
   const amount = state.balance.amounts[date]
                 && state.balance.amounts[date][state.session.user.id]
                 && state.balance.amounts[date][state.session.user.id][1]
-  // console.log(date, state.users.byCheckMonth[date])
-  console.log(date, (state.users.byCheckMonth && state.users.byCheckMonth[date]) || [])
+
   return { user: state.session.user,
            amount: amount,
-           users: (state.users.byCheckMonth && state.users.byCheckMonth[date]) || [] }
+           check_outs: (state.users.byCheckOutMonth && state.users.byCheckOutMonth[date]) || [],
+           check_ins: (state.users.byCheckInMonth && state.users.byCheckInMonth[date]) || [] }
 }
 
 export default connect(mapStateToProps, { fetchBalance, fetchUsers })(CardStay);

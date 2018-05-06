@@ -7,6 +7,12 @@ import { USER_CREATED_FAILURE,
        } from '../actions/types';
 import _ from 'lodash';
 
+const keyDate = (d) => {
+  const date = new Date(d)
+  const dateMonth = date.getMonth() + 1
+  return new Date(Date.UTC(date.getFullYear(), dateMonth, 0)).toISOString().substring(0, 10)
+}
+
 export default function(state = {}, action) {
   switch(action.type) {
     case USER_CREATED_FAILURE:
@@ -15,21 +21,23 @@ export default function(state = {}, action) {
       return { ...state, active_or_upcoming_users: action.payload };
     case USERS_FETCHED:
       const users = _.mapKeys(action.payload, 'id')
-      const byCheckMonth = _.groupBy(action.payload, function(user) {
-        const active = new Date(user.check_in) < _.now()
-        user.action = `check_${active ? 'out' : 'in'}`
-        user.action_date = active ? user.check_out : user.check_in
-
-        const date = new Date(user.action_date)
-        const dateMonth = date.getMonth() + 1
-        user.action_month = new Date(Date.UTC(date.getFullYear(), dateMonth, 0)).toISOString().substring(0, 10)
-        return user.action_month
+      const byCheckInMonth = _.groupBy(action.payload, function(user) {
+        return keyDate(user.check_in)
+      });
+      const byCheckOutMonth = _.groupBy(action.payload, function(user) {
+        return keyDate(user.check_out)
       });
       return { ...state,
                byId: { ...state.byId, ...users },
-               byCheckMonth: { ...state.byCheckMonth, ...byCheckMonth },
+               byCheckInMonth: { ...state.byCheckInMonth, ...byCheckInMonth },
+               byCheckOutMonth: { ...state.byCheckOutMonth, ...byCheckOutMonth }
              }
   }
 
   return state
 }
+
+_.reduce({ 'a': 1, 'b': 2, 'c': 1 }, function(result, value, key) {
+  (result[value] || (result[value] = [])).push(key);
+  return result;
+}, {});
