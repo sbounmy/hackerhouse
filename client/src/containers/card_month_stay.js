@@ -83,7 +83,7 @@ class CardStay extends Component {
                 <h6 className="mt-0 mb-1">
                   {this.badge('check_in', user.check_in)}
                 </h6>
-                <div className='d-flex flex-row align-items-start'>
+                <div className='my-2 d-flex flex-row align-items-start'>
                   {check_ins.map((user, index) =>
                     <div className='mr-2'>
                       <Avatar className='d-block' user={user} xs circle/>
