@@ -79,12 +79,23 @@ class CardStay extends Component {
     )
   }
   render() {
-    const { user, check_ins, check_outs, amounts } = this.props;
+    const { user, check_ins, check_outs, amounts, fromNow } = this.props;
+
+    if (new Date(user.check_out) < formatFromNowDates(fromNow)[0]) {
+      return (
+        <Card className='mb-2 border'
+              title={<span></span>
+              }
+        >
+        <p className='text-center'><h2 style={{'font-size': '3rem'}}>😿</h2><h4>Sayonara...</h4></p>
+        </Card>
+      ) // dont display anything if user left
+    }
 
     return (
       <Card className='mb-2 border'
             title={
-              <h3><Moment locale='fr' format='MMMM' utc>{formatFromNowDates(this.props.fromNow)[1]}</Moment></h3>
+              <h3><Moment locale='fr' format='MMMM' utc>{formatFromNowDates(fromNow)[1]}</Moment></h3>
             }
             footer={
               <div>
