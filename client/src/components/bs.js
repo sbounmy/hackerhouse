@@ -34,9 +34,11 @@ export const Card = props => {
         </div>
         {props.children}
       </div>
-      <div class="card-footer">
-        {props.footer}
-      </div>
+      {props.footer &&
+        <div class="card-footer">
+          {props.footer}
+        </div>
+      }
     </div>
   )
 }
