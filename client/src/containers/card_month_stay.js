@@ -29,7 +29,11 @@ class CardStay extends Component {
       })
     }
   }
+  note() {
+    return (this.props.amount > 0) &&
+                <p className="ml-1 card-text d-inline-block"><small className="text-muted">Prélevé le <Moment locale='fr' format='DD MMMM' utc>{formatFromNowDates(this.props.fromNow)[1]}</Moment></small></p>
 
+  }
   description() {
     if (this.props.amount <= 0) {
       return "☀️ 0€"
@@ -44,61 +48,55 @@ class CardStay extends Component {
 
   badge(action, date) {
     if (action == 'check_out') {
-      return <span className='badge badge-warning text-right'>✈️ Départ</span>
+      return <span className='badge badge-warning text-right'>✈️ Départs</span>
     } else {
-      return <span className='badge badge-success text-right'>✅ Arrivée</span>
+      return <span className='badge badge-success text-right'>✅ Arrivées</span>
     }
   }
 
+  renderUsers(type, user, users) {
+    if (_.isEmpty(users)) return ''
+    return (
+      <div>
+        <h6 className="mt-0 mb-1">
+          {this.badge(type, user.check_out)}
+        </h6>
+        <div className='my-2 d-flex flex-row align-items-start'>
+          {users.map((user, index) =>
+            <div className='mr-2'>
+              <Avatar className='d-block' user={user} xs circle/>
+              <small><FriendlyName firstname={user.firstname} lastname={user.lastname} /></small>
+              <br/>
+              <small>
+                <Moment locale="fr" format='DD/MM'>
+                  {user[type]}
+                </Moment>
+              </small>
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
   render() {
     const { user, check_ins, check_outs, amounts } = this.props;
 
     return (
       <Card className='mb-2 border'
             title={
-              <Moment locale='fr' format='MMMM' utc>{formatFromNowDates(this.props.fromNow)[1]}</Moment>
-            }>
-            <h3>{this.description()}</h3>
-            <ul class="list-group list-group-flush">
-              <li className={`list-group-item`}>
-                <h6 className="mt-0 mb-1">
-                  {this.badge('check_out', user.check_out)}
-                </h6>
-                <div className='my-2 d-flex flex-row align-items-start'>
-                  {check_outs.map((user, index) =>
-                    <div className='mr-2'>
-                      <Avatar className='d-block' user={user} xs circle/>
-                      <small><FriendlyName firstname={user.firstname} lastname={user.lastname} /></small>
-                      <br/>
-                      <small>
-                        <Moment locale="fr" format='DD/MM'>
-                          {user.check_out}
-                        </Moment>
-                      </small>
-                    </div>
-                  )}
-                </div>
-              </li>
-              <li className={`list-group-item`}>
-                <h6 className="mt-0 mb-1">
-                  {this.badge('check_in', user.check_in)}
-                </h6>
-                <div className='my-2 d-flex flex-row align-items-start'>
-                  {check_ins.map((user, index) =>
-                    <div className='mr-2'>
-                      <Avatar className='d-block' user={user} xs circle/>
-                      <small><FriendlyName firstname={user.firstname} lastname={user.lastname} /></small>
-                      <br/>
-                      <small>
-                        <Moment locale="fr" format='DD/MM'>
-                          {user.check_in}
-                        </Moment>
-                      </small>
-                    </div>
-                  )}
-                </div>
-              </li>
-            </ul>
+              <h3><Moment locale='fr' format='MMMM' utc>{formatFromNowDates(this.props.fromNow)[1]}</Moment></h3>
+            }
+            footer={
+              <div>
+                <h3 className='d-inline-block'>{this.description()}</h3>{this.note()}
+              </div>
+            }
+            >
+              {_.isEmpty(check_outs) && _.isEmpty(check_ins) &&
+                <p className='text-center'><h2 style={{'font-size': '3rem'}}>🐰</h2><h4>Quoi de neuf docteur ?</h4></p>
+              }
+              {this.renderUsers('check_out', user, check_outs)}
+              {this.renderUsers('check_in', user, check_ins)}
       </Card>
     );
   }
