@@ -63,7 +63,7 @@ class CardStay extends Component {
         </h6>
         <div className='my-2 d-flex flex-row align-items-start'>
           {users.map((user, index) =>
-            <div className='mr-2'>
+            <div className='mr-2 text-truncate'>
               <Avatar className='d-block' user={user} xs circle/>
               <small><FriendlyName firstname={user.firstname} lastname={user.lastname} /></small>
               <br/>
