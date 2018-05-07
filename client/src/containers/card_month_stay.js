@@ -60,42 +60,44 @@ class CardStay extends Component {
             }>
             <h3>{this.description()}</h3>
             <ul class="list-group list-group-flush">
-              {check_outs.map((user, index) =>
-                <li className={`list-group-item`} key={index}>
-                  <div className='d-flex flex-row justify-content-between align-items-start'>
-                    <div>
+              <li className={`list-group-item`}>
+                <h6 className="mt-0 mb-1">
+                  {this.badge('check_out', user.check_out)}
+                </h6>
+                <div className='my-2 d-flex flex-row align-items-start'>
+                  {check_outs.map((user, index) =>
+                    <div className='mr-2'>
                       <Avatar className='d-block' user={user} xs circle/>
                       <small><FriendlyName firstname={user.firstname} lastname={user.lastname} /></small>
-                    </div>
-                    <div className='text-right'>
-                      <h6 className="mt-0 mb-1">
-                        {this.badge('check_out', user.check_out)}
-                      </h6>
-                      <Moment locale="fr" format='DD/MM'>
+                      <br/>
+                      <small>
+                        <Moment locale="fr" format='DD/MM'>
                           {user.check_out}
-                      </Moment>
+                        </Moment>
+                      </small>
                     </div>
-                  </div>
-                </li>
-              )}
-              {check_ins.map((user, index) =>
-                <li className={`list-group-item`} key={index}>
-                  <div className='d-flex flex-row justify-content-between align-items-start'>
-                    <div>
+                  )}
+                </div>
+              </li>
+              <li className={`list-group-item`}>
+                <h6 className="mt-0 mb-1">
+                  {this.badge('check_in', user.check_in)}
+                </h6>
+                <div className='d-flex flex-row align-items-start'>
+                  {check_ins.map((user, index) =>
+                    <div className='mr-2'>
                       <Avatar className='d-block' user={user} xs circle/>
                       <small><FriendlyName firstname={user.firstname} lastname={user.lastname} /></small>
-                    </div>
-                    <div className='text-right'>
-                      <h6 className="mt-0 mb-1">
-                        {this.badge('check_in', user.check_in)}
-                      </h6>
-                      <Moment locale="fr" format='DD/MM'>
+                      <br/>
+                      <small>
+                        <Moment locale="fr" format='DD/MM'>
                           {user.check_in}
-                      </Moment>
+                        </Moment>
+                      </small>
                     </div>
-                  </div>
-                </li>
-              )}
+                  )}
+                </div>
+              </li>
             </ul>
       </Card>
     );
