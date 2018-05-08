@@ -29,7 +29,9 @@ module FeatureHelper
 
   def tf_fill_in(selector, with: '')
     within('.focus') { expect(page).to have_text(selector) }
-    find('.question', text: selector).first(:xpath,".//..").find('input, textarea').set with
-    find('.focus').send_keys :return
+    find('.question', text: selector).first(:xpath,".//..").find('input, textarea').tap do |input|
+      input.set with
+      input.send_keys :return
+    end
   end
 end
