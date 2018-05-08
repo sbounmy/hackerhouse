@@ -31,7 +31,7 @@ class CardStay extends Component {
   }
   note() {
     return (this.props.amount > 0) &&
-                <p className="ml-1 card-text d-inline-block"><small className="text-muted">Prélevé le <Moment locale='fr' format='DD MMMM' utc>{formatFromNowDates(this.props.fromNow)[1]}</Moment></small></p>
+                <p className="ml-1 card-text d-inline-block"><small className="text-muted">(estimatif) au <Moment locale='fr' format='DD/MM' utc>{formatFromNowDates(this.props.fromNow)[1]}</Moment></small></p>
 
   }
   description() {
@@ -84,8 +84,6 @@ class CardStay extends Component {
     if (new Date(user.check_out) < formatFromNowDates(fromNow)[0]) {
       return (
         <Card className='mb-2 border'
-              title={<span></span>
-              }
         >
         <p className='text-center'><h2 style={{'font-size': '3rem'}}>😿</h2><h4>Sayonara...</h4></p>
         </Card>
@@ -99,7 +97,7 @@ class CardStay extends Component {
             }
             footer={
               <div>
-                <h3 className='d-inline-block'>{this.description()}</h3>{this.note()}
+                <h4 className='d-inline-block'>{this.description()}</h4>{this.note()}
               </div>
             }
             >
