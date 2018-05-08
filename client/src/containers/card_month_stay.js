@@ -68,7 +68,7 @@ class CardStay extends Component {
               <small><FriendlyName firstname={user.firstname} lastname={user.lastname} /></small>
               <br/>
               <small>
-                <Moment locale="fr" format='DD/MM'>
+                <Moment locale="fr" format='ddd DD'>
                   {user[type]}
                 </Moment>
               </small>
@@ -92,7 +92,7 @@ class CardStay extends Component {
 
     return (
       <Card className='mb-2 border'
-            title={
+            header={
               <h3><Moment locale='fr' format='MMMM' utc>{formatFromNowDates(fromNow)[1]}</Moment></h3>
             }
             footer={
