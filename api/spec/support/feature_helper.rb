@@ -22,7 +22,9 @@ module FeatureHelper
 
   def tf_select(value)
     within('.focus') { expect(page).to have_text(value) }
-    find('.caption', text: value).click
+    # ci has a bug with .bd that obscures caption click. try to click on its container instead of element
+    find('.caption', text: value).first(:xpath,"./ancestor::li[contains(@class, 'container')]").click
+    # find('.caption', text: value).click
   end
 
   def tf_fill_in(selector, with: '')
