@@ -74,7 +74,7 @@ feature 'messages' do
     end
 
     within_intercom :notifications do
-      expect(page).to have_content 'C\'est parti ! Je viens de prévenir les colocs de ton inscription !'
+      expect(page).to have_content 'Je viens de prévenir les colocs de ton inscription !'
     end
   end
 
