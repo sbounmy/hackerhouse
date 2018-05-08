@@ -56,6 +56,38 @@ describe HousesAPI do
 
         expect(json_response.keys).to_not include('pantry_login', 'pantry_password', 'pantry_url', 'pantry_description', 'pantry_budget')
       end
+
+      it 'returns sensible attributes if user is admin' do
+        user = create(:user, house: hq, admin: true)
+        get_as user, "/v1/houses/#{hq.slug_id}"
+
+        expect(json_response['door_key']).to eq '#4432'
+        expect(json_response['building_key']).to eq '4242B'
+      end
+
+      it 'returns sensible information when user is active' do
+        user = create(:user, house: hq, check_out: 2.month.from_now)
+        get_as user, "/v1/houses/#{hq.slug_id}"
+
+        expect(json_response['door_key']).to eq '#4432'
+        expect(json_response['building_key']).to eq '4242B'
+      end
+
+      it 'does not returns sensible information when user is not active anymore' do
+        user = create(:user, house: hq, check_out: 2.month.ago)
+        get_as user, "/v1/houses/#{hq.slug_id}"
+
+        expect(json_response['door_key']).to eq nil
+        expect(json_response['building_key']).to eq nil
+      end
+
+      it 'does not returns sensible information when user does not belong to house' do
+        user = create(:user, house: nil)
+        get_as user, "/v1/houses/#{hq.slug_id}"
+
+        expect(json_response['door_key']).to eq nil
+        expect(json_response['building_key']).to eq nil
+      end
     end
   end
 
@@ -149,4 +181,27 @@ describe HousesAPI do
     end
   end
 
+  describe "PUT /v1/houses" do
+
+    context 'with valid params' do
+      let!(:hq) { create(:house, intercom: true) }
+
+      def update_house params
+        put_as :admin, "/v1/houses/#{hq.slug_id}", params: params
+      end
+
+      it "is success" do
+        update_house door_key: 'new-door-key'
+        expect(response.status).to be 200
+      end
+
+      it "returns json response" do
+        update_house door_key: 'new-door-key'
+        expect(json_response['door_key']).to eq 'new-door-key'
+      end
+
+      it 'updates intercom company'
+    end
+
+  end
 end

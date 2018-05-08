@@ -22,19 +22,34 @@ FactoryGirl.define do
     pantry_description 'Livraison bi-mensuel'
     pantry_url 'https://courses-en-ligne.carrefour.fr'
 
+    building_key '4242B'
+    door_key '#4432'
+
     transient do
       stripe false
+      intercom false
     end
 
     # Create customer on stripe and set it's stripe_id
     # Use only when you need to query on Stripe API
     # Example : create(:user, stripe: true)
-    before(:create) do |user, evaluator|
+    before(:create) do |house, evaluator|
       if evaluator.stripe
         App.stripe do
           c = Stripe::Account.create(email: evaluator.email,
             type: 'custom', country: 'fr') #custom so we can delete it
           evaluator.stripe_id = c.id
+        end
+      end
+    end
+    # Create customer on stripe and set it's stripe_id
+    # Use only when you need to query on Stripe API
+    # Example : create(:user, stripe: true)
+    before(:create) do |house, evaluator|
+      if evaluator.intercom
+        App.intercom do |client|
+          c = client.companies.create(company_id: "hh#{house.slug_id}", name: "hh:#{house.slug_id}")
+          client.companies.save(c)
         end
       end
     end

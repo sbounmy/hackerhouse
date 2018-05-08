@@ -15,6 +15,8 @@ class House
 
   # HackerHouse name
   field :name, type: String
+  field :door_key, type: String
+  field :building_key, type: String
   field :address, type: String
   field :zip_code, type: String
   field :city, type: String

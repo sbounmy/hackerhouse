@@ -20,4 +20,10 @@ class App
     Stripe.api_key = @prev || nil
     @res
   end
+
+  def self.intercom
+    Intercom::Client.new(token: Rails.application.secrets.intercom_access_token).tap do |c|
+      yield c if block_given?
+    end
+  end
 end

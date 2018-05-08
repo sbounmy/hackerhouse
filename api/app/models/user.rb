@@ -111,7 +111,7 @@ class User
   end
 
   def active_on?(house)
-    (house_id == house.id) && check_out.future?
+    !house.nil? && (house_id == house.id) && check_out.future?
   end
 
   # https://www.levups.com/en/blog/2017/undocumented-dirty-attributes-activerecord-changes-rails51.html

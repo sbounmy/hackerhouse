@@ -1,11 +1,35 @@
 class HousesAPI < Grape::API
+  helpers do
+    def update_company(house)
+      intercom.companies.find(name: "hh:#{house.slug_id}").tap do |c|
+        c.custom_attributes = {
+          door_key: house.door_key,
+          building_key: house.building_key
+        }
+        intercom.companies.save(c)
+      end
+    end
+  end
 
   resource :houses do
 
     route_param :slug_id do
-      desc "Get a house"
+      desc "Show a house"
       get do
         House.find_by(slug_id: params[:slug_id])
+      end
+
+      desc "Update a house"
+      params do
+        optional :door_key, type: String,     desc: "Door entrance key"
+        optional :building_key, type: String, desc: "Building entrance key"
+      end
+      put do
+        House.find_by(slug_id: params[:slug_id]).tap do |house|
+          authorize house, :update?
+          house.update_attributes! declared_params
+          update_company(house)
+        end
       end
     end
 

@@ -14,4 +14,8 @@ class Guest
   def house_id
     nil
   end
+
+  def house
+    nil
+  end
 end
