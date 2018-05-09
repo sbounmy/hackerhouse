@@ -13,6 +13,7 @@ FactoryGirl.define do
     bio_url 'https://linkedin.com/in/blabla'
     transient do
       stripe false
+      intercom false
     end
 
     # Create customer on stripe and set it's stripe_id
@@ -26,6 +27,24 @@ FactoryGirl.define do
         end
       end
     end
+    before(:create) do |user, evaluator|
+      if evaluator.intercom
+        App.intercom do |client|
+          c = client.users.create(user_id: evaluator.id.to_s, email: evaluator.email,
+            custom_attributes: {
+              check_in: evaluator.check_in,
+              check_out: evaluator.check_out,
+              phone_number: evaluator.phone_number
+            }
+          )
+          if evaluator.house_id
+            c.companies = [ { company_id: evaluator.house_id.to_s, name: "hh:#{evaluator.house.slug_id}" }]
+          end
+          client.users.save(c)
+        end
+      end
+    end
+
   end
 
 end

@@ -57,4 +57,13 @@ module ControllerHelper
     end
     retry
   end
+
+  def stub_synchronizers!
+    allow_any_instance_of(ApplicationSynchronizer).to receive(:method_missing).and_return false
+  end
+
+  def unstub_synchronizers!
+    allow_any_instance_of(ApplicationSynchronizer).to receive(:method_missing).and_call_original
+  end
+
 end

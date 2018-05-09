@@ -85,26 +85,6 @@ class User
     [check_in, check_out]
   end
 
-  def push!(params={})
-    App.stripe do
-      Stripe::Customer.retrieve(stripe_id).tap do |c|
-        c.email = email
-        c.metadata[:oid] = id.to_s
-        # this will break if someone move to another hackerhouse
-        Stripe::Subscription.list(customer: stripe_id).each do |s|
-          s.metadata[:house] = house.slug_id
-          s.metadata[:check_in] = check_in
-          s.metadata[:check_out] = check_out
-          s.save
-        end
-        params.each do |method, value|
-          c.send "#{method}=", value
-        end
-        c.save
-      end
-    end
-  end
-
   def authenticate_linkedin(tk)
     return false if linkedin_access_token.nil? || tk.nil?
     linkedin_access_token == tk

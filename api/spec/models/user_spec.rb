@@ -29,24 +29,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#push!' do
-    it 'pushes changes to stripe' do
-      user = create(:user, house: hq, stripe: true)
-
-      user.email = 'stephane+test@hackerhouse.paris'
-      App.stripe { Stripe::Subscription.create(customer: user.stripe_id, plan: 'rent_monthly') }
-      user.push!
-      App.stripe do
-        s = Stripe::Subscription.list(customer: user.stripe_id).data[0]
-        expect(s.metadata.to_hash).to eq({
-          house: hq.slug_id,
-          check_in: '2016-12-20',
-          check_out: '2017-02-20'
-        })
-      end
-    end
-  end
-
   describe '.active' do
     let(:user) { create(:user, check_out: 3.months.from_now) }
 

@@ -1,5 +1,4 @@
 class UsersAPI < Grape::API
-
   resource :users do
 
     desc "Create a User"
@@ -64,7 +63,7 @@ class UsersAPI < Grape::API
       User.find(params[:id]).tap do |user|
         authorize user, :update?
         user.update_attributes! declared_params
-        user.push! if user.stripe_id
+        UserSynchronizer.with(user: user).update(:stripe, :intercom)
         user.deliver_check_out_changes_email
       end
     end

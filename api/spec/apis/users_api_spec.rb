@@ -3,6 +3,7 @@ require 'rails_helper'
 describe UsersAPI do
   let!(:hq) { create(:house, stripe_plan_ids: ['rent_monthly', 'cleaning_monthly']) }
   let(:stripe) { StripeMock.create_test_helper }
+  before { stub_synchronizers! }
 
   describe "POST /v1/users" do
 
@@ -188,6 +189,20 @@ describe UsersAPI do
         put "/v1/users/#{user2.id}", params: { avatar_url: avatar }, headers: { 'Authorization' => token(user) }
       }.to change { user2.reload.avatar_url }.from(nil).to(avatar)
       expect(response.status).to eq 200
+    end
+
+    it 'sync on intercom' do
+      unstub_synchronizers!
+      u = create(:user, intercom: true)
+      co = 3.month.from_now.to_date
+      expect {
+        put_as :admin, "/v1/users/#{u.id}", params: { check_out: co }
+      }.to change { u.reload.check_out }.to(co)
+      expect(response.status).to eq 200
+      App.intercom do |i|
+        i_user = i.users.find(user_id: u.id.to_s)
+        expect(i_user.custom_attributes['check_out']).to eq co.to_s
+      end
     end
 
     context 'on checkout update' do
