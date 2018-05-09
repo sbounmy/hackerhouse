@@ -184,7 +184,7 @@ describe HousesAPI do
   describe "PUT /v1/houses" do
 
     context 'with valid params' do
-      let!(:hq) { create(:house, intercom: true) }
+      let(:hq) { create(:house) }
 
       def update_house params
         put_as :admin, "/v1/houses/#{hq.slug_id}", params: params
@@ -196,11 +196,20 @@ describe HousesAPI do
       end
 
       it "returns json response" do
-        update_house door_key: 'new-door-key'
-        expect(json_response['door_key']).to eq 'new-door-key'
+        update_house door_key: 'updated-door-key'
+        expect(json_response['door_key']).to eq 'updated-door-key'
       end
 
-      it 'updates intercom company'
+      it 'updates intercom company' do
+        unstub_synchronizers!
+        house = create(:house, intercom: true)
+        put_as :admin, "/v1/houses/#{house.slug_id}", params: { door_key: 'updated-door-key' }
+
+        App.intercom do |i|
+          comp = i.companies.find(company_id: house.id)
+          expect(comp.custom_attributes['door_key']).to eq 'updated-door-key'
+        end
+      end
     end
 
   end

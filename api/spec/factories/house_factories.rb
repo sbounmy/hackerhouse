@@ -48,7 +48,7 @@ FactoryGirl.define do
     before(:create) do |house, evaluator|
       if evaluator.intercom
         App.intercom do |client|
-          c = client.companies.create(company_id: "hh#{house.slug_id}", name: "hh:#{house.slug_id}")
+          c = client.companies.create(company_id: house.id.to_s, name: "hh:#{house.slug_id}")
           client.companies.save(c)
         end
       end

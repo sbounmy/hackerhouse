@@ -1,15 +1,4 @@
 class HousesAPI < Grape::API
-  helpers do
-    def update_company(house)
-      intercom.companies.find(name: "hh:#{house.slug_id}").tap do |c|
-        c.custom_attributes = {
-          door_key: house.door_key,
-          building_key: house.building_key
-        }
-        intercom.companies.save(c)
-      end
-    end
-  end
 
   resource :houses do
 
@@ -28,7 +17,7 @@ class HousesAPI < Grape::API
         House.find_by(slug_id: params[:slug_id]).tap do |house|
           authorize house, :update?
           house.update_attributes! declared_params
-          update_company(house)
+          HouseSynchronizer.with(house: house).update(:intercom)
         end
       end
     end
