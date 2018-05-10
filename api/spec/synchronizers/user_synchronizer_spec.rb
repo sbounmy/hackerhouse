@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe UserSynchronizer, type: :synchronizer do
+RSpec.describe UserSynchronizer, type: :synchronizer, live: true do
   let(:hq) { create(:house) }
 
   describe '#update' do
