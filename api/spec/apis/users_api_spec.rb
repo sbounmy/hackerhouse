@@ -3,7 +3,6 @@ require 'rails_helper'
 describe UsersAPI do
   let!(:hq) { create(:house, stripe_plan_ids: ['rent_monthly', 'cleaning_monthly']) }
   let(:stripe) { StripeMock.create_test_helper }
-  before { stub_synchronizers! }
 
   describe "POST /v1/users" do
 
@@ -191,8 +190,7 @@ describe UsersAPI do
       expect(response.status).to eq 200
     end
 
-    it 'sync on intercom' do
-      unstub_synchronizers!
+    it 'sync on intercom', :live do
       u = create(:user, intercom: true)
       co = 3.month.from_now.to_date
       expect {

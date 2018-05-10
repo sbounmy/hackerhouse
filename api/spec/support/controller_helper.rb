@@ -65,5 +65,4 @@ module ControllerHelper
   def unstub_synchronizers!
     allow_any_instance_of(ApplicationSynchronizer).to receive(:method_missing).and_call_original
   end
-
 end

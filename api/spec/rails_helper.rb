@@ -59,6 +59,12 @@ RSpec.configure do |config|
   config.include ReactHelper,  type: :feature
   config.include FeatureHelper,  type: :feature
 
+  # Make sure we dont synchronize to third parties
+  # Even if it targets 3rd party sandbox
+  config.before(:each) do |example|
+    stub_synchronizers! unless example.metadata[:live]
+  end
+
   # Wipe database to have a clean test environment
   config.after(:each) do
     Mongoid::Config.purge!
