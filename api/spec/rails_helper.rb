@@ -62,7 +62,13 @@ RSpec.configure do |config|
   # Make sure we dont synchronize to third parties
   # Even if it targets 3rd party sandbox
   config.before(:each) do |example|
-    stub_synchronizers! unless example.metadata[:live]
+    params = {}
+    params[:except] = if example.metadata[:sync] === true
+      [anything]
+    else
+      example.metadata[:sync]
+    end
+    stub_synchronizers! params
   end
 
   # Wipe database to have a clean test environment

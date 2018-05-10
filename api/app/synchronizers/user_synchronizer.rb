@@ -27,4 +27,19 @@ class UserSynchronizer < ApplicationSynchronizer
       end
     end if user.stripe_id
   end
+
+  # https://www.levups.com/en/blog/2017/undocumented-dirty-attributes-activerecord-changes-rails51.html
+  def update_mailer
+    user = params[:user]
+    _check_out_was = user.previous_changes[:check_out] && user.previous_changes[:check_out][0]
+
+    if !user.admin && user.previous_changes[:check_out] && user.check_out.future?
+      if (_check_out_was > user.check_out)
+        UserMailer.with(user: user).check_out_earlier_email.deliver_now
+      elsif (_check_out_was < user.check_out)
+        UserMailer.with(user: user).check_out_later_email.deliver_now
+      end
+    end
+  end
+
 end

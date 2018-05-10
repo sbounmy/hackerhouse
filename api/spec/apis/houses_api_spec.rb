@@ -200,7 +200,7 @@ describe HousesAPI do
         expect(json_response['door_key']).to eq 'updated-door-key'
       end
 
-      it 'updates intercom company', :live do
+      it 'updates intercom company', :sync do
         house = create(:house, intercom: true)
         put_as :admin, "/v1/houses/#{house.slug_id}", params: { door_key: 'updated-door-key' }
 

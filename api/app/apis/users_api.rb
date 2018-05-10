@@ -63,8 +63,7 @@ class UsersAPI < Grape::API
       User.find(params[:id]).tap do |user|
         authorize user, :update?
         user.update_attributes! declared_params
-        UserSynchronizer.with(user: user).update(:stripe, :intercom)
-        user.deliver_check_out_changes_email
+        UserSynchronizer.with(user: user).update(:stripe, :intercom, :mailer)
       end
     end
 

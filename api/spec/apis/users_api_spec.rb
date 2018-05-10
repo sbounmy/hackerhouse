@@ -190,7 +190,7 @@ describe UsersAPI do
       expect(response.status).to eq 200
     end
 
-    it 'sync on intercom', :live do
+    it 'sync on intercom', :sync do
       u = create(:user, intercom: true)
       co = 3.month.from_now.to_date
       expect {
@@ -210,7 +210,7 @@ describe UsersAPI do
       before { I18n.locale = :fr } # so expectations matches french date formats
       after { I18n.locale = :en }
 
-      context 'when check_out changes' do
+      context 'when check_out changes', sync: [:mailer] do
         it 'does not email when checkout is in the past' do
           expect {
             put "/v1/users/#{user.id}", params: { check_out: 2.month.ago, token: token(user) }

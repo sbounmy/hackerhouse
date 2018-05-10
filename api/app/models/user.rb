@@ -94,16 +94,4 @@ class User
     !house.nil? && (house_id == house.id) && check_out.future?
   end
 
-  # https://www.levups.com/en/blog/2017/undocumented-dirty-attributes-activerecord-changes-rails51.html
-  def deliver_check_out_changes_email
-    _check_out_was = previous_changes[:check_out] && previous_changes[:check_out][0]
-
-    if !admin && previous_changes[:check_out] && check_out.future?
-      if (_check_out_was > check_out)
-        UserMailer.with(user: self).check_out_earlier_email.deliver_now
-      elsif (_check_out_was < check_out)
-        UserMailer.with(user: self).check_out_later_email.deliver_now
-      end
-    end
-  end
 end

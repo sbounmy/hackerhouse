@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe HouseSynchronizer, type: :synchronizer, live: true do
+RSpec.describe HouseSynchronizer, type: :synchronizer, sync: true do
   let(:hq) { create(:house, intercom: true) }
 
   describe '#update' do

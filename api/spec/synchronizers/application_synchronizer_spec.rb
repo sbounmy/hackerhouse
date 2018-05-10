@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ApplicationSynchronizer, type: :synchronizer, live: true do
+RSpec.describe ApplicationSynchronizer, type: :synchronizer, sync: true do
   before do
     class TestSynchronizer < ApplicationSynchronizer
 

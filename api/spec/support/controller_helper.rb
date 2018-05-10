@@ -58,11 +58,16 @@ module ControllerHelper
     retry
   end
 
-  def stub_synchronizers!
-    allow_any_instance_of(ApplicationSynchronizer).to receive(:method_missing).and_return false
+  def stub_synchronizers! except: []
+    allow_send_action.and_return(false) #if except.empty?
+    except.each do |ex|
+      allow_send_action.with(anything, ex).and_call_original
+    end if except
   end
 
-  def unstub_synchronizers!
-    allow_any_instance_of(ApplicationSynchronizer).to receive(:method_missing).and_call_original
+  private
+
+  def allow_send_action
+    allow_any_instance_of(ApplicationSynchronizer).to receive(:send_action)
   end
 end
