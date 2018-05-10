@@ -57,7 +57,7 @@ describe BalancesAPI do
     end
   end
 
-  describe 'POST /v1/balances/:slug_id' do
+  describe 'POST /v1/balances/:slug_id', :sync do
 
     it 'responds succesfully' do
       post_as :admin, '/v1/balances/hq'
@@ -123,12 +123,6 @@ describe BalancesAPI do
         expect(@items.count).to eq 1
         expect(@items.first.amount).to eq 445_00
       end
-    end
-
-    it 'does not notify if false' do
-      expect {
-        post_as :admin, '/v1/balances/hq', params: { notify: false }
-      }.to_not change { deliveries.count }
     end
 
     it 'is idempotent' do
