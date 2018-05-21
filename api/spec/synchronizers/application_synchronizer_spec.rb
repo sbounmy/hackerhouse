@@ -3,17 +3,20 @@ require 'rails_helper'
 RSpec.describe ApplicationSynchronizer, type: :synchronizer, sync: true do
   before do
     class TestSynchronizer < ApplicationSynchronizer
+      on :cry do
+        to :baby do
+          give_a_hug
+        end
 
-      def hello(string)
-      end
-      def foo
-        hello params[:bar]
-      end
-
-      def bar_today
+        to :dog do
+          give_a_bone params[:sound]
+        end
       end
 
-      def bar_tomorrow
+      def give_a_hug
+      end
+
+      def give_a_bone noise
       end
     end
   end
@@ -24,27 +27,33 @@ RSpec.describe ApplicationSynchronizer, type: :synchronizer, sync: true do
 
   describe '.with' do
     it 'accepts params' do
-      expect_any_instance_of(TestSynchronizer).to receive(:hello).with('hello')
-      TestSynchronizer.with(bar: 'hello').foo
+      expect_any_instance_of(TestSynchronizer).to receive(:give_a_bone).with('waf')
+      TestSynchronizer.with(sound: 'waf').cry(:dog)
     end
   end
 
-  describe 'action methods' do
-    it 'accepts single platform' do
-      expect_any_instance_of(TestSynchronizer).to receive(:bar_today)
-      TestSynchronizer.with(bar: 'hello').bar(:today, :tomorrow)
+  describe '.on & .to' do
+    it 'accepts single service' do
+      expect_any_instance_of(TestSynchronizer).to receive(:give_a_hug)
+      TestSynchronizer.with(sound: 'ouin').cry(:baby)
     end
 
-    it 'accepts multiple platform' do
-      expect_any_instance_of(TestSynchronizer).to receive(:bar_today)
-      expect_any_instance_of(TestSynchronizer).to receive(:bar_tomorrow)
-      TestSynchronizer.with(bar: 'hello').bar(:today, :tomorrow)
+    it 'accepts multiple service' do
+      expect_any_instance_of(TestSynchronizer).to receive(:give_a_hug)
+      expect_any_instance_of(TestSynchronizer).to receive(:give_a_bone)
+      TestSynchronizer.with(sound: 'youpi').cry(:baby, :dog)
     end
 
-    it 'raises error on undefined method' do
+    it 'raise error when no service' do
       expect {
-        TestSynchronizer.with(bar: 'hello').bar(:unknown)
-      }.to raise_error(NoMethodError, /undefined method `bar_unknown'/)
+        TestSynchronizer.with(sound: '').cry()
+      }.to raise_error(TestSynchronizer::MissingService, /need at least a service as argument\: TestSynchronizer\.cry\(baby\, dog\)/)
+    end
+
+    it 'raises correct error on undefined .on' do
+      expect {
+        TestSynchronizer.with(sound: 'youpi').happy(:baby)
+      }.to raise_error(TestSynchronizer::DefinitionError, /on :happy/)
     end
   end
 end

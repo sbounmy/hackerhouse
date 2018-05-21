@@ -1,5 +1,7 @@
 class MessageSynchronizer < ApplicationSynchronizer
-  def create_mailer
-    MessageMailer.with(message: params[:message]).create_email.deliver
+  on :create do
+    to :mailer do
+      MessageMailer.with(message: params[:message]).create_email.deliver
+    end
   end
 end
