@@ -105,6 +105,5 @@ Capybara.register_driver :remote_firefox do |app|
   options = Selenium::WebDriver::Firefox::Options.new
   options.profile = profile
   Capybara::Selenium::Driver.new(app, browser: :remote,
-    # url: ENV.fetch('SELENIUM_DRIVER_URL'), desired_capabilities: :firefox)
     url: "http://#{ENV['SELENIUM_REMOTE_HOST']}:4444/wd/hub", desired_capabilities: firefox_capabilities)
 end
