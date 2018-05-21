@@ -72,21 +72,23 @@ class Synchronizer
     actions[method_name] && actions[method_name][arg]
   end
 
-  def method_missing(method_name, *args)
-    raise MissingService.new(self.class, self.class.actions[method_name.to_sym]) if args.empty?
-    args.each do |arg|
-      method_n = "#{method_name.to_s}_#{arg}".to_sym
+  def method_missing(action_name, *service_names)
+    raise MissingService.new(self.class, self.class.actions[action_name.to_sym]) if service_names.empty?
+    service_names.each do |service_name|
+      method_n = "#{action_name.to_s}_#{service_name}".to_sym
       if respond_to? method_n
-        send_action method_n
+        send_action action_name, service_name
       else
-        raise DefinitionError.new(method_name, arg)
-        super(method_n, args)
+        raise DefinitionError.new(action_name, service_name)
+        super(method_n, services)
       end
     end
   end
 
-  def send_action method_n
-    self.class[method_n].run(self)
+  # this method needs 2 arguments because we are mocking them for spec :
+  # controller_helper.rb#stub_synchronizers!
+  def send_action action_name, service_name
+    self.class.actions[action_name][service_name].run(self)
   end
 
   # https://relishapp.com/rspec/rspec-mocks/docs/verifying-doubles/dynamic-classes

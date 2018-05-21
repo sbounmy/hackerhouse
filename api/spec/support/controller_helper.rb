@@ -61,13 +61,13 @@ module ControllerHelper
   def stub_synchronizers! except: []
     allow_send_action.and_return(false) #if except.empty?
     except.each do |ex|
-      allow_send_action.with(anything).and_call_original
+      allow_send_action.with(anything, ex).and_call_original
     end if except
   end
 
   private
 
   def allow_send_action
-    allow_any_instance_of(ApplicationSynchronizer).to receive(:send_action)
+    allow_any_instance_of(Synchronizer).to receive(:send_action)
   end
 end
