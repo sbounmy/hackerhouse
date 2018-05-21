@@ -62,7 +62,7 @@ describe MessagesAPI do
       }.to change { padawan.messages.count }.by(1)
     end
 
-    it 'emails house active users' do
+    it 'emails house active users', :sync do
       alumni = create(:user, house: hq, check_in: 4.month.ago, check_out: 2.month.ago)
       joe = create(:user, house: hq, check_in: 4.month.ago, check_out: 2.month.from_now)
       expect {
@@ -75,7 +75,7 @@ describe MessagesAPI do
       expect(last_delivery.body.encoded).to match 'Salut, je suis'
     end
 
-    it 'emails house active users even without' do
+    it 'emails house active users even without', :sync do
       alumni = create(:user, house: hq, check_in: 4.month.ago, check_out: 2.month.ago)
       expect {
         create_message padawan

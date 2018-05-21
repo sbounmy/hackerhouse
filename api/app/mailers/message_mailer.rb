@@ -2,10 +2,10 @@ class MessageMailer < ApplicationMailer
   default from: -> { from.format },
           cc: 'stephane@hackerhouse.paris'
 
-  def create_email(message)
-    @message = message
-    @user = message.user
-    @house = message.house
+  def create_email
+    @message = params[:message]
+    @user = @message.user
+    @house = @message.house
     @residents = @house.users.active
 
     mail(to: @residents.pluck(:email),

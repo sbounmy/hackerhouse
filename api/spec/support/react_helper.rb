@@ -5,7 +5,7 @@ module ReactHelper
     RSpec.configure do |config|
       # this force to boot rails app
       config.before(:suite) do
-        puts "botting default server..."
+        puts "booting default server..."
         ip = `/sbin/ip route|awk '/scope/ { print $9 }'`
         ip = ip.gsub "\n", ""
         Capybara.server_port = "3000"
