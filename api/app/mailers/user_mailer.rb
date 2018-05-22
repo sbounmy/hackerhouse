@@ -19,4 +19,9 @@ class UserMailer < ApplicationMailer
   def check_out_later_email
     mail subject: "#{@user.firstname} reste plus longtemps que prévu ! 👍"
   end
+
+  def check_out_reminder_email
+    @next = @house.users.where(:check_in.gte => @user.check_out).first
+    mail subject: "#{@user.firstname} nous quitte bientôt..."
+  end
 end

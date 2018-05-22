@@ -66,6 +66,18 @@ class User
   validate :should_stay_at_least_1_month
   validates :email, uniqueness: true
 
+  def self.send_reminders(*durations)
+    durations_from_now = durations.map { |d| d.from_now.to_date }
+    User.where(:check_out.in => durations_from_now).includes(:house).map do |user|
+      if user.house.v2?
+        UserMailer.with(user: user).check_out_reminder_email.deliver
+        user
+      else
+        nil
+      end
+    end.compact
+  end
+
   def active
     !!check_out && !check_out.past? && house_id.present?
   end

@@ -77,4 +77,56 @@ RSpec.describe User, type: :model do
 
   end
 
+  describe '.send_reminders' do
+
+    it 'sends checkout reminder by days' do
+      create(:user, check_out: 30.days.from_now)
+      expect {
+        User.send_reminders(30.days)
+      }.to change { deliveries.count }.by(1)
+    end
+
+    it 'should not send to house not v2' do
+      user = create(:user, check_out: 30.days.from_now)
+      user.house.update_attributes v2: false
+      expect {
+        User.send_reminders(30.days)
+      }.to_not change { deliveries.count }.from(0)
+    end
+
+    it 'returns user reminded as value' do
+      user = create(:user, check_out: 30.days.from_now)
+      expect(User.send_reminders(30.days)).to eq [user]
+    end
+
+    it 'does not send when not in days' do
+      create(:user, check_out: 30.days.from_now)
+      expect {
+        User.send_reminders(20.days)
+      }.to_not change { deliveries.count }.from(0)
+    end
+
+    it 'returns empty array when no user reminded' do
+      user = create(:user, check_out: 30.days.from_now)
+      expect(User.send_reminders(20.days)).to eq []
+    end
+
+    it 'accepts multiple days' do
+      create(:user, check_out: 30.days.from_now)
+      Timecop.travel(15.day.from_now) do
+        expect {
+          User.send_reminders(20.days, 15.day)
+        }.to change { deliveries.count }.by(1)
+      end
+    end
+
+    it 'does not send email when they found someone' do
+      skip 'complicated'
+      leaver = create(:user, check_out: 30.days.from_now)
+      comer = create(:user, house: leaver.house, check: [30.days.from_now, 3.month.from_now])
+      expect {
+        User.send_reminders(30.days)
+      }.to_not change { deliveries.count }.from(0)
+    end
+  end
 end

@@ -74,6 +74,7 @@ RSpec.configure do |config|
   # Wipe database to have a clean test environment
   config.after(:each) do
     Mongoid::Config.purge!
+    deliveries.clear
   end
 
   config.before(type: :feature) do
