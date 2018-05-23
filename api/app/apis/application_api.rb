@@ -1,3 +1,5 @@
+require 'raven/integrations/rack'
+
 class ApplicationAPI < Grape::API
   version 'v1', using: :path
   format :json
@@ -7,6 +9,14 @@ class ApplicationAPI < Grape::API
     filter: Class.new { def filter(opts) opts.reject { |k, _| k.to_s == 'password' } end }.new,
     headers: %w(version cache-control)
   }
+  use Raven::Rack
+
+  before do
+    Raven.user_context(id: current_user.id.to_s,
+                       email: current_user.email,
+                       ip_address: request.ip) # or anything else in session
+    Raven.extra_context(params: params, url: request.url)
+  end
 
   # Helpers
   helpers do

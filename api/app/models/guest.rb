@@ -18,4 +18,8 @@ class Guest
   def house
     nil
   end
+
+  def email
+    "guest@hackerhouse.paris"
+  end
 end

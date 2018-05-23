@@ -67,6 +67,9 @@ gem 'intercom'
 # A Ruby and command-line client for the Slack Web and Real Time Messaging APIs.
 gem 'slack-ruby-client'
 
+# Sentry is cross-platform application monitoring, with a focus on error reporting.
+gem "sentry-raven", require: 'sentry-raven-without-integrations'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri

@@ -267,6 +267,8 @@ GEM
     selenium-webdriver (3.8.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.0)
+    sentry-raven (2.7.3)
+      faraday (>= 0.7.6, < 1.0)
     simple_command (0.0.9)
     slack-ruby-client (0.11.1)
       activesupport
@@ -338,6 +340,7 @@ DEPENDENCIES
   rspec-rails
   rspec_junit_formatter
   selenium-webdriver
+  sentry-raven
   simple_command
   slack-ruby-client
   spring
@@ -348,4 +351,4 @@ DEPENDENCIES
   tzinfo-data
 
 BUNDLED WITH
-   1.16.1
+   1.16.2
