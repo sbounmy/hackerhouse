@@ -70,7 +70,7 @@ class User
     durations_from_now = durations.map { |d| d.from_now.to_date }
     User.where(:check_out.in => durations_from_now).includes(:house).map do |user|
       if user.house.v2?
-        UserMailer.with(user: user).check_out_reminder_email.deliver
+        CheckOutSynchronizer.with(user: user).remind(:mailer, :slack)
         user
       else
         nil

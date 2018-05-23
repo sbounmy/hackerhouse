@@ -64,6 +64,9 @@ gem "bootsnap", ">= 1.1.0", require: false
 # Ruby bindings for the Intercom API
 gem 'intercom'
 
+# A Ruby and command-line client for the Slack Web and Real Time Messaging APIs.
+gem 'slack-ruby-client'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri

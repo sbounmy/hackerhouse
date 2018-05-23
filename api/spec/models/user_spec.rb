@@ -77,7 +77,7 @@ RSpec.describe User, type: :model do
 
   end
 
-  describe '.send_reminders' do
+  describe '.send_reminders', sync: [:mailer] do
 
     it 'sends checkout reminder by days' do
       create(:user, check_out: 30.days.from_now)
@@ -127,6 +127,16 @@ RSpec.describe User, type: :model do
       expect {
         User.send_reminders(30.days)
       }.to_not change { deliveries.count }.from(0)
+    end
+
+    it 'sends checkout reminder in slack by days', sync: [:slack] do
+      hq.update_attributes! slug_id: 'hq'
+      user = create(:user, house: hq, firstname: 'Pierre', check_out: 30.days.from_now)
+      expect {
+        User.send_reminders(30.days)
+      }.to change { slacks.count }.by(1)
+      expect(slacks[0].channel).to eq "#{user.house.slack_id}"
+      expect(slacks[0].text).to match "D-30: Départ de Pierre, avez-vous trouvé un nouveau coloc ?"
     end
   end
 end

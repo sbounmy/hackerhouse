@@ -55,6 +55,7 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.include ControllerHelper
+  config.include SlackHelper
   config.include StripeHelper, type: :feature
   config.include ReactHelper,  type: :feature
   config.include FeatureHelper,  type: :feature

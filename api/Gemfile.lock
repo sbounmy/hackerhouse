@@ -112,7 +112,10 @@ GEM
       railties (>= 3.0.0)
     faraday (0.12.2)
       multipart-post (>= 1.2, < 3)
+    faraday_middleware (0.12.2)
+      faraday (>= 0.7.4, < 1.0)
     ffi (1.9.18)
+    gli (2.17.1)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     grape (1.0.3)
@@ -127,6 +130,7 @@ GEM
       grape (>= 0.8.0)
     grape-middleware-logger (1.9.0)
       grape (>= 0.17, < 1.1)
+    hashie (3.5.7)
     htmlentities (4.3.4)
     httpclient (2.8.3)
     i18n (1.0.1)
@@ -264,6 +268,13 @@ GEM
       childprocess (~> 0.5)
       rubyzip (~> 1.0)
     simple_command (0.0.9)
+    slack-ruby-client (0.11.1)
+      activesupport
+      faraday (>= 0.9)
+      faraday_middleware
+      gli
+      hashie
+      websocket-driver
     slop (3.6.0)
     spring (2.0.0)
       activesupport (>= 4.2)
@@ -328,6 +339,7 @@ DEPENDENCIES
   rspec_junit_formatter
   selenium-webdriver
   simple_command
+  slack-ruby-client
   spring
   spring-watcher-listen (~> 2.0.0)
   stripe
