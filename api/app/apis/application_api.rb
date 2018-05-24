@@ -29,10 +29,6 @@ class ApplicationAPI < Grape::API
     def current_user
       @current_user ||= AuthorizeApiRequest.call(params[:token], request.headers).result || Guest.new
     end
-
-    def intercom
-      @intercom ||= App.intercom
-    end
   end
 
   # Errors handling
