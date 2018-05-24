@@ -33,7 +33,7 @@ describe HousesAPI do
       end
 
       it 'returns pantry attributes if user belongs to house' do
-        user = create(:user, house: hq)
+        user = create(:user, house: hq, check_out: 2.month.from_now)
         get_as user, "/v1/houses/#{hq.slug_id}"
 
         expect(json_response['pantry_login']).to eq 'pantry@hackerhouse.paris'
@@ -41,6 +41,7 @@ describe HousesAPI do
         expect(json_response['pantry_budget']).to eq 100
         expect(json_response['pantry_description']).to eq 'Livraison bi-mensuel'
         expect(json_response['pantry_url']).to eq 'https://courses-en-ligne.carrefour.fr'
+        expect(json_response['gdrive_folder_id']).to eq 'google-secret-folder-id'
       end
 
       it 'returns pantry attributes if current user is a guest' do

@@ -29,6 +29,9 @@ class House
   field :stripe_refresh_token, type: String
   field :stripe_publishable_key, type: String
 
+  # Google Drive
+  field :gdrive_folder_id, type: String
+
   # Stripe attributes
   # - stripe acc_id
   field :stripe_id, type: String

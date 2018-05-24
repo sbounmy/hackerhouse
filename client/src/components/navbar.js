@@ -17,7 +17,7 @@ class NavBar extends Component {
       return ''
     }
     return (
-      <div class="dashboard-toggle btn-group btn-group-toggle mr-auto" data-toggle="buttons">
+      <div className="dashboard-toggle btn-group btn-group-toggle mr-auto" data-toggle="buttons">
         <NavLink className="btn btn-light border mr-0" exact to="/dashboard" style={{width: '160px'}}><strong>🤖 Moi</strong></NavLink>
         <NavLink className="btn btn-light border" exact to="/dashboard/house" style={{width: '160px'}}><strong>🏡 Ma HackerHouse</strong></NavLink>
       </div>

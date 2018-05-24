@@ -10,7 +10,7 @@ export default function(state = {}, action) {
     case HOUSE_FETCHED:
       return { ...state, [action.payload.slug_id]: action.payload };
     case HOUSES_FETCHED:
-      return _.mapKeys(action.payload, 'id')
+      return { ...state, ..._.mapKeys(action.payload, 'id') }
   }
   return state;
 }

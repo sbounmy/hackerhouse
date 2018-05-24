@@ -16,6 +16,8 @@ FactoryGirl.define do
     pantry_monthly 0
     max_users 4
 
+    gdrive_folder_id 'google-secret-folder-id'
+
     pantry_login 'pantry@hackerhouse.paris'
     pantry_password 'pantry42'
     pantry_budget 100
