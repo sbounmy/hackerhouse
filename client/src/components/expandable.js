@@ -22,17 +22,16 @@ export default class Expandable extends Component {
   }
 
   isHidden(index) {
-    if (index + 1 > this.props.show && !this.state.showAll) {
-      return true
-    }
+    return ((index + 1 > this.props.show) && !this.state.showAll)
   }
 
   render() {
     const items = this.props.items || [];
     let displays = [];
 
-    _.forEach(items, (item, id, index) => {
-      displays.push(this.props.children(item, this.isHidden(index)))
+    // need to be an array so we have an index https://lodash.com/docs#forEach
+    _.each(_.values(items), (value, index) => {
+      displays.push(this.props.children(value, this.isHidden(index)))
     });
     return (
       <ul className='list-unstyled'>
