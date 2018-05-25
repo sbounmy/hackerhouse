@@ -8,8 +8,6 @@ import Folder from './folder';
 import _ from 'lodash';
 
 export default props => {
-  console.log('usr', props.user)
-  console.log('house', props.house)
   const isStaying = (props.user && props.house)
 
   if (!isStaying) {
