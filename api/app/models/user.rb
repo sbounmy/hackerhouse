@@ -14,7 +14,6 @@ class User
   field :email,           type: String
   field :firstname,       type: String
   field :lastname,        type: String
-  field :stripe_id,       type: String
   field :token,           type: String
   field :password_digest, type: String
   field :phone_number,    type: String
