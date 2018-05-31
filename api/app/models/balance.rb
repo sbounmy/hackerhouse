@@ -63,7 +63,7 @@ class Balance
         j += 1
         sum + res
       end
-      [row[0], amount.ceil]
+      [row[0], amount.positive? ? amount.ceil : 0]
     end
   end
 end
