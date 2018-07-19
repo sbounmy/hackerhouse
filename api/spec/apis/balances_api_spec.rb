@@ -131,5 +131,14 @@ describe BalancesAPI do
         post_as :admin, '/v1/balances/hq'
       }.to change { App.stripe { Stripe::InvoiceItem.list(limit: 10, customer: @nadia.stripe_id) }.count }.by(1)
     end
+
+    it 'can preview next month' do
+      @hugo.update_attributes check_out: '2017-12-31'
+      post_as :admin, '/v1/balances/hq', params: { date: '2017-09-20' }
+      expect(response.status).to eq 201
+      expect(json_response['date']).to eq '2017-09-20'
+      expect(json_response['users'].map(&:last)).to eq [0, 28, 28, 28]
+    end
+
   end
 end
