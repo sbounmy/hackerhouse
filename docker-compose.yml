@@ -28,6 +28,8 @@ services:
     env_file:
       - ./api/.env
     ports: ['3000:3000']
+    stdin_open: true
+    tty: true
 
   app: # react app
     build: ./client
