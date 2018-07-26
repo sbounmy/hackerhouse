@@ -7,10 +7,10 @@ GIT
 
 GIT
   remote: git://github.com/sbounmy/stripe-ruby-mock.git
-  revision: 38549e3c665b40cdc0e02785fec3bbb80248be3d
+  revision: 3d03e975598ed2da33298935b542ff77ddad31f0
   branch: justin808/update-api-to-2018-02-6
   specs:
-    stripe-ruby-mock (2.5.3)
+    stripe-ruby-mock (2.5.4)
       dante (>= 0.2.0)
       multi_json (~> 1.0)
       stripe (>= 2.0.3)
@@ -290,7 +290,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    stripe (3.9.1)
+    stripe (3.18.0)
       faraday (~> 0.10)
     thor (0.20.0)
     thread_safe (0.3.6)

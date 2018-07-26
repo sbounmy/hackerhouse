@@ -12,7 +12,6 @@ FactoryGirl.define do
     stripe_publishable_key "pk_public-token"
     stripe_plan_ids ['rent_monthly', 'utilities_monthly', 'cleaning_monthly']
     utilities_monthly 0
-    cleaning_monthly 0
     pantry_monthly 0
     max_users 4
 

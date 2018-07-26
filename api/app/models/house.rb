@@ -170,7 +170,7 @@ class House
   #              ...]
   def stripe_items
     subscription_items.map do |id, plan|
-      { plan: id, quantity: plan[:quantity]}
+      { plan: id, quantity: plan[:quantity] }
     end
   end
 
