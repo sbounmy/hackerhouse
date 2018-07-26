@@ -170,11 +170,5 @@ feature 'checkout', :rails do
     expect(user.stripe_id).to_not be_nil
     expect(user.house).to eq house
     expect(user.check).to eq [ next_mid_month, 4.months.from_now.end_of_month.to_date]
-    # no prorate flag on subscription
-    App.stripe do
-      subs = Stripe::Subscription.list(customer: User.last.stripe_id).data
-      expect(subs[1].metadata[:once]).to eq "true"
-      expect(subs[0].metadata[:once]).to eq nil
-    end
   end
 end

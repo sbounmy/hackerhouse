@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Balance, type: :model do
-  let(:hq) { create(:house, rent_monthly: 10_000) } # 10 000 euros / month
+  let(:hq) { create(:house, rent_monthly: 10_000, cleaning_monthly: 0) } # 10 000 euros / month
   let(:stripe) { StripeMock.create_test_helper }
 
   before { Timecop.travel(Date.parse('2017-11-25')) }
