@@ -1,6 +1,6 @@
 class SharedSubscription
 
-  attr_reader :id
+  attr_reader :id, :prorata_id
 
   def initialize house, customer:, check_in:, check_out:
     @check_in = check_in
@@ -11,11 +11,11 @@ class SharedSubscription
 
   def save
     App.stripe do
-      Stripe::Subscription.create(once_params) if not beginning_of_month?
-
       Stripe::Subscription.create(params).tap do |s|
         @id = s.id
       end
+
+      create_prorata if not beginning_of_month?
     end
   end
 
@@ -46,24 +46,21 @@ class SharedSubscription
     (next_billing_cycle_date - @check_in).to_i
   end
 
-  def once_params
-    items = @house.stripe_items
-    items.each do |obj|
-      obj[:quantity] = (obj[:quantity].to_f / 31 * days_to_prorate).ceil
+  def create_prorata
+    items = @house.subscription_items
+    items.each do |product_id, product|
+      Stripe::InvoiceItem.create({
+        customer: @customer,
+        amount: (product[:quantity].to_f / 31 * days_to_prorate).ceil * 100, currency: 'eur',
+        description: "Prorata #{product[:name]} de #{days_to_prorate} jours",
+      }, idempotency_key: user_key(product_id))
     end
-
-    {
-      customer: @customer,
-      items: items,
-      metadata: {
-        account_id: @house.stripe_id,
-        house: @house.slug_id,
-        check_in: @check_in,
-        check_out: @check_out,
-        once: true
-      },
-      trial_end: @check_in.to_time.to_i
-      # prorate: true
-    }
+    invoice = Stripe::Invoice.create customer: @customer
+    @prorata_id = invoice.id
   end
+
+  def user_key any_id
+    "#{Date.today.strftime('%Y-%m')}-#{@customer}-#{any_id}"
+  end
+
 end

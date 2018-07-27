@@ -11,7 +11,7 @@ export default (props) => {
                }>
           <div className="embed-responsive embed-responsive-21by9">
             <iframe className='embed-responsive-item'
-                   src={`https://drive.google.com/embeddedfolderview?id=${props.id}&maxresults=3#${props.type}`}
+                   src={`https://drive.google.com/embeddedfolderview?id=${props.id}#${props.type}`}
                    >
             </iframe>
           </div>

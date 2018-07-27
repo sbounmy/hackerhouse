@@ -79,10 +79,14 @@ feature 'checkout', :rails do
     }.to change { User.count }.by(1)
     user = User.last
     expect(user.check).to eq [2.months.from_now.beginning_of_month.to_date, 4.months.from_now.end_of_month.to_date]
-    # no prorate flag on subscription
-    # App.stripe do
-    #   expect(Stripe::Subscription.retrieve(User.last.stripe_subscription_ids[0]).prorate).to eq false
-    # end
+    # no prorata invoice
+    App.stripe do
+      subs = Stripe::Subscription.list(customer: User.last.stripe_id).data
+      expect(subs).to have(1).items
+      invoices = Stripe::Invoice.list(customer: User.last.stripe_id).data
+      expect(invoices).to have(1).items
+      expect(invoices[0].amount_due).to be 0
+    end
   end
 
   scenario 'when paying v2 in middle of month' do
@@ -105,10 +109,15 @@ feature 'checkout', :rails do
       alert.accept
     }.to change { User.count }.by(1)
     # no prorate flag on subscription
+    days_to_prorate = (next_mid_month.next_month.beginning_of_month.to_date - User.last.check_in).to_i
     App.stripe do
       subs = Stripe::Subscription.list(customer: User.last.stripe_id).data
-      expect(subs[1].metadata[:once]).to eq "true"
-      expect(subs[0].metadata[:once]).to eq nil
+      expect(subs).to have(1).items
+      invoices = Stripe::Invoice.list(customer: User.last.stripe_id).data
+      expect(invoices).to have(2).items
+      expect(invoices[0].lines.data).to have(3).items
+      total = ((500.to_f / 4 / 31 * days_to_prorate).ceil + (10000.to_f / 4 / 31 * days_to_prorate).ceil) * 100
+      expect(invoices[0].amount_due).to eq total
     end
   end
 
@@ -161,11 +170,5 @@ feature 'checkout', :rails do
     expect(user.stripe_id).to_not be_nil
     expect(user.house).to eq house
     expect(user.check).to eq [ next_mid_month, 4.months.from_now.end_of_month.to_date]
-    # no prorate flag on subscription
-    App.stripe do
-      subs = Stripe::Subscription.list(customer: User.last.stripe_id).data
-      expect(subs[1].metadata[:once]).to eq "true"
-      expect(subs[0].metadata[:once]).to eq nil
-    end
   end
 end

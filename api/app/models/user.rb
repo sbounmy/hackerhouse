@@ -21,6 +21,7 @@ class User
   # Stripe id
   field :stripe_id, type: String
   field :stripe_subscription_ids, type: Array, default: []
+  field :stripe_prorata_id, type: String
 
   # Linkedin
   field :linkedin_access_token, type: String

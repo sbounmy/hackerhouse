@@ -42,6 +42,8 @@ module Hackerhouse
     config.autoload_paths += Dir[Rails.root.join('app', 'synchronizers', '*')]
     # config.i18n.default_locale = :en # if we change this it will break api date formats
     config.i18n.fallbacks =[:en]
+
+    config.time_zone = 'Europe/Paris'
   end
 end
 
