@@ -14,7 +14,7 @@ describe BalancesAPI do
     Timecop.return
   end
 
-  let(:hq) { create(:house, slug_id: 'hq', rent_monthly: 10_000) } # 10 000 euros / month
+  let(:hq) { create(:house, slug_id: 'hq', rent_monthly: 10_000, cleaning_monthly: 0) } # 10 000 euros / month
   let(:stripe) { StripeMock.create_test_helper }
   let(:admin) { create(:user, admin: true) }
   def create_user(firstname, dates)
@@ -46,6 +46,16 @@ describe BalancesAPI do
       expect(response.status).to eq 200
       expect(json_response['date']).to eq '2017-11-30'
       expect(json_response['users'].map(&:last)).to eq [0, 445, 445, 445]
+    end
+
+    it 'takes into account other _monthly' do
+      hq.update_attributes cleaning_monthly: 500
+
+      @hugo.update_attributes check_out: '2017-12-31'
+      get_as :admin, '/v1/balances/hq'
+      expect(response.status).to eq 200
+      expect(json_response['date']).to eq '2017-11-30'
+      expect(json_response['users'].map(&:last)).to eq [0, 467, 467, 467]
     end
 
     it 'can preview next month' do

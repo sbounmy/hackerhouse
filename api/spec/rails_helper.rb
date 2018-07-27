@@ -93,6 +93,9 @@ RSpec.configure do |config|
   }
 
 end
+
+StripeMock.default_currency = 'eur'
+
 docker_ip = %x(/sbin/ip route|awk '/default/ { print $3 }').strip
 # Capybara.server_host = '0.0.0.0'
 # Capybara.server_port = "3010"

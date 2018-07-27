@@ -16,8 +16,8 @@ describe UsersAPI do
       # StripeMock.toggle_live(true)
       StripeMock.start
       # App.stripe do
-        stripe.create_plan(id: 'rent_monthly', amount: 1)
-        stripe.create_plan(id: 'cleaning_monthly', amount: 1)
+        stripe.create_plan(id: 'rent_monthly', amount: 1, currency: 'eur')
+        stripe.create_plan(id: 'cleaning_monthly', amount: 1, currency: 'eur')
       # end
     end
 
@@ -97,18 +97,24 @@ describe UsersAPI do
       it 'creates subscriptions without application fee on v2' do
         create_user
         customer = Stripe::Customer.retrieve(hq.users.last.stripe_id)
-        expect(customer.subscriptions.count).to eq 2
+        expect(customer.subscriptions.count).to eq 1
         expect(customer.subscriptions.first.try(:application_fee_percent)).to eq nil
       end
 
       it 'creates subscriptions in a middle week' do
-        create_user check_in: middle_of_month.strftime("%Y-%m-%d")
-        customer = Stripe::Customer.retrieve(hq.users.last.stripe_id)
-        expect(customer.subscriptions.count).to eq 2
-        expect(customer.subscriptions.data[0].trial_end).to eq middle_of_month.next_month.beginning_of_month.to_time.to_i
-        expect(customer.subscriptions.data[0].metadata[:once]).to eq nil
-        expect(customer.subscriptions.data[1].trial_end).to eq middle_of_month.to_time.to_i
-        expect(customer.subscriptions.data[1].metadata[:once]).to eq true
+        create_user email: 'paul+middleweek@42.com', check_in: middle_of_month.strftime("%Y-%m-%d")
+        user = hq.users.last
+        days_to_prorate = (middle_of_month.next_month.beginning_of_month.to_date - user.check_in).to_i
+        App.stripe do
+          customer = Stripe::Customer.retrieve(hq.users.last.stripe_id)
+          expect(customer.subscriptions.count).to eq 1
+          sub = customer.subscriptions.data[0]
+          items = Stripe::InvoiceItem.list(customer: user.stripe_id)
+          expect(sub.trial_end).to eq middle_of_month.next_month.beginning_of_month.to_time.to_i
+          expect(items.data.map(&:amount)).to include((500.to_f / 4 / 31 * days_to_prorate).ceil * 100,
+                                                               (10000.to_f / 4 / 31 * days_to_prorate).ceil * 100)
+        end
+        expect(user.stripe_prorata_id).to include 'in_'
       end
 
     end
@@ -237,7 +243,7 @@ describe UsersAPI do
           expect(last_delivery.to).to eq [sophie.email]
           expect(last_delivery.reply_to).to eq [user.email]
           expect(last_delivery.subject).to match /Paul reste plus longtemps que prévu ! 👍/
-          expect(last_delivery.body.encoded).to match /Paul continue l'aventure avec nous jusqu'au #{I18n.l(user.reload.check_out, format: :pretty)}/
+          expect(last_delivery.body.encoded).to match /Paul continue l'aventure avec nous jusqu'au #{I18n.l(user.reload.check_out, format: :pretty).to_quoted_printable}/
         end
 
         it 'does not email when user is admin' do

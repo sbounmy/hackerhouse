@@ -1,3 +1,9 @@
+class String
+  def to_quoted_printable(*args)
+    [self].pack("M").gsub(/\=\n/, "")
+  end
+end
+
 module ControllerHelper
   def json_response
     body = respond_to?(:last_response) ? last_response.body : response.body
