@@ -11,7 +11,7 @@ feature 'checkout', :rails do
     visit "/gp/ivry"
 
     select_date(2.months.from_now, from: '#check_in')
-    select_date(4.months.from_now, from: '#check_out')
+    select_date(4.months.from_now.beginning_of_month, from: '#check_out')
 
     # check 'terms'
     click_on "customButton"
@@ -64,7 +64,7 @@ feature 'checkout', :rails do
     visit "/gp/vh"
     expect(page).to have_content('VH')
     select_date(2.months.from_now.beginning_of_month, from: '#check_in')
-    select_date(4.months.from_now.end_of_month, from: '#check_out')
+    select_date(4.months.from_now.beginning_of_month, from: '#check_out')
 
     check 'terms'
     click_on "customButton"
@@ -95,7 +95,7 @@ feature 'checkout', :rails do
     expect(page).to have_content('VH')
     next_mid_month = Date.new(3.month.from_now.year, 3.month.from_now.month, 15)
     select_date(next_mid_month, from: '#check_in')
-    select_date(4.months.from_now.end_of_month, from: '#check_out')
+    select_date(4.months.from_now.beginning_of_month, from: '#check_out')
 
     check 'terms'
     click_on "customButton"
@@ -127,7 +127,7 @@ feature 'checkout', :rails do
     visit "/gp/vh"
     expect(page).to have_content('VH')
     select_date(Date.today.beginning_of_month, from: '#check_in')
-    select_date(4.months.from_now.end_of_month, from: '#check_out')
+    select_date(4.months.from_now.beginning_of_month, from: '#check_out')
 
     check 'terms'
     click_on "customButton"
@@ -152,7 +152,7 @@ feature 'checkout', :rails do
     expect(page).to have_content('VH')
     next_mid_month = Date.new(3.month.from_now.year, 3.month.from_now.month, 15)
     select_date(next_mid_month, from: '#check_in')
-    select_date(4.months.from_now.end_of_month, from: '#check_out')
+    select_date(4.months.from_now.beginning_of_month, from: '#check_out')
 
     check 'terms'
     click_on "customButton"

@@ -24,16 +24,14 @@
 
       const check_in = flatpickr('#check_in', $.extend(options, {
         onChange: function(d, n, str) {
-          check_out.set("minDate", d[0].fp_incr(<%= @house.min_stay_in_days -%>));
+          const minDate = d[0].fp_incr(<%= @house.min_stay_in_days -%>);
+          check_out.set("minDate", minDate);
 
           check_out.set("enable", [function(d2) {
-            const date = d2.getDate();
-            if (d[0].getDate() === date) {
+          // const lastDateOfCheckOutMonth = new Date(d2.getYear(), d2.getMonth() + 1, 1);
+          // if (d2.getDate() === lastDateOfCheckOutMonth.getDate()) {
+            if (d2.getDate() === 1) {
               return(true);
-            }
-            const lastDateOfPrevMonth = new Date(d2.getYear(), d2.getMonth(), 0);
-            if (d[0].getDate() > lastDateOfPrevMonth.getDate()) {
-              return(Math.abs(lastDateOfPrevMonth.getDate() - d[0].getDate()) === d2.getDate());
             }
             return(false);
           }]);
