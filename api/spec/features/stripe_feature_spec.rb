@@ -78,7 +78,7 @@ feature 'checkout', :rails do
       alert.accept
     }.to change { User.count }.by(1)
     user = User.last
-    expect(user.check).to eq [2.months.from_now.beginning_of_month.to_date, 4.months.from_now.end_of_month.to_date]
+    expect(user.check).to eq [2.months.from_now.beginning_of_month.to_date, 4.months.from_now.beginning_of_month.to_date]
     # no prorata invoice
     App.stripe do
       subs = Stripe::Subscription.list(customer: User.last.stripe_id).data
