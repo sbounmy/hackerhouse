@@ -95,7 +95,7 @@ feature 'checkout', :rails do
     expect(page).to have_content('VH')
     next_mid_month = Date.new(3.month.from_now.year, 3.month.from_now.month, 15)
     select_date(next_mid_month, from: '#check_in')
-    select_date(4.months.from_now.beginning_of_month, from: '#check_out')
+    select_date((next_mid_month + 3.month).beginning_of_month, from: '#check_out')
 
     check 'terms'
     click_on "customButton"
@@ -152,7 +152,7 @@ feature 'checkout', :rails do
     expect(page).to have_content('VH')
     next_mid_month = Date.new(3.month.from_now.year, 3.month.from_now.month, 15)
     select_date(next_mid_month, from: '#check_in')
-    select_date(4.months.from_now.beginning_of_month, from: '#check_out')
+    select_date((next_mid_month + 3.month).beginning_of_month, from: '#check_out')
 
     check 'terms'
     click_on "customButton"
@@ -169,6 +169,6 @@ feature 'checkout', :rails do
     expect(user.reload.token).to_not be_nil
     expect(user.stripe_id).to_not be_nil
     expect(user.house).to eq house
-    expect(user.check).to eq [ next_mid_month, 4.months.from_now.end_of_month.to_date]
+    expect(user.check).to eq [ next_mid_month, (next_mid_month + 3.month).beginning_of_month.to_date]
   end
 end

@@ -55,7 +55,7 @@ class SharedSubscription
         description: "Prorata #{product[:name]} de #{days_to_prorate} jours",
       }, idempotency_key: user_key(product_id))
     end
-    invoice = Stripe::Invoice.create customer: @customer
+    invoice = Stripe::Invoice.create customer: @customer, billing: 'send_invoice', due_date: @check_in.to_time.to_i
     @prorata_id = invoice.id
   end
 
