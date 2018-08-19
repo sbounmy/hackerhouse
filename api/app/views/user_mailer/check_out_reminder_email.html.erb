@@ -16,5 +16,5 @@
 PS : pour voir le montant de ta contribution solidaire par <%= link_to "ici", 'https://app.hackerhouse.paris' %>
 
 <% if @next %>
-<p>PS : Prochain emménagement c'est <%=  @next.firstname %>, le <%= l(@next.check_out, format: :long) -%>.</p>
+<p>PS : Prochain emménagement c'est <%=  @next.firstname %>, le <%= l(@next.check_in, format: :long) -%>.</p>
 <% end %>
