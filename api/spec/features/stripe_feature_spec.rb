@@ -20,7 +20,7 @@ feature 'checkout', :rails do
       expect(page).to have_no_css('.stripe_checkout_app')
       sleep 4
       alert = page.driver.browser.switch_to.alert
-      expect(alert.text).to match /42 x Merci/
+      expect(alert.text).to match /tout bon !/
       alert.accept
     }.to change { User.count }.by(1)
   end
