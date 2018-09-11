@@ -54,7 +54,7 @@ feature 'checkout', :rails do
       sleep 4
 
       alert = page.driver.browser.switch_to.alert
-      expect(alert.text).to match /42 x Merci/
+      expect(alert.text).to match /tout bon !/
       alert.accept
     }.to change { User.count }.by(1)
   end
@@ -74,7 +74,7 @@ feature 'checkout', :rails do
       expect(page).to have_no_css('.stripe_checkout_app')
       sleep 15
       alert = page.driver.browser.switch_to.alert
-      expect(alert.text).to match /42 x Merci/
+      expect(alert.text).to match /tout bon !/
       alert.accept
     }.to change { User.count }.by(1)
     user = User.last
@@ -105,7 +105,7 @@ feature 'checkout', :rails do
       expect(page).to have_no_css('.stripe_checkout_app')
       sleep 15
       alert = page.driver.browser.switch_to.alert
-      expect(alert.text).to match /42 x Merci/
+      expect(alert.text).to match /tout bon !/
       alert.accept
     }.to change { User.count }.by(1)
     # no prorate flag on subscription
@@ -136,7 +136,7 @@ feature 'checkout', :rails do
       fill_credit_card
       expect(page).to have_no_css('.stripe_checkout_app')
       alert = page.driver.browser.switch_to.alert
-      expect(alert.text).to match /42 x Merci/
+      expect(alert.text).to match /tout bon !/
       alert.accept
     }.to change { User.count }.by(1)
     # no prorate flag on subscription
@@ -162,7 +162,7 @@ feature 'checkout', :rails do
       expect(page).to have_no_css('.stripe_checkout_app')
       sleep 15
       alert = page.driver.browser.switch_to.alert
-      expect(alert.text).to match /42 x Merci/
+      expect(alert.text).to match /tout bon !/
       alert.accept
     }.to_not change { User.count }
 

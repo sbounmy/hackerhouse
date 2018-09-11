@@ -3,7 +3,7 @@
   <tr>
     <td><div class='text-left'><%= house.products[s.product].name %> <i class="fa fa-question-circle fa-padding" title="<%= s.metadata['description'] %>"
     data-toggle="tooltip" data-placement="right"></i></div></td>
-    <td class='text-right'><%= number_to_currency s.amount / 100, locale: 'fr', precision: 0 %></td>                
+    <td class='text-right'><%= number_to_currency s.amount / 100, locale: 'fr', precision: 0 %></td>
   </tr>
   <% end %>
   <tr>

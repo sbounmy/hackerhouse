@@ -15,10 +15,6 @@
 <% content_for :head do %>
 
   <script src="https://checkout.stripe.com/checkout.js"></script>
- 
-<!-- Start of HubSpot Embed Code -->
-  <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/3327857.js"></script>
-<!-- End of HubSpot Embed Code -->
 
   <!-- only let people to pick future date (starting tomorrow) -->
 
@@ -116,19 +112,7 @@
            check_out: check_out,
            slug_id: '<%= @house.slug_id %>'
           }).done(function(data) {
-              // convert local date to utc
-              var hsq_in = createDateAsUTC(document.querySelector("#check_in")._flatpickr.selectedDates[0]).getTime();
-              var hsq_out = createDateAsUTC(document.querySelector("#check_out")._flatpickr.selectedDates[0]).getTime();
-
-              _hsq.push(['identify', {
-                email: token.email,
-                lifecyclestage: 'customer',
-                check_in: hsq_in, //timestamp
-                check_out: hsq_out, //timestamp
-                hackerhouse_name: '<%= @house.slug_id -%>'
-              }]);
-              _hsq.push(['trackPageView']);
-              alert('42 x Merci ! Ton paiement a bien été pris en compte, on te voit très bientôt :-). <%= @house.name %>'); })
+              alert('C\'est tout bon ! Ton paiement a bien été pris en compte, on te voit très bientôt :-). <%= @house.name %>'); })
             .fail(function(error) {
               alert(error.responseText);
           });

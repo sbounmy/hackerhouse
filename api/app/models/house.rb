@@ -21,6 +21,11 @@ class House
   field :zip_code, type: String
   field :city, type: String
 
+  # Type of property.
+  # True : will send/show a subscription contract
+  # False : will send/show a residential mix contract
+  field :commercial, type: Boolean, default: true
+
   # Description text
   field :description, type: String
 

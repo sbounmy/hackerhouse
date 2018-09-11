@@ -1,10 +1,6 @@
 <% content_for :head do %>
 
   <script src="https://checkout.stripe.com/checkout.js"></script>
- 
-<!-- Start of HubSpot Embed Code -->
-  <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/3327857.js"></script>
-<!-- End of HubSpot Embed Code -->
 
   <!-- only let people to pick future date (starting tomorrow) -->
 
@@ -56,9 +52,62 @@
   </style>
 <% end %>
     <div class="row">
-      <div class="col-lg-offset-4 col-lg-4">
+      <div class='col'><h3 id='name'>On passe aux choses sérieuses ?</h3></div>
+    </div>
+    <div class="row">
+      <div class="col col-7">
+        <div class='form-group'><strong>📍 Où ? <%= @house.name %></strong></div>
+          <% if @house.commercial %>
+            <ul class="list-group">
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                Espaces communs avec bureaux nomades
+                <span class="badge badge-pill">⭐</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                Espaces de repos ouvert 7j/7 H24
+                <span class="badge badge-pill">⭐</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                Flexible et sécurisé : 1 mois dépôt de garantie et 1 mois de préavis
+                <span class="badge badge-pill">⭐</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                Pas de garants, ni de conditions de resources
+                <span class="badge badge-pill">🚫</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                Pas un lieu d'habitation: pas d'attestation hébergement ni éligible aux aides
+                <span class="badge badge-pill">🚫</span>
+              </li>
+            </ul>
+          <% else %>
+            <ul class="list-group">
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Espaces communs avec bureaux nomades
+                  <span class="badge badge-pill">⭐</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                Chambres partagées
+                <span class="badge badge-pill">⭐</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                Flexible et sécurisé : 1 mois dépôt de garantie et 1 mois de préavis
+                <span class="badge badge-pill">⭐</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                Pas de garants, ni de conditions de resources
+                <span class="badge badge-pill">🚫</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                Durée maximum 8 mois (résidence secondaire) : pas éligible aux aides
+                <span class="badge badge-pill">🚫</span>
+              </li>
+            </ul>
+          <% end %>
+          <p>pour plus de détail voir : <%= link_to_contract @house %></p>
+      </div>
+      <div class="col col-5">
         <form id='user_new'>
-          <h3 id='name'><%= @house.name %></h3>
           <label for='check_in'>Quand</label>
           <div class="form-inline">
             <div class='form-group'>
@@ -69,7 +118,7 @@
             </div>
           </div>
           <%= render "pricing2", house: @house %>
-          <input type='checkbox' id='terms'> <label for="terms">J'ai lu et accepte les <a target="_blank" href="http://man.hackerhouse.paris/articles-a-la-une/les-x-commandements">conditions générales d'utilisation</a></label>
+          <input type='checkbox' id='terms'> <label for="terms">J'ai lu et accepte <%= link_to_contract @house %></label>
 
           <button id="customButton" type="submit" class="btn btn-primary btn-lg btn-block" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Don't panic... 🤖" disabled=disabled>J'emménage 🚀</button>
           <p class='help-block text-center'><a href='https://man.hackerhouse.paris/vivre/paiement/quand-suis-je-debite-de-ma-reservation' target="_blank"><small>Tu seras débité au prorata à ton emménagement</small></a></p>
@@ -110,18 +159,8 @@
            slug_id: '<%= @house.slug_id -%>'})
             .done(function(data) {
               // convert local date to utc
-              var hsq_in = createDateAsUTC(document.querySelector("#check_in")._flatpickr.selectedDates[0]).getTime();
-              var hsq_out = createDateAsUTC(document.querySelector("#check_out")._flatpickr.selectedDates[0]).getTime();
-              _hsq.push(['identify', {
-                email: token.email,
-                lifecyclestage: 'customer',
-                check_in: hsq_in,
-                check_out: hsq_out,
-                hackerhouse_name: '<%= @house.slug_id -%>'
-              }]);
-              _hsq.push(['trackPageView']);
               $('#customButton').button('reset');
-              alert('42 x Merci ! Ton paiement a bien été pris en compte, on te voit très bientôt :-). <%= @house.name %>'); })
+              alert('C\'est tout bon ! 👌 D\'ici quelques heures tu receveras dans ta boite mail : contrat de réservation à signer et la demande de paiement du dépôt de garantie  :-). <%= @house.name %>'); })
             .fail(function (error) {
               alert(error.responseText);
               $('#customButton').button('reset');
