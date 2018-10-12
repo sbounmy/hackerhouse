@@ -232,7 +232,7 @@ describe UsersAPI do
           expect(last_delivery.to).to eq [sophie.email]
           expect(last_delivery.reply_to).to eq [user.email]
           expect(last_delivery.subject).to match /Paul nous quitte plus tôt que prévu/
-          expect(last_delivery.body.encoded).to match /Paul part le #{I18n.l(user.reload.check_out, format: :pretty)}/
+          expect(last_delivery.body.encoded).to match /Paul part le #{I18n.l(user.reload.check_out, format: :pretty).to_quoted_printable}/
         end
 
         it 'emails active users when checkout later' do
@@ -390,5 +390,24 @@ describe UsersAPI do
       expect(json_response).to have(2).items
       expect(json_response.map {|u| u['id'] }).to contain_exactly user.id.to_s, user2.id.to_s
     end
+  end
+
+  describe "GET /v1/users/:id" do
+    let(:user) { create(:user) }
+    let(:admin) { create(:user, admin: true) }
+
+    it 'show user email if admin' do
+      user
+      get_as admin, "/v1/users/#{user.id}"
+      expect(json_response.keys).to include 'firstname', 'lastname', 'email'
+    end
+
+    it 'does not show user email if guest' do
+      user
+      get_as Guest.new, "/v1/users/#{user.id}"
+      expect(json_response.keys).to include 'avatar_url', 'firstname', 'lastname'
+      expect(json_response.keys).to_not include 'email'
+    end
+
   end
 end

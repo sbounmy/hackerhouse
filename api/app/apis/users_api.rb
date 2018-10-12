@@ -69,6 +69,11 @@ class UsersAPI < Grape::API
       end
     end
 
+    desc "Get an User"
+    get ':id' do
+      User.find(params[:id])
+    end
+
     desc "List Users"
     params do
       optional :q, type: Hash
