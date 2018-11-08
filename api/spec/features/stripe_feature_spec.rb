@@ -36,7 +36,7 @@ feature 'checkout', :rails do
     pk = "pk_test_TZNvputhVSjs6WFIZy4b4hH9"
     sk = "sk_test_4h4o1ck9feZX9VzinYNX4Vwm"
     create(:house, name: 'SuperNana House', slug_id: 'supernana',
-      stripe_publishable_key: pk, stripe_access_token: sk, stripe_plan_ids: ['sleep_monthly'], v2: false)
+      stripe_publishable_key: pk, stripe_access_token: sk, stripe_plan_ids: ['sleep_monthly'], v2: false, commercial: false)
 
     visit "/gp/supernana"
     expect(page).to have_content("SuperNana House")
@@ -60,7 +60,7 @@ feature 'checkout', :rails do
   end
 
   scenario 'when paying v2 at beginning_of_month' do
-    create(:house, name: "HackerHouse VH", slug_id: 'vh', stripe: true)
+    create(:house, name: "HackerHouse VH", slug_id: 'vh', stripe: true, commercial: false)
     visit "/gp/vh"
     expect(page).to have_content('VH')
     select_date(2.months.from_now.beginning_of_month, from: '#check_in')
@@ -90,7 +90,7 @@ feature 'checkout', :rails do
   end
 
   scenario 'when paying v2 in middle of month' do
-    create(:house, name: "HackerHouse VH", slug_id: 'vh', stripe: true)
+    create(:house, name: "HackerHouse VH", slug_id: 'vh', stripe: true, commercial: false)
     visit "/gp/vh"
     expect(page).to have_content('VH')
     next_mid_month = Date.new(3.month.from_now.year, 3.month.from_now.month, 15)
@@ -123,7 +123,7 @@ feature 'checkout', :rails do
 
   scenario 'when paying v2 today' do
     pending 'not supported'
-    create(:house, name: "HackerHouse VH", slug_id: 'vh', stripe_id: 'acct_1B1FYLBnBiKe4QYN')
+    create(:house, name: "HackerHouse VH", slug_id: 'vh', stripe_id: 'acct_1B1FYLBnBiKe4QYN', commercial: false)
     visit "/gp/vh"
     expect(page).to have_content('VH')
     select_date(Date.today.beginning_of_month, from: '#check_in')
@@ -147,7 +147,7 @@ feature 'checkout', :rails do
 
   it 'updates existing user' do
     user = create(:user, email: 'paul@student.42.fr')
-    house = create(:house, name: "HackerHouse VH", slug_id: 'vh', stripe: true)
+    house = create(:house, name: "HackerHouse VH", slug_id: 'vh', stripe: true, commercial: false)
     visit "/gp/vh"
     expect(page).to have_content('VH')
     next_mid_month = Date.new(3.month.from_now.year, 3.month.from_now.month, 15)
@@ -170,5 +170,86 @@ feature 'checkout', :rails do
     expect(user.stripe_id).to_not be_nil
     expect(user.house).to eq house
     expect(user.check).to eq [ next_mid_month, (next_mid_month + 3.month).beginning_of_month.to_date]
+  end
+
+  scenario 'displays correctly vat tax' do
+    house = create(:house, name: "HackerHouse VH", slug_id: 'vh', stripe: true)
+    visit "/gp/vh"
+    expect(page).to have_content "TVA 20%"
+    expect(page).to have_content "525 €"
+    house.update_attributes commercial: false
+    visit "/gp/vh"
+    expect(page).to have_content "TVA 0%"
+    expect(page).to have_content "0 €"
+  end
+
+  scenario 'when commercial it includes 20% tax' do
+    create(:house, name: "HackerHouse VH", slug_id: 'vh', stripe: true)
+    visit "/gp/vh"
+    expect(page).to have_content('VH')
+    next_mid_month = Date.new(3.month.from_now.year, 3.month.from_now.month, 15)
+    select_date(next_mid_month, from: '#check_in')
+    select_date((next_mid_month + 3.month).beginning_of_month, from: '#check_out')
+
+    check 'terms'
+    click_on "customButton"
+
+    expect {
+      fill_credit_card
+      expect(page).to have_no_css('.stripe_checkout_app')
+      sleep 15
+      alert = page.driver.browser.switch_to.alert
+      expect(alert.text).to match /tout bon !/
+      alert.accept
+    }.to change { User.count }.by(1)
+    # no prorate flag on subscription
+    days_to_prorate = (next_mid_month.next_month.beginning_of_month.to_date - User.last.check_in).to_i
+    App.stripe do
+      subs = Stripe::Subscription.list(customer: User.last.stripe_id).data
+      expect(subs).to have(1).items
+      expect(subs.data[0].tax).to eq 2625 * 0.2
+      invoices = Stripe::Invoice.list(customer: User.last.stripe_id).data
+      expect(invoices).to have(2).items
+      expect(invoices[0].lines.data).to have(3).items
+      total = ((500.to_f / 4 / 31 * days_to_prorate).ceil + (10000.to_f / 4 / 31 * days_to_prorate).ceil) * 100
+      expect(invoices[0].subtotal).to eq total
+      expect(invoices[0].tax).to eq total * 0.2
+      expect(invoices[0].amount_due).to eq total * 1.2
+    end
+  end
+
+  scenario 'when residential it does not includes tax' do
+    create(:house, name: "HackerHouse VH", slug_id: 'vh', stripe: true, commercial: false)
+    visit "/gp/vh"
+    expect(page).to have_content('VH')
+    next_mid_month = Date.new(3.month.from_now.year, 3.month.from_now.month, 15)
+    select_date(next_mid_month, from: '#check_in')
+    select_date((next_mid_month + 3.month).beginning_of_month, from: '#check_out')
+
+    check 'terms'
+    click_on "customButton"
+
+    expect {
+      fill_credit_card
+      expect(page).to have_no_css('.stripe_checkout_app')
+      sleep 15
+      alert = page.driver.browser.switch_to.alert
+      expect(alert.text).to match /tout bon !/
+      alert.accept
+    }.to change { User.count }.by(1)
+    # no prorate flag on subscription
+    days_to_prorate = (next_mid_month.next_month.beginning_of_month.to_date - User.last.check_in).to_i
+    App.stripe do
+      subs = Stripe::Subscription.list(customer: User.last.stripe_id).data
+      expect(subs).to have(1).items
+      expect(subs.data[0].tax).to eq 0
+      invoices = Stripe::Invoice.list(customer: User.last.stripe_id).data
+      expect(invoices).to have(2).items
+      expect(invoices[0].lines.data).to have(3).items
+      total = ((500.to_f / 4 / 31 * days_to_prorate).ceil + (10000.to_f / 4 / 31 * days_to_prorate).ceil) * 100
+      expect(invoices[0].subtotal).to eq total
+      expect(invoices[0].tax).to eq 0
+      expect(invoices[0].amount_due).to eq total
+    end
   end
 end

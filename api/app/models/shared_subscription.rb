@@ -29,7 +29,8 @@ class SharedSubscription
         check_in: @check_in,
         check_out: @check_out
       },
-      trial_end: next_billing_cycle_date.to_time.to_i
+      trial_end: next_billing_cycle_date.to_time.to_i,
+      tax_percent: @house.tax_percent
     }
   end
 
@@ -55,7 +56,9 @@ class SharedSubscription
         description: "Prorata #{product[:name]} de #{days_to_prorate} jours",
       }, idempotency_key: user_key(product_id))
     end
-    invoice = Stripe::Invoice.create customer: @customer, billing: 'send_invoice', due_date: @check_in.to_time.to_i
+    invoice = Stripe::Invoice.create customer: @customer,
+              billing: 'send_invoice', due_date: @check_in.to_time.to_i,
+              tax_percent: @house.tax_percent
     @prorata_id = invoice.id
   end
 

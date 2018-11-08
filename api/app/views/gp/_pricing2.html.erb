@@ -7,8 +7,12 @@
   </tr>
   <% end %>
   <tr>
+    <td><div class='text-left'><strong>TVA </strong><small><%= number_to_percentage house.tax_percent, precision: 0 %></small></div></td>
+    <td class='text-right'><strong><%= cents house.tax_total_per_user %></strong></td>
+  </tr>
+  <tr>
     <td><div class='text-left'><strong>Total </strong><small>par mois</small></div></td>
-    <td class='text-right'><strong><%= cents house.amount_total_per_user %></strong></td>
+    <td class='text-right'><strong><%= cents house.amount_total_with_tax_per_user %></strong></td>
   </tr>
 </table>
 

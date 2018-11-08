@@ -184,4 +184,16 @@ class House
       amount_for(plan_id)
     end
   end
+
+  def tax_total_per_user
+    amount_total_per_user * tax_percent / 100
+  end
+
+  def amount_total_with_tax_per_user
+    amount_total_per_user + tax_total_per_user
+  end
+
+  def tax_percent
+    commercial? ? 20 : 0
+  end
 end
