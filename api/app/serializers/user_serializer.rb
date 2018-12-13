@@ -1,9 +1,11 @@
-class UserSerializer < ActiveModel::Serializer
-  attributes  :id, :firstname, :lastname, :avatar_url, :bio_title, :bio_url,
+class UserSerializer < DocumentSerializer
+  attributes  :firstname, :lastname, :bio_title, :bio_url,
               :check_in, :check_out, :active, :admin, :house_slug_id, :house_id
 
   attribute :email, if: :current_user_or_admin?
   attribute :phone_number, if: :current_user_or_admin?
+
+  attachments :avatar, fill: [150, 150]
 
   def current_user_or_admin?
     (scope.current_user.id == object.id) || scope.current_user.admin?

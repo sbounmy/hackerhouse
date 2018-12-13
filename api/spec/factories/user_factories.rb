@@ -7,7 +7,7 @@ FactoryGirl.define do
     password 'tiramisu42'
     check_in '2016-12-20'
     check_out '2017-02-20'
-    avatar_url 'http://avatar.slack.com/paul.jpg'
+    remote_avatar_url 'http://avatar.slack.com/paul.jpg'
     phone_number '0612345678'
     house
     bio_url 'https://linkedin.com/in/blabla'

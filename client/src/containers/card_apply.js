@@ -53,7 +53,7 @@ class CardApply extends Component {
 
     return (
       <Card className='mb-4 d-lg-block'
-            title="Séjour 😴">
+            title="Séjour 🖥 + 😴">
         <div className='apply-popup'>
           <ReactTypeformEmbed
             url={`https://hackerhouseparis.typeform.com/to/qmztfk?${this.applyParams()}`}

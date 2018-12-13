@@ -50,3 +50,5 @@ Rails.application.configure do
   end
 
 end
+
+Refile.app_host = 'http://localhost:3000'

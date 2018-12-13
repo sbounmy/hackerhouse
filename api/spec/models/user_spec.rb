@@ -139,4 +139,11 @@ RSpec.describe User, type: :model do
       expect(slacks[0].text).to match "D-30: Départ de Pierre, avez-vous trouvé un nouveau coloc ?"
     end
   end
+
+  describe '#remote_avatar_url' do
+    it 'can set remote avatar' do
+      u = create(:user, remote_avatar_url: "https://upload.wikimedia.org/wikipedia/commons/5/51/Google.png")
+      expect(u.avatar_url).to eq "riqnid"
+    end
+  end
 end

@@ -1,6 +1,4 @@
 class ApplicationSerializer < ActiveModel::Serializer
-  attributes :id
-
   def current_user?
     !!scope.current_user.id
   end

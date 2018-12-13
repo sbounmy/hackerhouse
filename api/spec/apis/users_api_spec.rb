@@ -60,8 +60,8 @@ describe UsersAPI do
       it 'doesnt display sensible information' do
         create_user
         expect(json_response.keys).to eq ["id", "firstname", "lastname",
-          "avatar_url", "bio_title", "bio_url", "check_in", "check_out",
-          "active", "admin", "house_slug_id", "house_id"]
+          "bio_title", "bio_url", "check_in", "check_out",
+          "active", "admin", "house_slug_id", "house_id", "avatar"]
       end
 
       it 'accepts date as %d\/%m\/%Y' do

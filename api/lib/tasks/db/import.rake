@@ -2,6 +2,7 @@ namespace :db do
   desc "Import from production env"
   task import: :environment do
     raise 'this should be run in dev mode !!' unless Rails.env == 'development'
+
     uri = Mongo::URI.new(`heroku config:get MONGODB_URI --app hackerhouse-api`.chomp)
     tmp = Dir::Tmpname.make_tmpname('/tmp/', 'hh-dump')
 

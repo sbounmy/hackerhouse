@@ -53,7 +53,7 @@ class UsersAPI < Grape::API
 
     desc "Updates an User"
     params do
-      optional :avatar_url,             type: String, desc: "Avatar url"
+      optional :remote_avatar_url,      type: String, desc: "Avatar url"
       optional :bio_title,              type: String, desc: "Bio Title"
       optional :bio_url,                type: String, desc: "Linkedin URL"
       optional :check_out,              type: Date,   desc: "Check out Date"

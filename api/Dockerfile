@@ -1,5 +1,3 @@
-FROM driftrock/heroku-cli:latest as heroku
-
 FROM ruby:2.4-jessie
 
 MAINTAINER Stephane BOUNMY <stephane@hackerhouse.paris>
@@ -13,11 +11,12 @@ RUN echo "deb http://repo.mongodb.org/apt/debian jessie/mongodb-org/3.6 main" | 
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install build-essential -y \
             git \
-            mongodb-org-tools
+            mongodb-org-tools \
+            node
 
 
-# Copy executable from heroku image
-COPY --from=heroku /usr/local/bin/heroku /usr/local/bin/heroku
+RUN curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
+
 RUN heroku update
 
 # Configure the main working directory. This is the base 

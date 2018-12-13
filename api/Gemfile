@@ -70,6 +70,14 @@ gem 'slack-ruby-client'
 # Sentry is cross-platform application monitoring, with a focus on error reporting.
 gem "sentry-raven", require: 'sentry-raven-without-integrations'
 
+
+# Ruby file uploads
+# Mongoid extension for Refile.
+gem 'refile', github: 'refile/refile', require: 'refile/rails'
+gem "refile-mini_magick"
+gem 'refile-mongoid', github: 'DimaSamodurov/refile-mongoid'
+gem 'refile-s3', github: 'refile/refile-s3'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri

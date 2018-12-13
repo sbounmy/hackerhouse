@@ -87,3 +87,5 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :postmark
   config.action_mailer.postmark_settings = { :api_token => "8e541c5e-8533-402c-bcb1-2cef7143ff5d" }
 end
+
+Refile.app_host = 'https://api.hackerhouse.paris'

@@ -18,14 +18,14 @@ class Token
       firstname: response['firstName'],
       lastname: response['lastName'],
       location: response['location']['name'],
-      avatar_url: response['pictureUrl'], # response['pictureUrls']['values'][0] not working
+      remote_avatar_url: response['pictureUrl'], # response['pictureUrls']['values'][0] not working
       bio_title: response['headline'],
       bio_url: response['publicProfileUrl'] || response['siteStandardProfileRequest']['url'] # return authenticated profile url when not public profile
     }
     new(token, data)
   end
 
-  attr_accessor :email, :firstname, :lastname, :avatar_url, :bio_title, :bio_url, :location, :token
+  attr_accessor :email, :firstname, :lastname, :remote_avatar_url, :bio_title, :bio_url, :location, :token
 
   def initialize(token, data)
     @token = token

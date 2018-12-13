@@ -6,7 +6,6 @@ class User
 
   # Fields
   field :admin,           type: Boolean, default: false
-  field :avatar_url,      type: String
   field :bio_title,       type: String
   field :bio_url,         type: String
   field :check_in,        type: Date
@@ -34,6 +33,9 @@ class User
 
   # Bcrypt
   has_secure_password
+
+  # Attachments
+  attachment :avatar, type: :image
 
   # Scope
   scope :customer, -> { where(admin: false) }
