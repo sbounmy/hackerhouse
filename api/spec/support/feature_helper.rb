@@ -21,17 +21,22 @@ module FeatureHelper
   end
 
   def tf_select(value)
-    within('.focus') { expect(page).to have_text(value) }
+    within('[data-qa-focused="true"]') { expect(page).to have_text(value) }
     # ci has a bug with .bd that obscures caption click. try to click on its container instead of element
-    find('.caption', text: value).first(:xpath,"./ancestor::li[contains(@class, 'container')]").click
+    # find('.caption', text: value).first(:xpath,"./ancestor::li[contains(@class, 'container')]").click
     # find('.caption', text: value).click
+    find('[data-qa="choice"]', text: value).click
   end
 
   def tf_fill_in(selector, with: '')
-    within('.focus') { expect(page).to have_text(selector) }
-    find('.question', text: selector).first(:xpath,".//..").find('input, textarea').tap do |input|
+    within('[data-qa-focused="true"]') { expect(page).to have_text(selector) }
+    find('[data-qa-block="true"]', text: selector).first(:xpath,".//..").find('input, textarea').tap do |input|
       input.set with
       input.send_keys :return
     end
+  end
+
+  def tf_submit
+    find('[data-qa="submit-button"]').click
   end
 end

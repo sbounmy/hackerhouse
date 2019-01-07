@@ -46,6 +46,7 @@ feature 'messages' do
       expect(page).to have_content("Hello World Julie-SANDBOX_TYPEFORM")
     end
 
+    sleep 1
     within_intercom :notifications do
       expect(page).to have_content 'Vraiment désolé Julie'
     end
@@ -59,7 +60,8 @@ feature 'messages' do
     within_frame(0) do
       expect(page).to have_content("Hello World Julie-SANDBOX_TYPEFORM")
 
-      find('.button.general', text: "HACKERHOUSE.GO").click
+      all('[data-qa="start-button"]').last.click
+
       tf_select(/HQ #blockchain #dev/)
       tf_select(/DEV/)
       tf_select(/Ta valise/)
@@ -68,7 +70,7 @@ feature 'messages' do
       tf_fill_in(/Date de d/, with: '31/10/2020')
       tf_fill_in(/Pitch ta startup/, with: build(:message).body)
       sleep 1 #wait scroll unfixed footer
-      find('.submit').click
+      tf_submit
 
       expect(page).to have_text('Super ! On te contactera sur julie@hackerhouse.paris')
     end
