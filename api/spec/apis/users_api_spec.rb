@@ -111,8 +111,8 @@ describe UsersAPI do
           sub = customer.subscriptions.data[0]
           items = Stripe::InvoiceItem.list(customer: user.stripe_id)
           expect(sub.trial_end).to eq middle_of_month.next_month.beginning_of_month.to_time.to_i
-          expect(items.data.map(&:amount)).to include((500.to_f / 4 / 31 * days_to_prorate).ceil * 100,
-                                                               (10000.to_f / 4 / 31 * days_to_prorate).ceil * 100)
+          expect(items.data.map(&:amount)).to include((500.to_f / 4 / 30 * days_to_prorate).ceil * 100,
+                                                               (10000.to_f / 4 / 30 * days_to_prorate).ceil * 100)
         end
         expect(user.stripe_prorata_id).to include 'in_'
       end

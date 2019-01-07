@@ -116,7 +116,7 @@ feature 'checkout', :rails do
       invoices = Stripe::Invoice.list(customer: User.last.stripe_id).data
       expect(invoices).to have(2).items
       expect(invoices[0].lines.data).to have(3).items
-      total = ((500.to_f / 4 / 31 * days_to_prorate).ceil + (10000.to_f / 4 / 31 * days_to_prorate).ceil) * 100
+      total = ((500.to_f / 4 / 30 * days_to_prorate).ceil + (10000.to_f / 4 / 30 * days_to_prorate).ceil) * 100
       expect(invoices[0].amount_due).to eq total
     end
   end
@@ -207,11 +207,11 @@ feature 'checkout', :rails do
     App.stripe do
       subs = Stripe::Subscription.list(customer: User.last.stripe_id).data
       expect(subs).to have(1).items
-      expect(subs.data[0].tax).to eq 2625 * 0.2
+      expect(subs[0].tax_percent).to eq 20.0
       invoices = Stripe::Invoice.list(customer: User.last.stripe_id).data
       expect(invoices).to have(2).items
-      expect(invoices[0].lines.data).to have(3).items
-      total = ((500.to_f / 4 / 31 * days_to_prorate).ceil + (10000.to_f / 4 / 31 * days_to_prorate).ceil) * 100
+      expect(invoices[0].lines).to have(3).items
+      total = ((500.to_f / 4 / 30 * days_to_prorate).ceil + (10000.to_f / 4 / 30 * days_to_prorate).ceil) * 100
       expect(invoices[0].subtotal).to eq total
       expect(invoices[0].tax).to eq total * 0.2
       expect(invoices[0].amount_due).to eq total * 1.2
@@ -242,11 +242,11 @@ feature 'checkout', :rails do
     App.stripe do
       subs = Stripe::Subscription.list(customer: User.last.stripe_id).data
       expect(subs).to have(1).items
-      expect(subs.data[0].tax).to eq 0
+      expect(subs[0].tax_percent).to eq 0
       invoices = Stripe::Invoice.list(customer: User.last.stripe_id).data
       expect(invoices).to have(2).items
-      expect(invoices[0].lines.data).to have(3).items
-      total = ((500.to_f / 4 / 31 * days_to_prorate).ceil + (10000.to_f / 4 / 31 * days_to_prorate).ceil) * 100
+      expect(invoices[0].lines).to have(3).items
+      total = ((500.to_f / 4 / 30 * days_to_prorate).ceil + (10000.to_f / 4 / 30 * days_to_prorate).ceil) * 100
       expect(invoices[0].subtotal).to eq total
       expect(invoices[0].tax).to eq 0
       expect(invoices[0].amount_due).to eq total

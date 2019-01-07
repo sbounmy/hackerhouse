@@ -1,4 +1,5 @@
 class SharedSubscription
+  DAYS_PER_MONTH = 30
 
   attr_reader :id, :prorata_id
 
@@ -52,7 +53,7 @@ class SharedSubscription
     items.each do |product_id, product|
       Stripe::InvoiceItem.create({
         customer: @customer,
-        amount: (product[:quantity].to_f / 31 * days_to_prorate).ceil * 100, currency: 'eur',
+        amount: (product[:quantity].to_f / DAYS_PER_MONTH * days_to_prorate).ceil * 100, currency: 'eur',
         description: "Prorata #{product[:name]} de #{days_to_prorate} jours",
       }, idempotency_key: user_key(product_id))
     end
