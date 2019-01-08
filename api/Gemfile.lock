@@ -387,7 +387,7 @@ DEPENDENCIES
   byebug
   capybara
   factory_girl_rails
-  faraday (= 0.15.4)
+  faraday
   grape
   grape-active_model_serializers
   grape-middleware-logger

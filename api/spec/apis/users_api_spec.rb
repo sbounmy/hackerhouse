@@ -59,9 +59,9 @@ describe UsersAPI do
 
       it 'doesnt display sensible information' do
         create_user
-        expect(json_response.keys).to eq ["id", "firstname", "lastname",
+        expect(json_response.keys).to contain_exactly "id", "firstname", "lastname",
           "bio_title", "bio_url", "check_in", "check_out",
-          "active", "admin", "house_slug_id", "house_id", "avatar"]
+          "active", "admin", "house_slug_id", "house_id", "avatar_url"
       end
 
       it 'accepts date as %d\/%m\/%Y' do
@@ -157,42 +157,42 @@ describe UsersAPI do
   end
 
   describe "PUT /v1/users/:id" do
-    let(:user) { create(:user, avatar_url: nil, stripe: true) }
+    let(:user) { create(:user, remote_avatar_url: nil, stripe: true) }
     let(:avatar) { "https://i1.wp.com/dev.slack.com/img/avatars/ava_0010-512.v1443724322.png" }
 
     it 'is forbidden to guest' do
       expect {
-        put "/v1/users/#{user.id}", params: { avatar_url: avatar }
+        put "/v1/users/#{user.id}", params: { remote_avatar_url: avatar }
       }.to_not change { user.reload.avatar_url }.from(nil)
       expect(response.status).to eq 403
     end
 
     it 'updates its own avatar url' do
       expect {
-        put "/v1/users/#{user.id}", params: { avatar_url: avatar }, headers: { 'Authorization' => token(user) }
-      }.to change { user.reload.avatar_url }.from(nil).to(avatar)
+        put "/v1/users/#{user.id}", params: { remote_avatar_url: avatar }, headers: { 'Authorization' => token(user) }
+      }.to change { user.reload.avatar_url }.from(nil).to(/attachment/)
     end
 
     it 'updates its own avatar url using token parameter' do
       expect {
-        put "/v1/users/#{user.id}", params: { avatar_url: avatar, token: token(user) }
-      }.to change { user.reload.avatar_url }.from(nil).to(avatar)
+        put "/v1/users/#{user.id}", params: { remote_avatar_url: avatar, token: token(user) }
+      }.to change { user.reload.avatar_url }.from(nil).to(/attachments/)
     end
 
     it 'is forbidden to update someone else avatar url' do
-      user2 = create(:user, avatar_url: nil)
+      user2 = create(:user, remote_avatar_url: nil)
       expect {
-        put "/v1/users/#{user2.id}", params: { avatar_url: avatar }, headers: { 'Authorization' => token(user) }
+        put "/v1/users/#{user2.id}", params: { remote_avatar_url: avatar }, headers: { 'Authorization' => token(user) }
       }.to_not change { user2.reload.avatar_url }.from(nil)
       expect(response.status).to eq 403
     end
 
     it 'is allowed to update someone else avatar url if admin' do
-      user2 = create(:user, avatar_url: nil, stripe: true)
+      user2 = create(:user, remote_avatar_url: nil, stripe: true)
       user.set admin: true
       expect {
-        put "/v1/users/#{user2.id}", params: { avatar_url: avatar }, headers: { 'Authorization' => token(user) }
-      }.to change { user2.reload.avatar_url }.from(nil).to(avatar)
+        put "/v1/users/#{user2.id}", params: { remote_avatar_url: avatar }, headers: { 'Authorization' => token(user) }
+      }.to change { user2.reload.avatar_url }.from(nil).to(/attachments/)
       expect(response.status).to eq 200
     end
 
@@ -270,9 +270,10 @@ describe UsersAPI do
       user
       get "/v1/users"
       expect(response.status).to eq 200
+
       expect(json_response[0]['firstname']).to eq "Paul"
       expect(json_response[0]['lastname']).to eq "Amicel"
-      expect(json_response[0]['avatar_url']).to eq "http://avatar.slack.com/paul.jpg"
+      expect(json_response[0]['avatar_url']).to start_with "/attachments/"
     end
 
     it 'list user from specific house' do

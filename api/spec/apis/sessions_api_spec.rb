@@ -15,9 +15,11 @@ describe SessionsAPI do
     context 'with valid params' do
 
       it "returns a session" do
-        new_session
-        expect(json_response['token']).to match /eyJ0/
-        expect(json_response['user']['firstname']).to eq 'john'
+        Timecop.freeze do # so when we compare token it matches (based on 24h expiration time)
+          new_session
+          expect(json_response['token']).to eq JsonWebToken.encode(user_id: user.id.to_s)
+          expect(json_response['user']['firstname']).to eq 'john'
+        end
       end
 
       it "returns success code" do
@@ -27,11 +29,13 @@ describe SessionsAPI do
 
       it 'can use linkedin access token instead of password' do
         user.update_attributes linkedin_access_token: 'secret-lkd-token'
-        new_session linkedin_access_token: 'secret-lkd-token', password: nil
-        expect(response.status).to eql 201
-        expect(json_response['token']).to match /eyJ0/
-        expect(json_response['user']['firstname']).to eql 'john'
-        expect(json_response['user']['email']).to eql 'john.snow@gmail.com' #since its current user it can see it
+        Timecop.freeze do # so when we compare token it matches (based on 24h expiration time)
+          new_session linkedin_access_token: 'secret-lkd-token', password: nil
+          expect(response.status).to eql 201
+          expect(json_response['token']).to eq JsonWebToken.encode(user_id: user.id.to_s)
+          expect(json_response['user']['firstname']).to eql 'john'
+          expect(json_response['user']['email']).to eql 'john.snow@gmail.com' #since its current user it can see it
+        end
       end
 
       it "user active can be false" do

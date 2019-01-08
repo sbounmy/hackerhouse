@@ -143,7 +143,7 @@ RSpec.describe User, type: :model do
   describe '#remote_avatar_url' do
     it 'can set remote avatar' do
       u = create(:user, remote_avatar_url: "https://upload.wikimedia.org/wikipedia/commons/5/51/Google.png")
-      expect(u.avatar_url).to eq "riqnid"
+      expect(u.avatar_url).to start_with '/attachments/'
     end
   end
 end
