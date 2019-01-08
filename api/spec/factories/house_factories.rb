@@ -41,8 +41,6 @@ FactoryGirl.define do
             type: 'custom', country: 'fr') #custom so we can delete it
           evaluator.stripe_id = c.id
         end
-      else
-        evaluator.stripe_id = "some_stripe_id_#{evaluator.id}"
       end
     end
     # Create customer on stripe and set it's stripe_id

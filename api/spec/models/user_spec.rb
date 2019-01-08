@@ -136,7 +136,7 @@ RSpec.describe User, type: :model do
         User.send_reminders(30.days)
       }.to change { slacks.count }.by(1)
       expect(slacks[0].channel).to eq "#{user.house.slack_id}"
-      expect(slacks[0].text).to match "D-30: Départ de Pierre, avez-vous trouvé un nouveau coloc ?"
+      expect(slacks[0].text).to match "D-30: Départ de Pierre ✈️ - Gagne 42 Briq en parrainant un nouveau coloc 🎁"
     end
   end
 

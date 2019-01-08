@@ -8,7 +8,7 @@ class CheckOutSynchronizer < ApplicationSynchronizer
       user = params[:user]
       App.slack.chat_postMessage(
         channel: user.house.slack_id,
-        text: "D#{d_check_out(user)}: Départ de #{user.firstname}, avez-vous trouvé un nouveau coloc ? @channel",
+        text: "D#{d_check_out(user)}: Départ de #{user.firstname} ✈️ - Gagne 42 Briq en parrainant un nouveau coloc 🎁 @channel",
         as_user: true)
     end
 
@@ -17,7 +17,7 @@ class CheckOutSynchronizer < ApplicationSynchronizer
   private
   # Returns an integer which is the number of days before check out
   def d_check_out(user)
-    (Time.zone.now.to_i - user.check_out.to_time.to_i) / 1.day
+    ((Time.zone.now.to_i - user.check_out.to_time.to_i) / 1.day.to_f).round
   end
 
 end

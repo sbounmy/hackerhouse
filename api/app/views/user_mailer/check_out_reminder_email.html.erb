@@ -2,12 +2,15 @@
 
 <p><%= @user.firstname %> nous quitte dans <%= time_ago_in_words @user.check_out -%> (<%= l @user.check_out, format: :long -%>)</p>
 
-<p>Connaîtrais-tu son successeur ?</p>
-<p>Pour t'aider, tu peux :</p>
-<ul>
-  <li>voir les postulants de la maison <%= link_to 'là', 'https://app.hackerhouse.paris/dashboard/house' %></li>
-  <li>faire appel à ton propre réseau : école, taff, meetup</li>
-</ul>
+<p>Tu peux parrainer un nouveau coloc pour gagner des briqs !</p>
+
+<p>Pour cela il faut:
+  <ul>
+    <li>ton filleul signup en mentionnant ton @username slack</li>
+    <li>slacker @vanessa avec le nom de la personne que tu parraines</li>
+  </ul>
+</p>
+
 <p>Si il a déjà été trouvé, ignore ce message ;)</p>
 
 <p>À ta dispo,</p>
