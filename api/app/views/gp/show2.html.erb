@@ -9,6 +9,13 @@
   <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
 
   <script type="text/javascript">
+    // Compute min date starting from a date
+    const getMinDate = function(date) {
+      const minDate = date.fp_incr(<%= @house.min_stay_in_days -%>);
+      const month = minDate.getMonth() + (minDate.getDate() == 1 ? 0 : 1); // min date month if minimum stay falls on the beginning on month
+      return new Date(minDate.getFullYear(), month, 1) // new min first month date
+    }
+
     $(document).ready(function() {
       var options = {
         locale: 'fr',
@@ -17,11 +24,9 @@
         dateFormat: 'd-m-Y',
         minDate: new Date().fp_incr(1)
       }
-
-      const check_in = flatpickr('#check_in', $.extend(options, {
+      const check_in = flatpickr('#check_in', $.extend({}, options, {
         onChange: function(d, n, str) {
-          const minDate = d[0].fp_incr(<%= @house.min_stay_in_days -%>);
-          check_out.set("minDate", minDate);
+          check_out.set("minDate", getMinDate(d[0]));
 
           check_out.set("enable", [function(d2) {
           // const lastDateOfCheckOutMonth = new Date(d2.getYear(), d2.getMonth() + 1, 1);
@@ -31,12 +36,15 @@
             }
             return(false);
           }]);
+        },
+        onClose: function(d, n, str) {
+          check_out.open(); // open checkout when we open check in
         }
       }));
-      const check_out = flatpickr('#check_out', $.extend(
-        options, {
+
+      const check_out = flatpickr('#check_out', $.extend({}, options, {
           onChange: function(d, n, str) {
-            check_in.set("maxDate", d[0]);
+            check_in.set("maxDate", d[0]); // check_in can not be after check_out
           }
       }));
     });

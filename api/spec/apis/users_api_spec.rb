@@ -146,6 +146,18 @@ describe UsersAPI do
         }.to_not change { User.count }
       end
 
+      it 'raises error when check_out is nil' do
+        create_user check_out: nil
+        expect(response.code).to eq "400"
+        expect(json_response['error']).to eq 'check_out is empty'
+      end
+
+      it 'raises error when check_out is empty' do
+        create_user check_out: ''
+        expect(response.code).to eq "400"
+        expect(json_response['error']).to eq 'check_out is empty'
+      end
+
       it 'does not create duplicate users' do
         expect {
           create_user

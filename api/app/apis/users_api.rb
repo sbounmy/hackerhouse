@@ -3,11 +3,13 @@ class UsersAPI < Grape::API
 
     desc "Create a User"
     params do
-      requires :token,                  type: String, desc: "Card token returned from Stripe"
-      requires :slug_id,                type: String, desc: "House slug id ex: hq"
-      requires :email,                  type: String
-      requires :check_in,               type: Date,   desc: 'Check in date'
-      requires :check_out,              type: Date,   desc: 'Check out date'
+      with allow_blank: false do
+        requires :token,                  type: String, desc: "Card token returned from Stripe"
+        requires :slug_id,                type: String, desc: "House slug id ex: hq"
+        requires :email,                  type: String
+        requires :check_in,               type: Date,   desc: 'Check in date'
+        requires :check_out,              type: Date,   desc: 'Check out date'
+      end
     end
 
     post do
