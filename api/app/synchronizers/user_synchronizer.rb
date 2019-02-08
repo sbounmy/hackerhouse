@@ -20,6 +20,7 @@ class UserSynchronizer < ApplicationSynchronizer
       App.intercom.users.find(user_id: user.id).tap do |u|
         u.phone = user.phone_number
         u.custom_attributes = {
+          check_in: user.check_in,
           check_out: user.check_out
         }
         App.intercom.users.save(u)
