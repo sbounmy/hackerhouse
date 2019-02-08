@@ -4,8 +4,10 @@ class UserSynchronizer < ApplicationSynchronizer
       user = params[:user]
       App.intercom.users.find(user_id: user.id).tap do |u|
         u.custom_attributes = {
+          bio_url: user.bio_url,
           check_in: user.check_in,
-          check_out: user.check_out
+          check_out: user.check_out,
+          stripe_id: user.stripe_id
         }
         App.intercom.users.save(u)
       end
@@ -16,9 +18,9 @@ class UserSynchronizer < ApplicationSynchronizer
     to :intercom do
       user = params[:user]
       App.intercom.users.find(user_id: user.id).tap do |u|
+        u.phone = user.phone_number
         u.custom_attributes = {
-          check_out: user.check_out,
-          phone_number: user.phone_number
+          check_out: user.check_out
         }
         App.intercom.users.save(u)
       end
