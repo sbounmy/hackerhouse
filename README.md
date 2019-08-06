@@ -2,6 +2,7 @@ Intro
 -----
 
 HackerHouse are big community houses run by hackers for hackers.
+https://hackerhouse.paris
 
 Every houses are self-managed and solidary meaning that when a roomate leaves, he has to be replaced by its staying roomates.
 
