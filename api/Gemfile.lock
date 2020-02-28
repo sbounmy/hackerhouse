@@ -255,7 +255,8 @@ GEM
     pry-rails (0.3.6)
       pry (>= 0.10.4)
     public_suffix (2.0.4)
-    puma (3.11.3)
+    puma (4.3.3)
+      nio4r (~> 2.0)
     pundit (1.1.0)
       activesupport (>= 3.0.0)
     rack (2.0.6)
@@ -402,7 +403,7 @@ DEPENDENCIES
   oauth2
   postmark-rails
   pry-rails
-  puma (~> 3.0)
+  puma (~> 4.3)
   pundit
   rack-cors
   rails
