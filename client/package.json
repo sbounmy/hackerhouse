@@ -6,7 +6,7 @@
     "axios": "^0.17.1",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
-    "moment": "^2.20.1",
+    "moment": "^2.29.4",
     "query-string": "^5.0.1",
     "react": "^16.2.0",
     "react-cookie": "^2.1.2",
